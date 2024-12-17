@@ -20,12 +20,12 @@ public class PopUpShopManager : MonoBehaviour
     private int nonRewardDrinks = 0;
 
     private float totalSum = 0f;
-    private float timer;
+    private float timer = 60f;
     private float avgTimeToPurchase = 0f;
     private void Start()
     {
         // Set the timer to the BetweenSceneDuration from GameSettings
-        timer = GameSettings.Instance.BetweenSceneDuration;
+        //timer = GameSettings.Instance.BetweenSceneDuration;
 
         shopCanvas.enabled = true;
         UpdateTotalSum();
