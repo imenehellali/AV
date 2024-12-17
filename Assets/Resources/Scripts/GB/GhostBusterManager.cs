@@ -82,6 +82,7 @@ public class GhostBusterManager : MonoBehaviour
     private void Start()
     {
         MoneyManager.instance.ResetMoney();
+        StartTask();
     }
     private void OnEnable()
     {
