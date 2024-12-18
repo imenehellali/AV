@@ -17,12 +17,9 @@ public class InstructionPanel : MonoBehaviour
     [SerializeField] private InputActionReference Menu;
     [SerializeField]
     private AudioSource _audioSourceInstr;
-    //[SerializeField] private TextMeshProUGUI gameTranscript;
-    [SerializeField] private Text gameTranscriptTextNormal;
+    [SerializeField] private TextMeshProUGUI gameTranscript;
 
-    //[SerializeField] private TextMeshProUGUI levelTranscript;
-    [SerializeField] private Text levelTranscriptTextNormal;
-
+    [SerializeField] private TextMeshProUGUI levelTranscript;
     [TextArea]
     public string gameTranscriptText;
     public AudioClip gameVideo;
@@ -55,7 +52,7 @@ public class InstructionPanel : MonoBehaviour
         if (IsSceneLoaded("StartScene"))
         {
             _audioSourceInstr.PlayOneShot(gameVideo); 
-            levelTranscriptTextNormal.text = "Sie befinden sich in der Startszene, bevor eine der eigentlichen Aufgaben beginnt! Dies ist ein Platzhalter. Die spezifischen Anweisungen zu jeder Aufgabe werden hier angezeigt! Die Anweisungen zu jeder Aufgabe werden zu Beginn jeder Aufgabe abgespielt! Sie können sie unten pausieren und wieder fortsetzen oder jederzeit von diesem Panel aus abspielen!";
+            levelTranscript.text = "Sie befinden sich in der Startszene, bevor eine der eigentlichen Aufgaben beginnt! Dies ist ein Platzhalter. Die spezifischen Anweisungen zu jeder Aufgabe werden hier angezeigt! Die Anweisungen zu jeder Aufgabe werden zu Beginn jeder Aufgabe abgespielt! Sie können sie unten pausieren und wieder fortsetzen oder jederzeit von diesem Panel aus abspielen!";
         }
 
         else if (IsSceneLoaded("PUWScene"))
@@ -131,7 +128,7 @@ public class InstructionPanel : MonoBehaviour
         if (!string.IsNullOrEmpty(gameTranscriptText))
         {
             //gameTranscript.text = gameTranscriptText;
-            gameTranscriptTextNormal.text = gameTranscriptText; 
+            gameTranscript.text = gameTranscriptText; 
         }
     }
 
@@ -140,7 +137,7 @@ public class InstructionPanel : MonoBehaviour
         if (levelTranscripts != null && index >= 0 && index < levelTranscripts.Count && !string.IsNullOrEmpty(levelTranscripts[index]))
         {
             //levelTranscript.text = levelTranscripts[index];
-            levelTranscriptTextNormal.text = levelTranscripts[index].ToString();
+            levelTranscript.text = levelTranscripts[index].ToString();
         }
     }
 

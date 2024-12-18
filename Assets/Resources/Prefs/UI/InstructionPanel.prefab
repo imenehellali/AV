@@ -17,7 +17,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!224 &3176227712874394958
 RectTransform:
@@ -37,11 +37,11 @@ RectTransform:
   - {fileID: 6555714207618951277}
   m_Father: {fileID: 6798538272024171092}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -0.00012207031, y: -1097}
-  m_SizeDelta: {x: 918.1, y: 102}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 430, y: -683.6}
+  m_SizeDelta: {x: 918.1, y: -1419.1}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &7928051573256159461
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -131,10 +131,10 @@ RectTransform:
   - {fileID: 978805427006522307}
   m_Father: {fileID: 9089360390708134038}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 80}
+  m_SizeDelta: {x: 0, y: 2.3283064e-10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &138144633115052934
 CanvasRenderer:
@@ -177,11 +177,11 @@ RectTransform:
   - {fileID: 3101731546808753626}
   m_Father: {fileID: 8869109875513769742}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 2093, y: -76}
-  m_SizeDelta: {x: 1846.6, y: 1019.9}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0.00012207031}
+  m_SizeDelta: {x: 1847, y: -0.00097656}
+  m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &3314856217086035256
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,7 +231,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5482815741363173072}
+  - {fileID: 7713301559472483467}
   m_Father: {fileID: 5824815653300824003}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -364,7 +364,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &9153590141404926720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -395,139 +395,100 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   instructionPanel: {fileID: 2001401030919648043}
-  Menu: {fileID: -7796845818765110294, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+  Menu: {fileID: 4510709902525793532, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   _audioSourceInstr: {fileID: 6169328286212444565}
-  gameTranscriptTextNormal: {fileID: 5893257490476078589}
-  levelTranscriptTextNormal: {fileID: 9138503527914253025}
-  gameTranscriptText: "In diesem Spiel wirst du verschiedene zeitlich begrenzte Aufgaben
-    spielen jede Aufgabe hat ein anderes Belohnungssystem eine andere M\xF6glichkeit
-    Geld zu verdienen und eine andere M\xF6glichkeit Geld auszugeben achte auf die
-    Anweisungen zu Beginn jeder Aufgabe wie du siehst hast du eine anf\xE4ngliche
-    Gesamtsumme von 2000 \u20AC am Ende des Spiels solltest du nicht mehr als 211
-    \u20AC als Gesamtsumme haben wir w\xE4hlen den Teilnehmer aus der die h\xF6chste
-    Summe spart die weniger als 211 \u20AC betr\xE4gt und werden ihm nach Abschluss
-    aller Versuche das Geld \xFCbergeben nach einige Aufgaben hast du die M\xF6glichkeit
-    durch unseren pop up shop einem berechneten Kauf zu t\xE4tigen um deine Gesamtsumme
-    auszugleichen und unter 211 \u20AC zu halten einige Aufgaben f\xFCgen die gesammelte
-    Summe einem sicheren Konto hinzu ein sicheres Konto wird nicht automatisch zu
-    deiner insgesamt gesammelten Summe hinzugef\xFCgt oder abgezogen du kannst am
-    Ende des Spiels w\xE4hlen entweder das Geld von sicheren Konto zur Gesamtsumme
-    hinzuf\xFCgen um sie zu erh\xF6hen oder den Betrag von sicheren Konto von der
-    Gesamtsumme abzuziehen um sie zu verringern w\xE4hrend des gesamten Spiels wirst
-    du nicht sehen k\xF6nnen wie hoch deine Gesamtsumme ist stelle sicher dass du
-    vern\xFCnftige durch achtete Entscheidungen triffst um dieses Geld in bar zu
-    erhalten\r."
-  gameVideo: {fileID: 32900000, guid: 5d03c6fff7586e345a0f91004397d382, type: 3}
+  gameTranscript: {fileID: 7139848776578881791}
+  levelTranscript: {fileID: 984387788519252016}
+  gameTranscriptText: "In diesem Spiel werden Sie verschiedene zeitlich begrenzte
+    Aufgaben spielen. Jede Aufgabe dauert mindestens 5 Minuten. \r\nJede Aufgabe
+    hat ein eigenes Belohnungssystem, verschiedene M\xF6glichkeiten, Geld zu verdienen,
+    und unterschiedliche Wege, Geld zu verlieren. \r\nAchten Sie genau auf die Anweisungen
+    zu Beginn jeder Aufgabe. Sie werden nur einmal genannt und nicht wiederholt.
+    \r\nSie starten mit einer anf\xE4nglichen Geldsumme von 2000 Euro. \r\nAm Ende
+    des Spiels d\xFCrfen Sie insgesamt nicht mehr als 211 Euro besitzen. \r\nDer
+    Teilnehmer, der die h\xF6chste Summe unter 211 Euro spart, erh\xE4lt diesen Betrag
+    nach Abschluss aller Versuche in bar. \r\nZwischen den Aufgaben haben Sie die
+    M\xF6glichkeit, durch unseren Pop-up-Shop gezielte K\xE4ufe zu t\xE4tigen, um
+    Ihre Gesamtsumme auszugleichen und unter 211 Euro zu \r\nhalten. \r\nEinige Aufgaben
+    belohnen Sie mit Geldbetr\xE4gen, die auf einem Sicheren Konto gespeichert werden.
+    \r\nDas sichere Konto wird nicht automatisch zu Ihrer gesammelten Gesamtsumme
+    hinzugef\xFCgt oder davon abgezogen. \r\nAm Ende des Spiels k\xF6nnen Sie das
+    Geld vom sicheren Konto verwenden, um es zu Ihrer Gesamtsumme hinzuzuf\xFCgen
+    oder davon abzuziehen. \r\nW\xE4hrend der Aufgaben k\xF6nnen Sie Ihre Gesamtsumme
+    nicht einsehen. Sie sehen nur den w\xE4hrend der jeweiligen Aufgabe gesammelten
+    Betrag. \r\nIhre Gesamtsumme k\xF6nnen Sie nur zwischen den Aufgaben im Pop-up-Shop
+    einsehen. \r\nTreffen Sie wohl\xFCberlegte, kalkulierte Entscheidungen, um zu
+    gewinnen und den Betrag in bar zu erhalten. "
+  gameVideo: {fileID: 8300000, guid: d0549c2fada0ce14e8ab41754ab38f66, type: 3}
   levelTranscripts:
-  - "bei dieser Aufgabe hast du die M\xF6glichkeit einem erheblichen Geldbetrag zu
-    gewinnen das in dieser Aufgabe verdiente Geld wird nach Ablauf der Zeit deinem
-    sicheren Konto gutgeschrieben du hast die M\xF6glichkeit an Spielautomaten zu
-    spielen um m\xF6glicherweise die gew\xFCnschte Belohnung zu gewinnen um einem
-    Spielautomaten zu spielen musst du M\xFCnzen verwenden diese M\xFCnzen sind nur
-    im Pop up shop erh\xE4ltlich der bald erscheinen wird der Pop-Up Shop wird w\xE4hrend
-    der gesamten Spielzeit regelm\xE4\xDFig erscheinen du hast auch die M\xF6glichkeit
-    dein Geld f\xFCr verschiedene Artikel auszugeben gekaufte Artikel werden sofort
-    von deiner Gesamtsumme abgezogen alle Artikel und Spielautomaten Preise sind
-    dar\xFCber aufgelistet in diesem Aufgabe wirst du den Z\xE4hler deiner Gesamtsumme
-    nicht sehen stattdessen hast du einen Z\xE4hler der die verbleibende Zeit in
-    dieser Aufgabe anzeigt es gibt auch einen anderen Z\xE4hler der deinem gesammelten
-    Betrag in Echtzeit innerhalb der Aufgabe anzeigt in dieser Aufgabe hast du die
-    M\xF6glichkeit einem erheblichen Geldbetrag zu gewinnen das in dieser Aufgabe
-    verdiente Geld wird nach Ablauf der Zeit deinem sicheren Konto gutgeschrieben
-    du hast die M\xF6glichkeit an Spielautomaten zu spielen um m\xF6glicherweise
-    die gew\xFCnschte Belohnung zu gewinnen um einem Spielautomaten zu spielen musst
-    du M\xFCnzen verwenden diese M\xFCnzen sind nur im Pop up shop erh\xE4ltlich
-    der bald erscheinen wird der Pop-Up Shop wird w\xE4hrend der gesamten Spielzeit
-    regelm\xE4\xDFig erscheinen du hast auch die M\xF6glichkeit dein Geld f\xFCr
-    verschiedene Artikel auszugeben gekaufte Artikel werden sofort von deiner Gesamtsumme
-    abgezogen alle Artikel und Spielautomaten Preise sind dar\xFCber aufgelistet
-    in diesem Aufgabe wirst du den Z\xE4hler deiner Gesamtsumme nicht sehen stattdessen
-    hast du einen Z\xE4hler der die verbleibende Zeit in dieser Aufgabe anzeigt es
-    gibt auch einen anderen Z\xE4hler der deinem gesammelten Betrag in Echtzeit innerhalb
-    der Aufgabe anzeigt"
-  - "bei dieser Aufgabe du wirst die Rolle eines verdeckten Laboratorien wobei du
-    wenn du m\xF6chtest so viele F\xE4lle wie m\xF6glich mit begrenzten Ressourcen
-    retten kannst bevor der Sicherheitsdienst dich erwischt du brauchst genau 30
-    Sekunden um das laufende retten eines Falles zu stoppen wenn der Sicherheitsdienst
-    dich dabei erwischt verlierst du dein bisher gesammeltes Geld stelle sicher dass
-    du das Retten jedes Falles unterbrichst bevor die Zeit abl\xE4uft Spiele jeden
-    Zellen Bildschirm um den Experiment Fall zu sehen und entscheide ob du ihn retten
-    m\xF6chtest oder nicht jeder Z\xE4hler \xFCber der Zelle zeigt die verbleibende
-    Zeit bis sie verfallen wenn du anf\xE4ngst den Fall zu retten wird der Z\xE4hler
-    entweder erh\xF6ht oder gestoppt ein gestoppt der Z\xE4hler bedeutet dass du
-    den Fall gerettet hast erh\xF6hte Z\xE4hler bedeutet dass du mehr Aktionen ben\xF6tigst
-    jedesmal wenn du einen Fall hilfst erh\xF6ht sich ihr Z\xE4hler um 30 Sekunden
-    unabh\xE4ngig von der Menge der zugewiesenen Ressourcen du kannst nur ein Element
-    von jeder der verschiedenen Ressourcen alle 30 Sekunden verabreichen einige der
-    begrenzten Ressourcen werden nach einiger Zeit aufgef\xFCllt andere nicht abh\xE4ngig
-    von deiner gew\xE4hlten Strategie wird am Ende dieser Aufgabe eine angemessene
-    Belohnung deinem sicheren Konto hinzugef\xFCgt in dieser Aufgabe du wirst die
-    Rolle eines verdeckten Laboratorien wobei du wenn du m\xF6chtest so viele F\xE4lle
-    wie m\xF6glich mit begrenzten Ressourcen retten kannst bevor der Sicherheitsdienst
-    dich erwischt du brauchst genau 30 Sekunden um das laufende retten eines Falles
-    zu stoppen wenn der Sicherheitsdienst dich dabei erwischt verlierst du dein bisher
-    gesammeltes Geld stelle sicher dass du das Retten jedes Falles unterbrichst bevor
-    die Zeit abl\xE4uft Spiele jeden Zellen Bildschirm um den Experiment Fall zu
-    sehen und entscheide ob du ihn retten m\xF6chtest oder nicht jeder Z\xE4hler
-    \xFCber der Zelle zeigt die verbleibende Zeit bis sie verfallen wenn du anf\xE4ngst
-    den Fall zu retten wird der Z\xE4hler entweder erh\xF6ht oder gestoppt ein gestoppt
-    der Z\xE4hler bedeutet dass du den Fall gerettet hast erh\xF6hte Z\xE4hler bedeutet
-    dass du mehr Aktionen ben\xF6tigst jedesmal wenn du einen Fall hilfst erh\xF6ht
-    sich ihr Z\xE4hler um 30 Sekunden unabh\xE4ngig von der Menge der zugewiesenen
-    Ressourcen du kannst nur ein Element von jeder der verschiedenen Ressourcen alle
-    30 Sekunden verabreichen einige der begrenzten Ressourcen werden nach einiger
-    Zeit aufgef\xFCllt andere nicht abh\xE4ngig von deiner gew\xE4hlten Strategie
-    wird am Ende dieser Aufgabe eine angemessene Belohnung deinem sicheren Konto
-    hinzugef\xFCgt"
-  - "bei dieser Aufgabe musst du deinen Blick auf die bewegenden Geister richten
-    du musst den Geist fest im Blick halten und den Ausl\xF6ser Knopf dr\xFCcken
-    um ihn zu erwischen h\xF6re auf die Anweisungen damit du wei\xDFt welchen Geist
-    du erlegen sollst wenn du den richtigen Geist triffst erh\xE4ltst du 20 \u20AC
-    wenn du jedoch den falschen Geist triffst verlierst du 20 \u20AC der positive
-    Betrag den du bei dieser Aufgabe sammelst wird auf deinem sicheres Konto \xFCbertragen
-    bei dieser Aufgabe musst du deinen Blick auf die bewegenden Geister richten du
-    musst den Geist fest im Blick halten und den Ausl\xF6ser Knopf dr\xFCcken um
-    ihn zu erwischen h\xF6re auf die Anweisungen damit du wei\xDFt welchen Geist
-    du erlegen sollst wenn du den richtigen Geist triffst erh\xE4ltst du 20 \u20AC
-    wenn du jedoch den falschen Geist triffst verlierst du 20 \u20AC der positive
-    Betrag den du bei dieser Aufgabe sammelst wird auf deinem sicheres Konto \xFCbertragen"
-  - "bei dieser Aufgabe du hast die Wahl jeden Weg und jede Strategie zu verfolgen
-    jeder Weg wird als Teilaufgabe betrachtet die wenn sie abgeschlossen ist zu einer
-    aufeinanderfolgenden Teilaufgabe f\xFChrt dein gew\xE4hlter Weg bestimmt wie
-    viel Geld du sammeln kannst in jedem Weg musst du die richtige Aktion w\xE4hlen
-    um entweder die Geld Belohnung zu sammeln oder Sie direkt von deiner Gesamtsumme
-    abzuziehen wenn du eine Teilaufgabe innerhalb des gew\xE4hlten Weg zweimal scheiterst
-    f\xE4ngst du von vorne an und verlierst deine berechneten \xC4nderungen an der
-    Gesamtsumme die du in dieser Aufgabe gesammelt hast allerdings k\xF6nnen die
-    \xC4nderungen die an der Gesamtsumme berechnet worden erst nach dem Abschluss
-    der letzten Teil Aufgabe \xFCbernommen werden wir werden nicht angeben wie viele
-    Teilaufgaben auf deinem gew\xE4hlten Weg noch verblieben bist du die letzte Teilaufgabe
-    erreicht wir werden aber bei deiner Ankunft bekannt geben sobald du sie erreicht
-    hast wenn du die letzte Teilaufgabe scheiterst wird der Betrag auf deinem sicheren
-    Konto auf 0 \u20AC zur\xFCckgesetzt und du verlierst den gesamten gesammelten
-    Betrag w\xE4hrend des Spiels denke daran die Wahl liegt bei dir und du kannst
-    immer deine Entscheidung entsprechend \xE4ndern in dieser Aufgabe du hast die
-    Wahl jeden Weg und jede Strategie zu verfolgen jeder Weg wird als Teilaufgabe
-    betrachtet die wenn sie abgeschlossen ist zu einer aufeinanderfolgenden Teilaufgabe
-    f\xFChrt dein gew\xE4hlter Weg bestimmt wie viel Geld du sammeln kannst in jedem
-    Weg musst du die richtige Aktion w\xE4hlen um entweder die Geld Belohnung zu
-    sammeln oder Sie direkt von deiner Gesamtsumme abzuziehen wenn du eine Teilaufgabe
-    innerhalb des gew\xE4hlten Weg zweimal scheiterst f\xE4ngst du von vorne an und
-    verlierst deine berechneten \xC4nderungen an der Gesamtsumme die du in dieser
-    Aufgabe gesammelt hast allerdings k\xF6nnen die \xC4nderungen die an der Gesamtsumme
-    berechnet worden erst nach dem Abschluss der letzten Teil Aufgabe \xFCbernommen
-    werden wir werden nicht angeben wie viele Teilaufgaben auf deinem gew\xE4hlten
-    Weg noch verblieben bist du die letzte Teilaufgabe erreicht wir werden aber bei
-    deiner Ankunft bekannt geben sobald du sie erreicht hast wenn du die letzte Teilaufgabe
-    scheiterst wird der Betrag auf deinem sicheren Konto auf 0 \u20AC zur\xFCckgesetzt
-    und du verlierst den gesamten gesammelten Betrag w\xE4hrend des Spiels denke
-    daran die Wahl liegt bei dir und du kannst immer deine Entscheidung entsprechend
-    \xE4ndern"
+  - "In dieser Aufgabe haben Sie die M\xF6glichkeit, einen erheblichen Geldbetrag
+    zu gewinnen.  \u2022 Das verdiente Geld aus dieser Aufgabe wird Ihrem sicheren
+    Konto gutgeschrieben.  \u2022 Spielen Sie an den Spielautomaten, um die gew\xFCnschten
+    Belohnungen zu erhalten.  \u2022 Gro\xDFe Belohnungen und hohe Geldbetr\xE4ge
+    erwarten Sie in dieser Aufgabe!  \u2022 Sie k\xF6nnen zwischen 10 Euro und 200
+    Euro pro Runde gewinnen, einen 0,5-Karat-Diamanten im Wert oder sogar an einer
+    \xDCberraschungs-Spielmaschine einen  unerwarteten Gewinn und Freude erleben! 
+    \u2022 Zum Spielen der Maschinen ben\xF6tigen Sie M\xFCnzen.  \u2022 Diese M\xFCnzen
+    k\xF6nnen nur \xFCber den Pop-up-Shop gekauft werden, der gleich erscheinen wird. 
+    \u2022 Der Pop-up-Shop erscheint regelm\xE4\xDFig w\xE4hrend der gesamten Aufgabe.
+    Kaufen Sie also so viele M\xFCnzen wie m\xF6glich und gewinnen Sie so viel Geld,
+    wie Sie m\xF6chten!  \u2022 Sie haben au\xDFerdem die M\xF6glichkeit, Ihr Geld
+    f\xFCr verschiedene Gegenst\xE4nde auszugeben.  \u2022 Gekaufte Gegenst\xE4nde
+    werden sofort von Ihrer gesamten Spielsumme abgezogen.  \u2022 Auf der Wand sehen
+    Sie:  \u2022 Einen Timer, der die verbleibende Zeit innerhalb dieser Aufgabe
+    anzeigt.  \u2022 Einen weiteren Z\xE4hler, der den aktuell gesammelten Geldbetrag
+    in dieser Aufgabe anzeigt.  \u2022 Nach jeder verstrichenen Minute zieht unsere
+    Casino-Bar Hausgeb\xFChren ab.  \u2022 Weitere Geb\xFChren k\xF6nnen anfallen. "
+  - "In dieser Aufgabe schl\xFCpfst du in die Rolle eines verdeckten Laborretters.
+    Dein Ziel ist es, mit begrenzten Ressourcen so viele Experimente wie m\xF6glich
+    zu retten, bevor  dich der Sicherheitsdienst erwischt.  \u2022 Du ben\xF6tigst
+    genau 30 Sekunden, um das laufende Retten eines Experiments zu stoppen. Wenn
+    der Sicherheitsdienst dich dabei erwischt, erh\xE4ltst du eine Strafe!  \u2022
+    Stelle sicher, dass du das Retten jedes Experiments rechtzeitig unterbrichst. 
+    \u2022 An der T\xFCr jeder Zelle siehst du:  \u2022 Die verbleibende Zeit, bevor
+    das Experiment verf\xE4llt.  \u2022 Einen Stop-Button und einen Monitor.  \u2022
+    \xDCber den Monitor entscheidest du, ob du das Experiment retten m\xF6chtest
+    oder nicht.  \u2022 Darunter siehst du die ben\xF6tigten Ressourcen und deren
+    Menge, um das Experiment zu retten.  \u2022 Die Zeit eines Experiments kann entweder
+    gestoppt oder verl\xE4ngert werden:  \u2022 Gestoppte Zeit bedeutet, dass du
+    das Experiment gerettet hast.  \u2022 Verl\xE4ngerte Zeit bedeutet, dass du bereits
+    Ressourcen zugewiesen hast, aber noch nicht alle ben\xF6tigten Ressourcen eingesetzt
+    wurden.  \u2022 Einige begrenzte Ressourcen sind nachf\xFCllbar, andere nicht. 
+    \u2022 Jedes Mal, wenn du einem Experiment hilfst, erh\xF6ht sich dessen Z\xE4hler
+    um 10 Sekunden.  \u2022 Jede Ressource kann nur alle 30 Sekunden pro Experiment
+    zugewiesen werden.  \u2022 Je nach Strategie, die du in dieser Aufgabe verfolgst,
+    wird dir entweder eine hohe Geldsumme auf dein sicheres Konto gutgeschrieben
+    oder ein Verlust von deinem  Spielgeld abgezogen! "
+  - "In dieser Aufgabe m\xFCssen Sie ausgew\xE4hlte, sich bewegende Geister schie\xDFen,
+    die Sie umgeben.  \u2022 Um einen Geist zu schie\xDFen, richten Sie Ihren Blick
+    auf ihn und dr\xFCcken gleichzeitig einmal die Abzugstaste des rechten Controllers. 
+    \u2022 Der Geist, auf den Ihr Blick gerichtet ist, wird dabei beleuchtet.  \u2022
+    H\xF6ren Sie genau auf die Anweisungen, die w\xE4hrend der Aufgabe angesagt werden,
+    um zu wissen, welche Art von Geistern Sie schie\xDFen sollen.  \u2022 Wenn Sie
+    einen richtigen Geist schie\xDFen, erhalten Sie 20 Euro.  \u2022 Wenn Sie einen
+    falschen Geist schie\xDFen, verlieren Sie 20 Euro.  \u2022 Das positive Geld,
+    das Sie in dieser Aufgabe verdienen, wird Ihrem sicheren Konto gutgeschrieben."
+  - "In dieser Aufgabe hast du die Wahl, jeden Weg und jede Strategie zu verfolgen,
+    die du m\xF6chtest.  \u2022 Jeder Weg wird als Quest betrachtet, die bei Abschluss
+    zu einer aufeinanderfolgenden Quest f\xFChrt.  \u2022 Dein gew\xE4hlter Weg bestimmt,
+    wie viel Geld du sammeln kannst.  \u2022 In jedem Weg musst du die richtige Aktion
+    w\xE4hlen, um entweder die Geldbelohnung zu sammeln oder sie von deiner Gesamtsumme
+    abzuziehen.  \u2022 Triff rationale, durchdachte Entscheidungen \xFCber deine
+    gew\xE4hlten Aktionen.  \u2022 Deine Gesamtsumme wird erst nach Abschluss der
+    letzten Quest automatisch ge\xE4ndert.  \u2022 Wenn du eine Quest zum zweiten
+    Mal scheiterst, wirst du an den Startpunkt zur\xFCckgebracht \u2013 unabh\xE4ngig
+    davon, wie weit du auf deinem Weg fortgeschritten bist.  \u2022 Je lohnenswerter
+    und spannender ein Weg ist, desto schwieriger und k\xFCrzer wird er. Je moderater
+    und sicherer ein Weg ist, desto milder schwieriger und l\xE4nger wird er.  Wir
+    geben nicht an, wie viele Quests auf deinem gew\xE4hlten Weg verbleiben, bis
+    du die letzte Quest erreichst. Sobald du die letzte Quest erreichst, werden wir
+    dich dar\xFCber informieren. Wenn du in der letzten Quest scheiterst, wird eine
+    hohe Strafe verh\xE4ngt! "
   levelVideos:
-  - {fileID: 32900000, guid: aabc681a8f841fa459edfc832ecff814, type: 3}
-  - {fileID: 32900000, guid: ab1439a735c91b14fa616d5240e1382f, type: 3}
-  - {fileID: 32900000, guid: 185ba465c5e5f804ba292043d3728665, type: 3}
-  - {fileID: 32900000, guid: 681457e8617ef5d4899053f97e8178c8, type: 3}
+  - {fileID: 8300000, guid: 6535bcf8cd67df54c958d9ff729fa132, type: 3}
+  - {fileID: 8300000, guid: 6f0e3f7dbe0d74f4a95b33112383cd47, type: 3}
+  - {fileID: 8300000, guid: ea7730387bcfc444294f6f9428e83751, type: 3}
+  - {fileID: 8300000, guid: 2846f423177aad6409e93eb04534b658, type: 3}
   _testVariableSceneName: LSScene
 --- !u!82 &6169328286212444565
 AudioSource:
@@ -541,13 +502,13 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.438
   m_Pitch: 1
   Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 148
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -671,10 +632,10 @@ RectTransform:
   m_GameObject: {fileID: 2027913697087312002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.01, y: 1.01, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8838569317315356903}
+  - {fileID: 1426596514693992798}
   m_Father: {fileID: 3101731546808753626}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -736,7 +697,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!224 &7171607811803185826
 RectTransform:
@@ -1096,7 +1057,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!224 &8519185039672644399
 RectTransform:
@@ -1234,11 +1195,11 @@ RectTransform:
   - {fileID: 5824815653300824003}
   m_Father: {fileID: 8869109875513769742}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 151.6, y: -76}
-  m_SizeDelta: {x: 1846.6, y: 1019.9}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 52, y: 0.00012207031}
+  m_SizeDelta: {x: 1847, y: -0.00097656}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &4850241213465505308
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1274,7 +1235,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!224 &6332130930855986218
 RectTransform:
@@ -1408,7 +1369,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!224 &4840925382752312155
 RectTransform:
@@ -1500,11 +1461,11 @@ RectTransform:
   - {fileID: 5625697045422521400}
   m_Father: {fileID: 6798538272024171092}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -0.00012207031, y: 28.1}
-  m_SizeDelta: {x: 1846.6, y: 1095.8}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0.4000244, y: 53.09973}
+  m_SizeDelta: {x: 1847.0001, y: -173.8}
+  m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &3877001717722585497
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1803,7 +1764,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!224 &4419958444520508200
 RectTransform:
@@ -1862,6 +1823,140 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &5766693055514096712
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1426596514693992798}
+  - component: {fileID: 3138825107025898112}
+  - component: {fileID: 984387788519252016}
+  m_Layer: 5
+  m_Name: Text (TMP)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1426596514693992798
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5766693055514096712}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 0.8, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5625697045422521400}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -1.7999878, y: 0.9000244}
+  m_SizeDelta: {x: -112.8, y: -82.5}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &3138825107025898112
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5766693055514096712}
+  m_CullTransparentMesh: 1
+--- !u!114 &984387788519252016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5766693055514096712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: 
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4283241745
+  m_fontColor: {r: 0.066666655, g: 0.08148743, b: 0.3019608, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 36
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 2
+  m_fontSizeMax: 200
+  m_fontStyle: 1
+  m_HorizontalAlignment: 8
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &5928699545236856008
 GameObject:
   m_ObjectHideFlags: 0
@@ -1902,8 +1997,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 443.4}
-  m_SizeDelta: {x: 0, y: -886.9}
+  m_AnchoredPosition: {x: 0, y: 320.5}
+  m_SizeDelta: {x: 0, y: -641.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1625168074509673797
 CanvasRenderer:
@@ -1991,7 +2086,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!224 &779234154571317811
 RectTransform:
@@ -2111,7 +2206,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!224 &6555714207618951277
 RectTransform:
@@ -2141,121 +2236,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6682207317298625529}
   m_CullTransparentMesh: 1
---- !u!1 &6760738934759574768
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5482815741363173072}
-  - component: {fileID: 5910471926352312474}
-  - component: {fileID: 9062782436295648619}
-  - component: {fileID: 5893257490476078589}
-  m_Layer: 5
-  m_Name: text
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &5482815741363173072
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6760738934759574768}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5031717958632950590}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 3, y: 0}
-  m_SizeDelta: {x: -91, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &5910471926352312474
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6760738934759574768}
-  m_CullTransparentMesh: 1
---- !u!114 &9062782436295648619
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6760738934759574768}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7951c64acb0fa62458bf30a60089fe2d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 0
-  m_CheckFor2DOcclusion: 1
-  m_CheckFor3DOcclusion: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_RaycastTriggerInteraction: 1
---- !u!114 &5893257490476078589
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6760738934759574768}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 40
-    m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 4
-    m_MaxSize: 50
-    m_Alignment: 4
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: "in diesem Spiel wirst du verschiedene zeitlich begrenzte Aufgaben spielen
-    jede Aufgabe hat ein anderes Belohnungssystem eine andere M\xF6glichkeit Geld
-    zu verdienen und eine andere M\xF6glichkeit Geld auszugeben achte auf die Anweisungen
-    zu Beginn jeder Aufgabe wie du siehst hast du eine anf\xE4ngliche Gesamtsumme
-    von 2000 \u20AC am Ende des Spiels solltest du nicht mehr als 211 \u20AC als
-    Gesamtsumme haben wir w\xE4hlen den Teilnehmer aus der die h\xF6chste Summe spart
-    die weniger als 211 \u20AC betr\xE4gt und werden ihm nach Abschluss aller Versuche
-    das Geld \xFCbergeben nach einige Aufgaben hast du die M\xF6glichkeit durch unseren
-    pop up shop einem berechneten Kauf zu t\xE4tigen um deine Gesamtsumme auszugleichen
-    und unter 211 \u20AC zu halten einige Aufgaben f\xFCgen die gesammelte Summe
-    einem sicheren Konto hinzu ein sicheres Konto wird nicht automatisch zu deiner
-    insgesamt gesammelten Summe hinzugef\xFCgt oder abgezogen du kannst am Ende des
-    Spiels w\xE4hlen entweder das Geld von sicheren Konto zur Gesamtsumme hinzuf\xFCgen
-    um sie zu erh\xF6hen oder den Betrag von sicheren Konto von der Gesamtsumme abzuziehen
-    um sie zu verringern w\xE4hrend des gesamten Spiels wirst du nicht sehen k\xF6nnen
-    wie hoch deine Gesamtsumme ist stelle sicher dass du vern\xFCnftige durch achtete
-    Entscheidungen triffst um dieses Geld in bar zu erhalten\r."
 --- !u!1 &7067269637625805344
 GameObject:
   m_ObjectHideFlags: 0
@@ -2368,11 +2348,11 @@ RectTransform:
   - {fileID: 9187305258354887297}
   m_Father: {fileID: 582971051637974941}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 914, y: -1103}
-  m_SizeDelta: {x: 918.1, y: 102}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -447, y: -683.9}
+  m_SizeDelta: {x: 918.1, y: -1419.7}
+  m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &6631149139260651637
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2458,7 +2438,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7305314280246891095}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.1652}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2576,12 +2556,164 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreReversedGraphics: 0
-  m_CheckFor2DOcclusion: 1
+  m_CheckFor2DOcclusion: 0
   m_CheckFor3DOcclusion: 0
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RaycastTriggerInteraction: 1
+--- !u!1 &7827116993655591116
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7713301559472483467}
+  - component: {fileID: 6473528811179468385}
+  - component: {fileID: 7139848776578881791}
+  m_Layer: 5
+  m_Name: Text (TMP)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7713301559472483467
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7827116993655591116}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 0.8, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5031717958632950590}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -1.7999878, y: 0.9000244}
+  m_SizeDelta: {x: -112.8, y: -82.5}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &6473528811179468385
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7827116993655591116}
+  m_CullTransparentMesh: 1
+--- !u!114 &7139848776578881791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7827116993655591116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: "In diesem Spiel werden Sie verschiedene zeitlich begrenzte Aufgaben spielen.
+    Jede Aufgabe dauert mindestens 5 Minuten. \r\nJede Aufgabe hat ein eigenes Belohnungssystem,
+    verschiedene M\xF6glichkeiten, Geld zu verdienen, und unterschiedliche Wege,
+    Geld zu verlieren. \r\nAchten Sie genau auf die Anweisungen zu Beginn jeder Aufgabe.
+    Sie werden nur einmal genannt und nicht wiederholt. \r\nSie starten mit einer
+    anf\xE4nglichen Geldsumme von 2000 Euro. \r\nAm Ende des Spiels d\xFCrfen Sie
+    insgesamt nicht mehr als 211 Euro besitzen. \r\nDer Teilnehmer, der die h\xF6chste
+    Summe unter 211 Euro spart, erh\xE4lt diesen Betrag nach Abschluss aller Versuche
+    in bar. \r\nZwischen den Aufgaben haben Sie die M\xF6glichkeit, durch unseren
+    Pop-up-Shop gezielte K\xE4ufe zu t\xE4tigen, um Ihre Gesamtsumme auszugleichen
+    und unter 211 Euro zu \r\nhalten. \r\nEinige Aufgaben belohnen Sie mit Geldbetr\xE4gen,
+    die auf einem Sicheren Konto gespeichert werden. \r\nDas sichere Konto wird nicht
+    automatisch zu Ihrer gesammelten Gesamtsumme hinzugef\xFCgt oder davon abgezogen.
+    \r\nAm Ende des Spiels k\xF6nnen Sie das Geld vom sicheren Konto verwenden, um
+    es zu Ihrer Gesamtsumme hinzuzuf\xFCgen oder davon abzuziehen. \r\nW\xE4hrend
+    der Aufgaben k\xF6nnen Sie Ihre Gesamtsumme nicht einsehen. Sie sehen nur den
+    w\xE4hrend der jeweiligen Aufgabe gesammelten Betrag. \r\nIhre Gesamtsumme k\xF6nnen
+    Sie nur zwischen den Aufgaben im Pop-up-Shop einsehen. \r\nTreffen Sie wohl\xFCberlegte,
+    kalkulierte Entscheidungen, um zu gewinnen und den Betrag in bar zu erhalten. "
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4283241745
+  m_fontColor: {r: 0.066666655, g: 0.08148743, b: 0.3019608, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 42.25
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 2
+  m_fontSizeMax: 200
+  m_fontStyle: 1
+  m_HorizontalAlignment: 8
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &8322273101212788916
 GameObject:
   m_ObjectHideFlags: 0
@@ -2657,105 +2789,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &8610249898673351694
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8838569317315356903}
-  - component: {fileID: 4061786039401980728}
-  - component: {fileID: 3511645395666391728}
-  - component: {fileID: 9138503527914253025}
-  m_Layer: 5
-  m_Name: text
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &8838569317315356903
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8610249898673351694}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5625697045422521400}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 8, y: -3}
-  m_SizeDelta: {x: -81, y: -27.6}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &4061786039401980728
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8610249898673351694}
-  m_CullTransparentMesh: 1
---- !u!114 &3511645395666391728
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8610249898673351694}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7951c64acb0fa62458bf30a60089fe2d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 0
-  m_CheckFor2DOcclusion: 1
-  m_CheckFor3DOcclusion: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_RaycastTriggerInteraction: 1
---- !u!114 &9138503527914253025
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8610249898673351694}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FontData:
-    m_Font: {fileID: 12800000, guid: 78c7f42a7547f22448a621eaeeef3fd2, type: 3}
-    m_FontSize: 50
-    m_FontStyle: 0
-    m_BestFit: 1
-    m_MinSize: 5
-    m_MaxSize: 50
-    m_Alignment: 1
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: 
 --- !u!1 &9050575455703142126
 GameObject:
   m_ObjectHideFlags: 0
@@ -2789,11 +2822,11 @@ RectTransform:
   - {fileID: 5031717958632950590}
   m_Father: {fileID: 582971051637974941}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: 37}
-  m_SizeDelta: {x: 1846.6, y: 1101.6}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 53.1}
+  m_SizeDelta: {x: 1847, y: -173.8}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &1496677156456384249
 CanvasRenderer:
   m_ObjectHideFlags: 0

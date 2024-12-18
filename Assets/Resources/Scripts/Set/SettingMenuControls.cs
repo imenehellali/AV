@@ -123,7 +123,6 @@ public class SettingMenuControls : MonoBehaviour
     }
     private void LaunchGame(InputAction.CallbackContext callbackContext)
     {
-        Debug.Log("Starting Game");
 
     }
     private void OpenSettingMenu(InputAction.CallbackContext callbackContext)
@@ -189,6 +188,7 @@ public class SettingMenuControls : MonoBehaviour
 
         _selectionPanel.SetActive(true);
         _step0.SetActive(true);
+        FindAnyObjectByType<InstructionPanel>().gameObject.SetActive(true);
     }
     public void ClickenOnMe()
     {

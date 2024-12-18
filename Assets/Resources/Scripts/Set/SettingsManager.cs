@@ -29,10 +29,7 @@ public class SettingsManager : MonoBehaviour
     private float TMBGVolume = 0.5f;
 
     //intermediate variable for local saving before sending to gameSettings
-    private float PUWduration = 0f;
-    private float LSDuration = 0f;
-    private float TMDuration = 0f;
-    private float GBFDuration = 0f;
+   
     private float PUSDuration = 0f;
 
 
@@ -47,15 +44,10 @@ public class SettingsManager : MonoBehaviour
     public void SetTMBGVolume(float volume)=>TMBGVolume = volume;
    
     //Setting for the different levels durations Functions
-    public void SetPUSDuration(float _val)=>PUSDuration = _val;
-    public void SetPUWDuration(float _val)=>PUWduration = _val;
-    public void SetLSDuration(float _val)=> LSDuration = _val;
-    public void SetTMDuration(float _Val)=>TMDuration = _Val;
-    public void SetGBDuration(float _val)=>GBFDuration=_val;
+    public void SetPUSDuration(int _val)=>PUSDuration = _val;
 
     //Setting the level list and its corresponding durations
-   
-    public void SaveSettings()
+   public void ModifyLevelsSpecs()
     {
         levelDurations.Clear();
         levelSequence.Clear();
@@ -63,7 +55,7 @@ public class SettingsManager : MonoBehaviour
         _levels.ForEach(level =>
         {
             if (level.levelSelected)
-               _selectedLevels.Add(level);
+                _selectedLevels.Add(level);
         });
 
         _selectedLevels.OrderBy(level => level.levelOrder);
@@ -73,6 +65,10 @@ public class SettingsManager : MonoBehaviour
             levelDurations.Add(level.levelDuration);
 
         });
+    }
+    public void SaveSettings()
+    {
+
         // Update and save the new settings
         GameSettings.Instance.UpdateLevelSettings(levelSequence, levelDurations, PUSDuration);
         MoneyManager.instance.InitializeSafeAccount(levelSequence.Count);
