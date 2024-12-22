@@ -19,7 +19,6 @@ public class GBData : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        // _IDataService = new FileDataService(new JsonSerializer());
 
     }
     public void SaveData()

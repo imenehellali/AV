@@ -19,11 +19,12 @@ public class TMData : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        // _IDataService = new FileDataService(new JsonSerializer());
+        
 
     }
     public void SaveData()
     {
+        //ParticipantSettings.Instance.TMDataPair.Invoke();
 
     }
 
