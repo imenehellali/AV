@@ -1,6 +1,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Unity.XR.PXR;
 using UnityEngine;
 using UnityEngine.Events;
@@ -13,14 +14,13 @@ public class ThrillMinerManager : MonoBehaviour
 
     private int temporaryAmount = 0;
     private float remainingTime = 300f;
-
+    [SerializeField]
+    private PathSetting _startPath;
 
     public UnityAction<int> addAmount;
     public UnityAction<PathSetting> questFailed;
-    public UnityAction<PathSetting> chosenPath;
+    public UnityAction<PathSetting, PathSetting> chosenPath;
 
-    [SerializeField]
-    private List<GameObject> allPathNodes = new List<GameObject>();
     private void OnEnable()
     {
         addAmount += AddTempAmount;
@@ -44,34 +44,54 @@ public class ThrillMinerManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    private void AdvancePath(PathSetting node)
+    private IEnumerator Advance(PathSetting _from, PathSetting _to)
     {
-        // Reposition participant
-        FindAnyObjectByType<PXR_Manager>().gameObject.transform.SetPositionAndRotation(node.startPos.position, node.startPos.rotation);
-
-        //Unload Other scenePaths
-        node._prevNode.nextNodes.ForEach(x =>
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(_to.rp.ToString(), LoadSceneMode.Additive);
+        _to.ResetRPObjs();
+        while (!asyncLoad.isDone)
         {
-            if (x.rp != node.rp)
+            yield return null;
+        }
+        if (asyncLoad.isDone)
+        {
+            // Reposition participant
+            FindAnyObjectByType<PXR_Manager>().gameObject.transform.SetPositionAndRotation(_to.startPos.position, _to.startPos.rotation);
+
+            //Unload Other scenePaths
+            _from.nextNodes.ForEach(x =>
+            {
+                if (x.rp != _to.rp)
+                {
+                    string _sceneName = x.rp.ToString();
+                    x.RemoveRPObjs();
+                    SceneManager.UnloadSceneAsync(SceneManager.GetSceneByName(_sceneName).buildIndex);
+                }
+            });
+
+            // Unload prev scene
+            if (_from.rp != PathSetting.RP.Start)
+            {
+                SceneManager.UnloadSceneAsync(_from.rp.ToString());
+                _from.RemoveRPObjs();
+            }
+
+
+            // Load other possible scenes
+            _to.nextNodes.ForEach(x =>
             {
                 string _sceneName = x.rp.ToString();
-                SceneManager.UnloadSceneAsync(SceneManager.GetSceneByName(_sceneName).buildIndex);
-            }
-        });
-
-        // Unload prev scene
-        SceneManager.UnloadSceneAsync(node._prevNode.rp.ToString());
-
-        // Load other possible scenes
-        node.nextNodes.ForEach(x =>
-        {
-            string _sceneName = x.rp.ToString();
-            SceneManager.LoadSceneAsync(SceneManager.GetSceneByName(_sceneName).buildIndex, LoadSceneMode.Additive);
-        });
+                x.ResetRPObjs();
+                SceneManager.LoadSceneAsync(SceneManager.GetSceneByName(_sceneName).buildIndex, LoadSceneMode.Additive);
+            });
+        }
+    }
+    private void AdvancePath(PathSetting _from, PathSetting _to)
+    {
+        StartCoroutine(Advance(_from, _to));
     }
     private void AddTempAmount(int amount)
     {
-        temporaryAmount += amount;  
+        temporaryAmount += amount;
     }
     private void QuestFailed(PathSetting node)
     {
@@ -82,11 +102,11 @@ public class ThrillMinerManager : MonoBehaviour
             node.ResetRPObjs();
             FindAnyObjectByType<PXR_Manager>().gameObject.transform.SetPositionAndRotation(node.startPos.position, node.startPos.rotation);
         }
-        else if (node.remainingTrials<0 && node.rp!=PathSetting.RP.R4P4 && remainingTime>=-0.5f)
+        else if (node.remainingTrials < 0 && node.rp != PathSetting.RP.R4P4 && remainingTime >= -0.5f)
         {
             RestartPath(node);
         }
-        else if (node.remainingTrials < 0 && node.rp== PathSetting.RP.R4P4 && remainingTime >= -0.5f)
+        else if (node.remainingTrials < 0 && node.rp == PathSetting.RP.R4P4 && remainingTime >= -0.5f)
         {
             temporaryAmount = 0;
             RestartPath(node);
@@ -101,19 +121,26 @@ public class ThrillMinerManager : MonoBehaviour
         //Unload next possible Scene nodes
         node.nextNodes.ForEach(x =>
         {
-            if (x.rp != node.rp)
-            {
-                string _sceneName = x.rp.ToString();
-                SceneManager.UnloadSceneAsync(SceneManager.GetSceneByName(_sceneName).buildIndex);
-            }
+            string _sceneName = x.rp.ToString();
+            x.RemoveRPObjs();
+            SceneManager.UnloadSceneAsync(SceneManager.GetSceneByName(_sceneName).buildIndex);
+
         });
 
         //Unload the current node
         SceneManager.UnloadSceneAsync(node.rp.ToString());
+        node.RemoveRPObjs();
+        //Load Initial Paths Choices  --> Load R1P3, R1P4, R1P2, R1P1
+        _startPath.nextNodes.ForEach(_x =>
+        {
+            _x.ResetRPObjs();
+            SceneManager.LoadSceneAsync(SceneManager.GetSceneByName(_x.rp.ToString()).buildIndex, LoadSceneMode.Additive);
+        });
+
     }
 
-    public void StarLevel()
+    public void StartLevel()
     {
-
+       
     }
 }

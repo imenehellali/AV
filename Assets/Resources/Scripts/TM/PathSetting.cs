@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using Unity.XR.PXR;
+using System.Linq;
 using UnityEngine;
 
 public class PathSetting : MonoBehaviour
@@ -21,29 +20,41 @@ public class PathSetting : MonoBehaviour
     }
     public RP rp;
     public int remainingTrials = 2;
-    public PathSetting _prevNode;
-    public List<PathSetting> nextNodes;
+
+    public List<PathSetting> nextNodes=new List<PathSetting>();
+    public List<PathSetting> prevNodes = new List<PathSetting>();
+
     public Transform startPos;
     public GameObject RPLevelObjects;
     private GameObject _currRPObjs;
 
-    private void Start()
-    {
-        _currRPObjs = Instantiate(RPLevelObjects);
-    }
     public void ResetRPObjs()
     {
-        Destroy(_currRPObjs.gameObject);
-        _currRPObjs = Instantiate(RPLevelObjects);
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other != null && !other.GetComponent<PXR_Manager>().IsUnityNull())
+        if (rp!=RP.Start)
         {
-            ThrillMinerManager.Instance.chosenPath.Invoke(this);
+            if (_currRPObjs != null)
+            {
+                Destroy(_currRPObjs);
+                _currRPObjs = null;
+            }
+            _currRPObjs = Instantiate(RPLevelObjects);
+            List<TMObjects> _rpObjs = _currRPObjs.GetComponentsInChildren<TMObjects>(false).ToList();
+            Debug.Log($"count of TMObjs {_rpObjs.Count}");
+            _rpObjs.ForEach(rp => { rp.belongsTo = this; });
         }
+      
     }
+    public void RemoveRPObjs()
+    {
+        if (rp != RP.Start)
+        {
+            if (_currRPObjs != null)
+            {
+                Destroy(_currRPObjs);
+                _currRPObjs = null;
+            }
+        }
 
+    }
 
 }

@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7642421243126432633}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.28697446, z: -0, w: 0.95793825}
+  m_LocalRotation: {x: 0, y: -0.286976, z: 0, w: 0.9579378}
   m_LocalPosition: {x: 14.48, y: 0, z: -20.26}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
@@ -32,7 +32,7 @@ Transform:
   - {fileID: 2500470414323954433}
   - {fileID: 6882166258961930231}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -33.354, z: 0}
 --- !u!1001 &6296701733790593990
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -47,7 +47,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 639578639774934065, guid: 848700cabd2e4d44d97c9c21a9848717, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.73
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 639578639774934065, guid: 848700cabd2e4d44d97c9c21a9848717, type: 3}
       propertyPath: m_LocalPosition.z
@@ -85,8 +85,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DiamondPath
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedComponents:
+    - {fileID: 8496040648834393155, guid: 848700cabd2e4d44d97c9c21a9848717, type: 3}
+    m_RemovedGameObjects:
+    - {fileID: 8388444415303717717, guid: 848700cabd2e4d44d97c9c21a9848717, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 848700cabd2e4d44d97c9c21a9848717, type: 3}
@@ -109,7 +111,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5572421028452654694, guid: c4ce4a6c08c85bf4fb00fd0d3e66b926, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.73
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 5572421028452654694, guid: c4ce4a6c08c85bf4fb00fd0d3e66b926, type: 3}
       propertyPath: m_LocalPosition.z
@@ -148,7 +150,8 @@ PrefabInstance:
       value: CoinPath
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4477713769331917759, guid: c4ce4a6c08c85bf4fb00fd0d3e66b926, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c4ce4a6c08c85bf4fb00fd0d3e66b926, type: 3}

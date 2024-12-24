@@ -92,7 +92,10 @@ public class InstructionPanel : MonoBehaviour
     {
         instructionPanel.SetActive(!instructionPanel.activeSelf);
     }
-
+    public void CloseInstrPanel()
+    {
+        instructionPanel.SetActive(false);
+    }
     private bool IsSceneLoaded(string sceneName)
     {
         for (int i = 0; i < SceneManager.sceneCount; i++)
@@ -116,7 +119,7 @@ public class InstructionPanel : MonoBehaviour
 
         instructionPanel.SetActive(false);
         FindAnyObjectByType<GhostBusterManager>().StartTask();
-        //Add Thrill miner
+        FindAnyObjectByType<ThrillMinerManager>().StartLevel();
         FindAnyObjectByType<LifeSaverManager>().StartLevel();
         FindAnyObjectByType<PopUpWerkManager>().StartLevel();
         instructionPanel.SetActive(false);
@@ -148,14 +151,12 @@ public class InstructionPanel : MonoBehaviour
         {
             _audioSourceInstr.UnPause();
         }
-        else if(IsSceneLoaded("StartScene") && (!_audioSourceInstr.clip.Equals(gameVideo) ||
-                !_audioSourceInstr.isPlaying))
+        else if(IsSceneLoaded("StartScene") && !_audioSourceInstr.clip.Equals(gameVideo) )
         {
             _audioSourceInstr.PlayOneShot(gameVideo);
         
         }
-        else if (!IsSceneLoaded("StartScene") && (!_audioSourceInstr.clip.Equals(gameVideo) ||
-                !_audioSourceInstr.isPlaying))
+        else if (!IsSceneLoaded("StartScene") && !_audioSourceInstr.clip.Equals(gameVideo) )
         {
             _audioSourceInstr.PlayOneShot(gameVideo);
         }
@@ -168,8 +169,7 @@ public class InstructionPanel : MonoBehaviour
     {
 
         if (!IsSceneLoaded("StartScene") && 
-            (_audioSourceInstr.clip.Equals(gameVideo) ||
-                !_audioSourceInstr.isPlaying))
+            _audioSourceInstr.clip.Equals(gameVideo))
         {
             _audioSourceInstr.PlayOneShot(levelVideos[lvlIdx]);
         }

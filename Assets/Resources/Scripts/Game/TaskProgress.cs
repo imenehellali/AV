@@ -16,7 +16,7 @@ public class TaskProgress : MonoBehaviour
     private void OnEnable()
     {
          MoneyManager.instance.OnMoneyWon+=UpdateMoneyDisplay;
-        GameSettings.Instance.OnTimeUp+=UpdateTimer;
+         GameSettings.Instance.OnTimeUp+=UpdateTimer;
 
     }
     private void OnDisable()

@@ -37,4 +37,17 @@ public class TMObjects : MonoBehaviour
             
         }
     }
+
+    private void SlowRotate()
+    {
+
+    }
+
+    private void Update()
+    {
+        if(type!=Type.DeathTrap)
+        {
+            SlowRotate();
+        }
+    }
 }
