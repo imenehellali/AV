@@ -66,7 +66,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a2f38b1223cd55d4ab4c1e83141ff113, type: 3}
       propertyPath: m_Name
-      value: animatedHummingbird
+      value: Bird
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -84,7 +84,76 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a2f38b1223cd55d4ab4c1e83141ff113, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6383023399216920308}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a2f38b1223cd55d4ab4c1e83141ff113, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8462511973268496021}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a2f38b1223cd55d4ab4c1e83141ff113, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6919568487809804396}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a2f38b1223cd55d4ab4c1e83141ff113, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8601242888928583661}
+    - targetCorrespondingSourceObject: {fileID: -5338743212406815831, guid: a2f38b1223cd55d4ab4c1e83141ff113, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 169329333444454976}
+    - targetCorrespondingSourceObject: {fileID: -5338743212406815831, guid: a2f38b1223cd55d4ab4c1e83141ff113, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8414996998166838697}
   m_SourcePrefab: {fileID: 100100000, guid: a2f38b1223cd55d4ab4c1e83141ff113, type: 3}
+--- !u!1 &631319005392821272 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -5338743212406815831, guid: a2f38b1223cd55d4ab4c1e83141ff113, type: 3}
+  m_PrefabInstance: {fileID: 4407366108782436273}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &169329333444454976
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 631319005392821272}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 2
+--- !u!64 &8414996998166838697
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 631319005392821272}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4593017811520302497, guid: a2f38b1223cd55d4ab4c1e83141ff113, type: 3}
 --- !u!1 &3597098255162254048 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a2f38b1223cd55d4ab4c1e83141ff113, type: 3}
@@ -103,7 +172,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 500e1dd56b5fc0d4c9e3d7beec79d90f, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
@@ -121,17 +190,17 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: b9da2602e5dcc844282270b7b68ca362, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
+  MinDistance: 1.7429771
   MaxDistance: 500
   Pan2D: 0
   rolloffMode: 0
@@ -167,7 +236,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -182,7 +251,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 0.022222223
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -219,3 +288,70 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 539d03fbecc180444b37e393df130825, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 2
+  A: {fileID: 0}
+  B: {fileID: 0}
+--- !u!64 &8462511973268496021
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3597098255162254048}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4593017811520302497, guid: a2f38b1223cd55d4ab4c1e83141ff113, type: 3}
+--- !u!54 &6919568487809804396
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3597098255162254048}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 2
+--- !u!114 &8601242888928583661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3597098255162254048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45350c56d4957764e9c185a37e9a5945, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  belongsTo: {fileID: 0}
+  _amount: 0
+  type: 5

@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
+using static ThrillMinerManager;
 
 public class TMData : MonoBehaviour
 {
+   
     public static TMData Data { get; private set; }
 
     private void Awake()
@@ -19,14 +19,13 @@ public class TMData : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        
+
 
     }
     public void SaveData()
     {
-        //ParticipantSettings.Instance.TMDataPair.Invoke();
-
+        List<ThrillMinerManager.ChosenPath> _pathList = ThrillMinerManager.Instance._pathList;
+        TMStats.ChosenPath(_pathList);
     }
-
-
+    
 }

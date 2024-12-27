@@ -4,12 +4,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
-using static ParticipantData;
 
 public class ParticipantSettings : MonoBehaviour
 {
@@ -19,14 +16,11 @@ public class ParticipantSettings : MonoBehaviour
 
     //Data from all the differetn levels to fetch
     private Dictionary<string, float> PUWdataDict = new Dictionary<string, float>();
-    private Dictionary<string, float> LSdataDict = new Dictionary<string, float>();
-    private Dictionary<string, float> TMdataDict = new Dictionary<string, float>();
+    private Dictionary<string, object> LSdataDict = new Dictionary<string, object>();
+    private Dictionary<string, object> TMdataDict = new Dictionary<string, object>();
     private Dictionary<string, float> GBdataDict = new Dictionary<string, float>();
     private Dictionary<string, float> WholeGameDict = new Dictionary<string, float>();
-    private string strategy = "";
-    public string getStrategy() => strategy;
 
-    private List<Dictionary<string, float>> levelsMeasures = new List<Dictionary<string, float>>();
 
 
     //parsing varibales into a JSON file
@@ -39,9 +33,8 @@ public class ParticipantSettings : MonoBehaviour
     public UnityAction<KeyValuePair<string, float>> WholeGamePair;
     public UnityAction<KeyValuePair<string, float>> PUWDataPair;
     public UnityAction<KeyValuePair<string, float>> GBDataPair;
-    public UnityAction<KeyValuePair<string, float>> TMDataPair;
-    public UnityAction<KeyValuePair<string, float>> LSDataPair;
-    public UnityAction<string> LSStrategy;
+    public UnityAction<KeyValuePair<string, object>> TMDataPair;
+    public UnityAction<KeyValuePair<string, object>> LSDataPair;
     public UnityAction<string> PID;
 
     private void OnEnable()
@@ -51,7 +44,6 @@ public class ParticipantSettings : MonoBehaviour
         GBDataPair += FillGBDataDict;
         TMDataPair += FillTMDataDict;
         LSDataPair += FillLSDataDict;
-        LSStrategy += FillStrategy;
         PID += UpdateParticipantData;
     }
     private void OnDisable()
@@ -61,31 +53,35 @@ public class ParticipantSettings : MonoBehaviour
         GBDataPair -= FillGBDataDict;
         TMDataPair -= FillTMDataDict;
         LSDataPair -= FillLSDataDict;
-        LSStrategy -= FillStrategy;
         PID -= UpdateParticipantData;
     }
     //Contains purchaseDurations, GameQAccount, sAfeAccount
     private void FillWholeGameDict(KeyValuePair<string, float> pair)
     {
-        WholeGameDict.Add(pair.Key, pair.Value);
+        if (!WholeGameDict.ContainsKey(pair.Key))
+            WholeGameDict.Add(pair.Key, pair.Value);
     }
     private void FillPUWDataDict(KeyValuePair<string, float> pair)
     {
-        PUWdataDict.Add(pair.Key, pair.Value);
+        if (!PUWdataDict.ContainsKey(pair.Key))
+            PUWdataDict.Add(pair.Key, pair.Value);
     }
     private void FillGBDataDict(KeyValuePair<string, float> pair)
     {
-        GBdataDict.Add(pair.Key, pair.Value);
+        if (!GBdataDict.ContainsKey(pair.Key))
+            GBdataDict.Add(pair.Key, pair.Value);
     }
-    private void FillLSDataDict(KeyValuePair<string, float> pair)
+    private void FillLSDataDict(KeyValuePair<string, object> pair)
     {
-        LSdataDict.Add(pair.Key, pair.Value);
+        if (!LSdataDict.ContainsKey(pair.Key))
+            LSdataDict.Add(pair.Key, pair.Value);
     }
-    private void FillTMDataDict(KeyValuePair<string, float> pair)
+    private void FillTMDataDict(KeyValuePair<string, object> pair)
     {
-        TMdataDict.Add(pair.Key, pair.Value);
+        if (!TMdataDict.ContainsKey(pair.Key))
+            TMdataDict.Add(pair.Key, pair.Value);
     }
-    private void FillStrategy(string strategy) => this.strategy = strategy;
+
     private void UpdateParticipantData(string UID)
     {
         ParticipantID = UID;
@@ -118,12 +114,12 @@ public class ParticipantSettings : MonoBehaviour
         if (TMdataDict.Count > lengthOfColumn)
         {
             lengthOfColumn = TMdataDict.Count;
-            Dict = 2;
+            Dict = 3;
         }
         if (GBdataDict.Count > lengthOfColumn)
         {
             lengthOfColumn = GBdataDict.Count;
-            Dict = 3;
+            Dict = 2;
         }
         if (WholeGameDict.Count > lengthOfColumn)
         {
@@ -134,9 +130,8 @@ public class ParticipantSettings : MonoBehaviour
 
         return Dict;
     }
-    private ParticipantData GeneratePdata()
+    private async Task<ParticipantData> GeneratePdata()
     {
-
         int Dict = getLongestDict();
         ParticipantData _pData = new ParticipantData();
 
@@ -146,79 +141,87 @@ public class ParticipantSettings : MonoBehaviour
 
                 {
                     int idx = 0;
+                    string Column1 = ""; float Column2 = 0f; string Column3 = ""; string Column4 = ""; string Column5 = "";
+                    float Column6 = 0f; string Column7 = ""; string Column8 = ""; string Column9 = ""; float Column10 = 0f;
+
                     foreach (KeyValuePair<string, float> keyValuePair in PUWdataDict)
                     {
-                        if (idx == 0)
+                        if (PUWdataDict.Any())
                         {
-                            ParticipantRow _pRow = new ParticipantRow(keyValuePair.Key,
-                            keyValuePair.Value, "Strategy", strategy,
-                            !GBdataDict.ElementAt(idx).IsUnityNull() ? GBdataDict.ElementAt(idx).Key : "",
-                            !GBdataDict.ElementAt(idx).IsUnityNull() ? GBdataDict.ElementAt(idx).Value : 0f,
-                            !TMdataDict.ElementAt(idx).IsUnityNull() ? TMdataDict.ElementAt(idx).Key : "",
-                            !TMdataDict.ElementAt(idx).IsUnityNull() ? TMdataDict.ElementAt(idx).Value : 0f,
-                            !WholeGameDict.ElementAt(idx).IsUnityNull() ? WholeGameDict.ElementAt(idx).Key : "",
-                            !WholeGameDict.ElementAt(idx).IsUnityNull() ? WholeGameDict.ElementAt(idx).Value : 0f
-                            );
-                            _pData.Rows.Add(_pRow);
-                        }
-                        else
-                        {
-                            ParticipantRow _pRow = new ParticipantRow(keyValuePair.Key,
-                                keyValuePair.Value,
-                                !LSdataDict.ElementAt(idx).IsUnityNull() ? LSdataDict.ElementAt(idx).Key : "",
-                                !LSdataDict.ElementAt(idx).IsUnityNull() ? LSdataDict.ElementAt(idx).Value : 0f,
-                                !GBdataDict.ElementAt(idx).IsUnityNull() ? GBdataDict.ElementAt(idx).Key : "",
-                                !GBdataDict.ElementAt(idx).IsUnityNull() ? GBdataDict.ElementAt(idx).Value : 0f,
-                                !TMdataDict.ElementAt(idx).IsUnityNull() ? TMdataDict.ElementAt(idx).Key : "",
-                                !TMdataDict.ElementAt(idx).IsUnityNull() ? TMdataDict.ElementAt(idx).Value : 0f,
-                                !WholeGameDict.ElementAt(idx).IsUnityNull() ? WholeGameDict.ElementAt(idx).Key : "",
-                                !WholeGameDict.ElementAt(idx).IsUnityNull() ? WholeGameDict.ElementAt(idx).Value : 0f
-                                );
-                            _pData.Rows.Add(_pRow);
-                        }
+                            Column1 = keyValuePair.Key;
+                            Column2 = keyValuePair.Value;
 
+                        }
+                        if (LSdataDict.Any())
+                        {
+
+                            Column3 = LSdataDict.ElementAtOrDefault(idx).Key;
+                            Column4 = LSdataDict.ElementAtOrDefault(idx).Value.ToString();
+                        }
+                        if (GBdataDict.Any())
+                        {
+
+                            Column5 = GBdataDict.ElementAtOrDefault(idx).Key;
+                            Column6 = GBdataDict.ElementAtOrDefault(idx).Value;
+                        }
+                        if (TMdataDict.Any())
+                        {
+                            Column7 = TMdataDict.ElementAtOrDefault(idx).Key;
+                            Column8 = TMdataDict.ElementAtOrDefault(idx).Value.ToString();
+                        }
+                        if (WholeGameDict.Any())
+                        {
+                            Column9 = WholeGameDict.ElementAtOrDefault(idx).Key;
+                            Column10 = WholeGameDict.ElementAtOrDefault(idx).Value;
+                        }
+                        ParticipantRow _pRow = new ParticipantRow(Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10);
+                        _pData.Rows.Add(_pRow);
                         ++idx;
+
                     }
                     break;
                 }
+
             case 1:
                 {
                     int idx = 0;
-                    foreach (KeyValuePair<string, float> keyValuePair in LSdataDict)
-                    {
-                        if (idx == 0)
-                        {
-                            ParticipantRow _pRow = new ParticipantRow(
-                            !PUWdataDict.ElementAt(idx).IsUnityNull() ? PUWdataDict.ElementAt(idx).Key : "",
-                            !PUWdataDict.ElementAt(idx).IsUnityNull() ? PUWdataDict.ElementAt(idx).Value : 0f,
-                            "Strategy", strategy,
-                            !GBdataDict.ElementAt(idx).IsUnityNull() ? GBdataDict.ElementAt(idx).Key : "",
-                            !GBdataDict.ElementAt(idx).IsUnityNull() ? GBdataDict.ElementAt(idx).Value : 0f,
-                            !TMdataDict.ElementAt(idx).IsUnityNull() ? TMdataDict.ElementAt(idx).Key : "",
-                            !TMdataDict.ElementAt(idx).IsUnityNull() ? TMdataDict.ElementAt(idx).Value : 0f,
-                            !WholeGameDict.ElementAt(idx).IsUnityNull() ? WholeGameDict.ElementAt(idx).Key : "",
-                            !WholeGameDict.ElementAt(idx).IsUnityNull() ? WholeGameDict.ElementAt(idx).Value : 0f
-                            );
-                            _pData.Rows.Add(_pRow);
-                        }
-                        else
-                        {
-                            ParticipantRow _pRow = new ParticipantRow(
-                                !PUWdataDict.ElementAt(idx).IsUnityNull() ? PUWdataDict.ElementAt(idx).Key : "",
-                                !PUWdataDict.ElementAt(idx).IsUnityNull() ? PUWdataDict.ElementAt(idx).Value : 0f,
-                                keyValuePair.Key,
-                                keyValuePair.Value,
-                                !GBdataDict.ElementAt(idx).IsUnityNull() ? GBdataDict.ElementAt(idx).Key : "",
-                                !GBdataDict.ElementAt(idx).IsUnityNull() ? GBdataDict.ElementAt(idx).Value : 0f,
-                                !TMdataDict.ElementAt(idx).IsUnityNull() ? TMdataDict.ElementAt(idx).Key : "",
-                                !TMdataDict.ElementAt(idx).IsUnityNull() ? TMdataDict.ElementAt(idx).Value : 0f,
-                                !WholeGameDict.ElementAt(idx).IsUnityNull() ? WholeGameDict.ElementAt(idx).Key : "",
-                                !WholeGameDict.ElementAt(idx).IsUnityNull() ? WholeGameDict.ElementAt(idx).Value : 0f
-                                );
-                            _pData.Rows.Add(_pRow);
-                        }
+                    string Column1 = ""; float Column2 = 0f; string Column3 = ""; string Column4 = ""; string Column5 = "";
+                    float Column6 = 0f; string Column7 = ""; string Column8 = ""; string Column9 = ""; float Column10 = 0f;
 
+                    foreach (KeyValuePair<string, object> keyValuePair in LSdataDict)
+                    {
+                        if (PUWdataDict.Any())
+                        {
+                            Column1 = PUWdataDict.ElementAtOrDefault(idx).Key;
+                            Column2 = PUWdataDict.ElementAtOrDefault(idx).Value;
+
+                        }
+                        if (LSdataDict.Any())
+                        {
+
+                            Column3 = keyValuePair.Key;
+                            Column4 = keyValuePair.Value.ToString();
+                        }
+                        if (GBdataDict.Any())
+                        {
+
+                            Column5 = GBdataDict.ElementAtOrDefault(idx).Key;
+                            Column6 = GBdataDict.ElementAtOrDefault(idx).Value;
+                        }
+                        if (TMdataDict.Any())
+                        {
+                            Column7 = TMdataDict.ElementAtOrDefault(idx).Key;
+                            Column8 = TMdataDict.ElementAtOrDefault(idx).Value.ToString();
+                        }
+                        if (WholeGameDict.Any())
+                        {
+                            Column9 = WholeGameDict.ElementAtOrDefault(idx).Key;
+                            Column10 = WholeGameDict.ElementAtOrDefault(idx).Value;
+                        }
+                        ParticipantRow _pRow = new ParticipantRow(Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10);
+                        _pData.Rows.Add(_pRow);
                         ++idx;
+
                     }
                     break;
                 }
@@ -226,40 +229,41 @@ public class ParticipantSettings : MonoBehaviour
 
                 {
                     int idx = 0;
+                    string Column1 = ""; float Column2 = 0f; string Column3 = ""; string Column4 = ""; string Column5 = "";
+                    float Column6 = 0f; string Column7 = ""; string Column8 = ""; string Column9 = ""; float Column10 = 0f;
+
                     foreach (KeyValuePair<string, float> keyValuePair in GBdataDict)
                     {
-                        if (idx == 0)
+                        if (PUWdataDict.Any())
                         {
-                            ParticipantRow _pRow = new ParticipantRow(
-                            !PUWdataDict.ElementAt(idx).IsUnityNull() ? PUWdataDict.ElementAt(idx).Key : "",
-                            !PUWdataDict.ElementAt(idx).IsUnityNull() ? PUWdataDict.ElementAt(idx).Value : 0f,
-                            "Strategy", strategy,
-                             keyValuePair.Key,
-                             keyValuePair.Value,
-                            !TMdataDict.ElementAt(idx).IsUnityNull() ? TMdataDict.ElementAt(idx).Key : "",
-                            !TMdataDict.ElementAt(idx).IsUnityNull() ? TMdataDict.ElementAt(idx).Value : 0f,
-                            !WholeGameDict.ElementAt(idx).IsUnityNull() ? WholeGameDict.ElementAt(idx).Key : "",
-                            !WholeGameDict.ElementAt(idx).IsUnityNull() ? WholeGameDict.ElementAt(idx).Value : 0f
-                            );
-                            _pData.Rows.Add(_pRow);
-                        }
-                        else
-                        {
-                            ParticipantRow _pRow = new ParticipantRow(
-                                !PUWdataDict.ElementAt(idx).IsUnityNull() ? PUWdataDict.ElementAt(idx).Key : "",
-                                !PUWdataDict.ElementAt(idx).IsUnityNull() ? PUWdataDict.ElementAt(idx).Value : 0f,
-                                !LSdataDict.ElementAt(idx).IsUnityNull() ? LSdataDict.ElementAt(idx).Key : "",
-                                !LSdataDict.ElementAt(idx).IsUnityNull() ? LSdataDict.ElementAt(idx).Value : 0f,
-                                keyValuePair.Key,
-                                keyValuePair.Value,
-                                !TMdataDict.ElementAt(idx).IsUnityNull() ? TMdataDict.ElementAt(idx).Key : "",
-                                !TMdataDict.ElementAt(idx).IsUnityNull() ? TMdataDict.ElementAt(idx).Value : 0f,
-                                !WholeGameDict.ElementAt(idx).IsUnityNull() ? WholeGameDict.ElementAt(idx).Key : "",
-                                !WholeGameDict.ElementAt(idx).IsUnityNull() ? WholeGameDict.ElementAt(idx).Value : 0f
-                                );
-                            _pData.Rows.Add(_pRow);
-                        }
+                            Column1 = PUWdataDict.ElementAtOrDefault(idx).Key;
+                            Column2 = PUWdataDict.ElementAtOrDefault(idx).Value;
 
+                        }
+                        if (LSdataDict.Any())
+                        {
+
+                            Column3 = LSdataDict.ElementAtOrDefault(idx).Key;
+                            Column4 = LSdataDict.ElementAtOrDefault(idx).Value.ToString();
+                        }
+                        if (GBdataDict.Any())
+                        {
+
+                            Column5 = keyValuePair.Key;
+                            Column6 = keyValuePair.Value;
+                        }
+                        if (TMdataDict.Any())
+                        {
+                            Column7 = TMdataDict.ElementAtOrDefault(idx).Key;
+                            Column8 = TMdataDict.ElementAtOrDefault(idx).Value.ToString();
+                        }
+                        if (WholeGameDict.Any())
+                        {
+                            Column9 = WholeGameDict.ElementAtOrDefault(idx).Key;
+                            Column10 = WholeGameDict.ElementAtOrDefault(idx).Value;
+                        }
+                        ParticipantRow _pRow = new ParticipantRow(Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10);
+                        _pData.Rows.Add(_pRow);
                         ++idx;
                     }
                     break;
@@ -267,40 +271,41 @@ public class ParticipantSettings : MonoBehaviour
             case 3:
                 {
                     int idx = 0;
-                    foreach (KeyValuePair<string, float> keyValuePair in TMdataDict)
-                    {
-                        if (idx == 0)
-                        {
-                            ParticipantRow _pRow = new ParticipantRow(
-                            !PUWdataDict.ElementAt(idx).IsUnityNull() ? PUWdataDict.ElementAt(idx).Key : "",
-                            !PUWdataDict.ElementAt(idx).IsUnityNull() ? PUWdataDict.ElementAt(idx).Value : 0f,
-                            "Strategy", strategy,
-                            !GBdataDict.ElementAt(idx).IsUnityNull() ? GBdataDict.ElementAt(idx).Key : "",
-                            !GBdataDict.ElementAt(idx).IsUnityNull() ? GBdataDict.ElementAt(idx).Value : 0f,
-                             keyValuePair.Key,
-                             keyValuePair.Value,
-                            !WholeGameDict.ElementAt(idx).IsUnityNull() ? WholeGameDict.ElementAt(idx).Key : "",
-                            !WholeGameDict.ElementAt(idx).IsUnityNull() ? WholeGameDict.ElementAt(idx).Value : 0f
-                            );
-                            _pData.Rows.Add(_pRow);
-                        }
-                        else
-                        {
-                            ParticipantRow _pRow = new ParticipantRow(
-                                !PUWdataDict.ElementAt(idx).IsUnityNull() ? PUWdataDict.ElementAt(idx).Key : "",
-                                !PUWdataDict.ElementAt(idx).IsUnityNull() ? PUWdataDict.ElementAt(idx).Value : 0f,
-                                !LSdataDict.ElementAt(idx).IsUnityNull() ? LSdataDict.ElementAt(idx).Key : "",
-                                !LSdataDict.ElementAt(idx).IsUnityNull() ? LSdataDict.ElementAt(idx).Value : 0f,
-                                !GBdataDict.ElementAt(idx).IsUnityNull() ? GBdataDict.ElementAt(idx).Key : "",
-                                !GBdataDict.ElementAt(idx).IsUnityNull() ? GBdataDict.ElementAt(idx).Value : 0f,
-                                keyValuePair.Key,
-                                keyValuePair.Value,
-                                !WholeGameDict.ElementAt(idx).IsUnityNull() ? WholeGameDict.ElementAt(idx).Key : "",
-                                !WholeGameDict.ElementAt(idx).IsUnityNull() ? WholeGameDict.ElementAt(idx).Value : 0f
-                                );
-                            _pData.Rows.Add(_pRow);
-                        }
+                    string Column1 = ""; float Column2 = 0f; string Column3 = ""; string Column4 = ""; string Column5 = "";
+                    float Column6 = 0f; string Column7 = ""; string Column8 = ""; string Column9 = ""; float Column10 = 0f;
 
+                    foreach (KeyValuePair<string, object> keyValuePair in TMdataDict)
+                    {
+                        if (PUWdataDict.Any())
+                        {
+                            Column1 = PUWdataDict.ElementAtOrDefault(idx).Key;
+                            Column2 = PUWdataDict.ElementAtOrDefault(idx).Value;
+
+                        }
+                        if (LSdataDict.Any())
+                        {
+
+                            Column3 = LSdataDict.ElementAtOrDefault(idx).Key;
+                            Column4 = LSdataDict.ElementAtOrDefault(idx).Value.ToString();
+                        }
+                        if (GBdataDict.Any())
+                        {
+
+                            Column5 = GBdataDict.ElementAtOrDefault(idx).Key;
+                            Column6 = GBdataDict.ElementAtOrDefault(idx).Value;
+                        }
+                        if (TMdataDict.Any())
+                        {
+                            Column7 = keyValuePair.Key;
+                            Column8 = keyValuePair.Value.ToString();
+                        }
+                        if (WholeGameDict.Any())
+                        {
+                            Column9 = WholeGameDict.ElementAtOrDefault(idx).Key;
+                            Column10 = WholeGameDict.ElementAtOrDefault(idx).Value;
+                        }
+                        ParticipantRow _pRow = new ParticipantRow(Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10);
+                        _pData.Rows.Add(_pRow);
                         ++idx;
                     }
                     break;
@@ -308,39 +313,41 @@ public class ParticipantSettings : MonoBehaviour
             case 4:
                 {
                     int idx = 0;
+                    string Column1 = ""; float Column2 = 0f; string Column3 = ""; string Column4 = ""; string Column5 = "";
+                    float Column6 = 0f; string Column7 = ""; string Column8 = ""; string Column9 = ""; float Column10 = 0f;
+
                     foreach (KeyValuePair<string, float> keyValuePair in WholeGameDict)
                     {
-                        if (idx == 0)
+                        if (PUWdataDict.Any())
                         {
-                            ParticipantRow _pRow = new ParticipantRow(
-                            !PUWdataDict.ElementAt(idx).IsUnityNull() ? PUWdataDict.ElementAt(idx).Key : "",
-                            !PUWdataDict.ElementAt(idx).IsUnityNull() ? PUWdataDict.ElementAt(idx).Value : 0f,
-                            "Strategy", strategy,
-                            !GBdataDict.ElementAt(idx).IsUnityNull() ? GBdataDict.ElementAt(idx).Key : "",
-                            !GBdataDict.ElementAt(idx).IsUnityNull() ? GBdataDict.ElementAt(idx).Value : 0f,
-                            !TMdataDict.ElementAt(idx).IsUnityNull() ? TMdataDict.ElementAt(idx).Key : "",
-                            !TMdataDict.ElementAt(idx).IsUnityNull() ? TMdataDict.ElementAt(idx).Value : 0f,
-                             keyValuePair.Key,
-                             keyValuePair.Value
-                            );
-                            _pData.Rows.Add(_pRow);
-                        }
-                        else
-                        {
-                            ParticipantRow _pRow = new ParticipantRow(
-                                !PUWdataDict.ElementAt(idx).IsUnityNull() ? PUWdataDict.ElementAt(idx).Key : "",
-                                !PUWdataDict.ElementAt(idx).IsUnityNull() ? PUWdataDict.ElementAt(idx).Value : 0f,
-                                !LSdataDict.ElementAt(idx).IsUnityNull() ? LSdataDict.ElementAt(idx).Key : "",
-                                !LSdataDict.ElementAt(idx).IsUnityNull() ? LSdataDict.ElementAt(idx).Value : 0f,
-                                !GBdataDict.ElementAt(idx).IsUnityNull() ? GBdataDict.ElementAt(idx).Key : "",
-                                !GBdataDict.ElementAt(idx).IsUnityNull() ? GBdataDict.ElementAt(idx).Value : 0f,
-                                !TMdataDict.ElementAt(idx).IsUnityNull() ? TMdataDict.ElementAt(idx).Key : "",
-                                !TMdataDict.ElementAt(idx).IsUnityNull() ? TMdataDict.ElementAt(idx).Value : 0f, 
-                                keyValuePair.Key,
-                                keyValuePair.Value );
-                            _pData.Rows.Add(_pRow);
-                        }
+                            Column1 = PUWdataDict.ElementAtOrDefault(idx).Key;
+                            Column2 = PUWdataDict.ElementAtOrDefault(idx).Value;
 
+                        }
+                        if (LSdataDict.Any())
+                        {
+
+                            Column3 = LSdataDict.ElementAtOrDefault(idx).Key;
+                            Column4 = LSdataDict.ElementAtOrDefault(idx).Value.ToString();
+                        }
+                        if (GBdataDict.Any())
+                        {
+
+                            Column5 = GBdataDict.ElementAtOrDefault(idx).Key;
+                            Column6 = GBdataDict.ElementAtOrDefault(idx).Value;
+                        }
+                        if (TMdataDict.Any())
+                        {
+                            Column7 = TMdataDict.ElementAtOrDefault(idx).Key;
+                            Column8 = TMdataDict.ElementAtOrDefault(idx).Value.ToString();
+                        }
+                        if (WholeGameDict.Any())
+                        {
+                            Column9 = keyValuePair.Key;
+                            Column10 = keyValuePair.Value;
+                        }
+                        ParticipantRow _pRow = new ParticipantRow(Column1, Column2, Column3, Column4, Column5, Column6, Column7, Column8, Column9, Column10);
+                        _pData.Rows.Add(_pRow);
                         ++idx;
                     }
                     break;
@@ -350,19 +357,16 @@ public class ParticipantSettings : MonoBehaviour
         return _pData;
     }
 
-    private void SaveRawParticipantData()
+    public async void SaveRawParticipantData()
     {
-        participantFilePath = Path.Combine(Application.persistentDataPath, $"{PID}.json");
-        ParticipantData _pData = GeneratePdata();
+
+        string _path = Path.Combine(Application.persistentDataPath, $"{ParticipantID}.json");
+        ParticipantData data = GeneratePdata().Result;
         try
         {
-            // Convert the data object to a JSON string
-            string jsonData =JsonUtility.ToJson(_pData,true);
-
-            // Write the JSON string to the specified file path
-            File.WriteAllText(participantFilePath, jsonData);
-
-            Debug.Log("Settings data saved to: " +participantFilePath);
+            string json = JsonUtility.ToJson(data, true);
+            await Task.Run(() => File.WriteAllText(_path, json));
+            Debug.Log("Data saved successfully.");
         }
         catch (System.Exception e)
         {
@@ -370,16 +374,47 @@ public class ParticipantSettings : MonoBehaviour
         }
 
     }
-    private void SaveNormalizedParticipantData()
+    private async Task SaveNormalizedParticipantData()
     {
-        participantFilePath = Path.Combine(Application.persistentDataPath, $"{PID}Normalized.json");
+        string _path = Path.Combine(Application.persistentDataPath, $"{ParticipantID}Normalized.json");
+
+        PUWdataDict = await Task.Run(() => GeneratePUWInputData());
+        LSdataDict = await Task.Run(() => GenerateLSInputData());
+        TMdataDict = await Task.Run(() => GenerateTMInputData());
+        GBdataDict = await Task.Run(() => GenerateGBInputData());
+        WholeGameDict = await Task.Run(() => GenerateWGInputData());
+
+        ParticipantData data = GeneratePdata().Result;
+        try
+        {
+            string json = JsonUtility.ToJson(data, true);
+            await Task.Run(() => File.WriteAllText(_path, json));
+            Debug.Log("Data saved successfully.");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("Failed to save settings data: " + e.Message);
+        }
+
+    }
+
+    //Whole Game generation
+    public async Task<Dictionary<string, float>> GenerateWGInputData()
+    {
+        return await Task.Run(() => NormalizeWGnInputData(WholeGameDict));
+    }
+    public static Dictionary<string, float> NormalizeWGnInputData(Dictionary<string, float> inputData)
+    {
+        Dictionary<string, float> normalizedData = new Dictionary<string, float>();
+
+        return normalizedData;
 
     }
 
     //PUW Data generation
     public async Task<Dictionary<string, float>> GeneratePUWInputData()
     {
-        return await Task.Run(()=> NormalizePUWInputData(PUWdataDict));
+        return await Task.Run(() => NormalizePUWInputData(PUWdataDict));
     }
 
     public static Dictionary<string, float> NormalizePUWInputData(Dictionary<string, float> inputData)
@@ -459,14 +494,14 @@ public class ParticipantSettings : MonoBehaviour
 
     //LS Data generation
 
-    public async Task<Dictionary<string, float>> GenerateLSInputData()
+    public async Task<Dictionary<string, object>> GenerateLSInputData()
     {
         return await Task.Run(() => NormalizeLSInputData(LSdataDict));
     }
 
-    public static Dictionary<string, float> NormalizeLSInputData(Dictionary<string, float> inputData)
+    public static Dictionary<string, object> NormalizeLSInputData(Dictionary<string, object> inputData)
     {
-        Dictionary<string, float> normalizedData = new Dictionary<string, float>();
+        Dictionary<string, object> normalizedData = new Dictionary<string, object>();
 
         // Min and Max values for Min-Max Normalization (assumed or predefined based on knowledge of data distribution)
         float maxProgress = 100; // Example assumed upper bound for progress percentages
@@ -488,7 +523,7 @@ public class ParticipantSettings : MonoBehaviour
                 case "ProgressOfSavingWithinAStrategy":
                 case "AvgOfProgressOfHumanCases":
                 case "AvgOfProgressOfAnimalCases":
-                    normalizedData[entry.Key] = entry.Value / maxProgress;
+                    normalizedData[entry.Key] = (float)entry.Value / maxProgress;
                     break;
 
                 // Min-Max Normalization for time spent (e.g., SpenTimeOnCase)
@@ -500,7 +535,7 @@ public class ParticipantSettings : MonoBehaviour
                 case "TimeSpentOnCA3":
                 case "TimeSpentOnCA2":
                 case "TimeSpentOnCA1":
-                    normalizedData[entry.Key] = entry.Value / maxTimeSpent;
+                    normalizedData[entry.Key] = (float)entry.Value / maxTimeSpent;
                     break;
 
                 // Binary values (e.g., healed, dead, watched video)
@@ -645,18 +680,42 @@ public class ParticipantSettings : MonoBehaviour
         return normalizedData;
     }
 
-
-
     //TM data generation
-
-    public async Task<Dictionary<string, float>> GenerateTMInputData()
+    public async Task<Dictionary<string, object>> GenerateTMInputData()
     {
-        return await Task.Run(() => NormalizePUWInputData(TMdataDict));
+        return await Task.Run(() => NormalizeTMInputData(TMdataDict));
     }
 
+    public static Dictionary<string, object> NormalizeTMInputData(Dictionary<string, object> inputData)
+    {
+        Dictionary<string, object> normalizedData = new Dictionary<string, object>();
+        foreach (var entry in inputData)
+        {
+            string key = entry.Key;
+            object value = entry.Value;
 
+            // Normalize based on the type and key
+            if (key.Contains("PercentageOfProgressPath") || key.Contains("IncreaseOrDecreaseLearningFactorOverPath"))
+            {
+                // Convert the value to a float and normalize it (e.g., min-max between 0 and 1)
+                if (float.TryParse(value.ToString(), out float floatValue))
+                {
+                    // Assuming a simple normalization where we consider a range [-1, 1]
+                    // Adjust normalization logic based on actual requirements
+                    float normalizedValue = (floatValue + 1) / 2.0f;
+                    normalizedData[key] = normalizedValue;
+                }
+            }
+            else if (key.Contains("FullyChosenPath"))
+            {
+                // Paths are kept as strings
+                normalizedData[key] = value.ToString();
+            }
+        }
 
+        return normalizedData;
 
+    }
 
     public static float CalculateStandardDeviation(IEnumerable<float> values)
     {

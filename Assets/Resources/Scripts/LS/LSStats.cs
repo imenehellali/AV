@@ -13,72 +13,72 @@ public static class LSStats
 
         if (!CH4.IsUnityNull() && CH4.startedAssigning)
         {
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("ProgressOfSavingWithinCH4", CH4.percentageDone));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("TimeSpentOnCH4", CH4.SpenTimeOnCase()));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CH4DiscoveredAndSaved?", CH4.healed ? 1f : 0f));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CH4DiscoveredAndKilled?", CH4.dead ? 1f : 0f));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CH4WatchedVideo", CH4.watchedVid ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("ProgressOfSavingWithinCH4", CH4.percentageDone));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("TimeSpentOnCH4", CH4.SpenTimeOnCase()));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CH4DiscoveredAndSaved?", CH4.healed ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CH4DiscoveredAndKilled?", CH4.dead ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CH4WatchedVideo", CH4.watchedVid ? 1f : 0f));
         }
         if (!CH3.IsUnityNull() && CH3.startedAssigning)
         {
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("ProgressOfSavingWithinCH3", CH3.percentageDone));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("TimeSpentOnCH3", CH3.SpenTimeOnCase()));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CH3DiscoveredAndSaved?", CH3.healed ? 1f : 0f));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CH3DiscoveredAndKilled?", CH3.dead ? 1f : 0f));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CH32WatchedVideo", CH3.watchedVid ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("ProgressOfSavingWithinCH3", CH3.percentageDone));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("TimeSpentOnCH3", CH3.SpenTimeOnCase()));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CH3DiscoveredAndSaved?", CH3.healed ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CH3DiscoveredAndKilled?", CH3.dead ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CH32WatchedVideo", CH3.watchedVid ? 1f : 0f));
         }
         if (!CH2.IsUnityNull() && CH2.startedAssigning)
         {
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("ProgressOfSavingWithinCH2", CH2.percentageDone));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("TimeSpentOnCH2", CH2.SpenTimeOnCase()));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CH2DiscoveredAndSaved?", CH2.healed ? 1f : 0f));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CH2DiscoveredAndKilled?", CH2.dead ? 1f : 0f));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CH2WatchedVideo", CH2.watchedVid ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("ProgressOfSavingWithinCH2", CH2.percentageDone));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("TimeSpentOnCH2", CH2.SpenTimeOnCase()));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CH2DiscoveredAndSaved?", CH2.healed ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CH2DiscoveredAndKilled?", CH2.dead ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CH2WatchedVideo", CH2.watchedVid ? 1f : 0f));
         }
         if (!CH1.IsUnityNull() && CH1.startedAssigning)
         {
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("ProgressOfSavingWithinCH1", CH1.percentageDone));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("TimeSpentOnCH1", CH1.SpenTimeOnCase()));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CH1DiscoveredAndSaved?", CH1.healed ? 1f : 0f));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CH1DiscoveredAndKilled?", CH1.dead ? 1f : 0f));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CH1WatchedVideo", CH1.watchedVid ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("ProgressOfSavingWithinCH1", CH1.percentageDone));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("TimeSpentOnCH1", CH1.SpenTimeOnCase()));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CH1DiscoveredAndSaved?", CH1.healed ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CH1DiscoveredAndKilled?", CH1.dead ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CH1WatchedVideo", CH1.watchedVid ? 1f : 0f));
         }
 
 
         if (!CA4.IsUnityNull() && CA4.startedAssigning)
         {
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("ProgressOfSavingWithinCA4", CA4.percentageDone));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("TimeSpentOnCA4", CA4.SpenTimeOnCase()));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CA4DiscoveredAndSaved?", CA4.healed ? 1f : 0f));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CA4DiscoveredAndKilled?", CA4.dead ? 1f : 0f));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CA4WatchedVideo", CA4.watchedVid ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("ProgressOfSavingWithinCA4", CA4.percentageDone));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("TimeSpentOnCA4", CA4.SpenTimeOnCase()));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CA4DiscoveredAndSaved?", CA4.healed ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CA4DiscoveredAndKilled?", CA4.dead ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CA4WatchedVideo", CA4.watchedVid ? 1f : 0f));
         }
         if (!CA3.IsUnityNull() && CA3.startedAssigning)
         {
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("ProgressOfSavingWithinCA3", CA3.percentageDone));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("TimeSpentOnCA3", CA3.SpenTimeOnCase()));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CA3DiscoveredAndSaved?", CA3.healed ? 1f : 0f));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CA3DiscoveredAndKilled?", CA3.dead ? 1f : 0f));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CA3WatchedVideo", CA3.watchedVid ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("ProgressOfSavingWithinCA3", CA3.percentageDone));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("TimeSpentOnCA3", CA3.SpenTimeOnCase()));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CA3DiscoveredAndSaved?", CA3.healed ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CA3DiscoveredAndKilled?", CA3.dead ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CA3WatchedVideo", CA3.watchedVid ? 1f : 0f));
         }
         if (!CA2.IsUnityNull() && CA2.startedAssigning)
         {
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("ProgressOfSavingWithinCA2", CA2.percentageDone));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("TimeSpentOnCA2", CA2.SpenTimeOnCase()));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CA2DiscoveredAndSaved?", CA2.healed ? 1f : 0f));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CA2DiscoveredAndKilled?", CA2.dead ? 1f : 0f));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CA2WatchedVideo", CA2.watchedVid ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("ProgressOfSavingWithinCA2", CA2.percentageDone));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("TimeSpentOnCA2", CA2.SpenTimeOnCase()));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CA2DiscoveredAndSaved?", CA2.healed ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CA2DiscoveredAndKilled?", CA2.dead ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CA2WatchedVideo", CA2.watchedVid ? 1f : 0f));
         }
         if (!CA1.IsUnityNull() && CA1.startedAssigning)
         {
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("ProgressOfSavingWithinCA1", CA1.percentageDone));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("TimeSpentOnCA1", CA1.SpenTimeOnCase()));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CA1DiscoveredAndSaved?", CA1.healed ? 1f : 0f));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CA1DiscoveredAndKilled?", CA1.dead ? 1f : 0f));
-            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("CA1WatchedVideo", CA1.watchedVid ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("ProgressOfSavingWithinCA1", CA1.percentageDone));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("TimeSpentOnCA1", CA1.SpenTimeOnCase()));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CA1DiscoveredAndSaved?", CA1.healed ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CA1DiscoveredAndKilled?", CA1.dead ? 1f : 0f));
+            ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("CA1WatchedVideo", CA1.watchedVid ? 1f : 0f));
         }
 
-        ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("ProgressOfSavingWithinAStrategy", avgOfSet(CH1!, CH2, CH3, CH4, CA1, CA2, CA3, CA4)));
+        ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("ProgressOfSavingWithinAStrategy", avgOfSet(CH1!, CH2, CH3, CH4, CA1, CA2, CA3, CA4)));
     }
     public static async Task<KeyValuePair<string, string>> FollowedStrategy(Dictionary<string, Case> VC)  
     {
@@ -96,9 +96,9 @@ public static class LSStats
         await Task.Run(() => CalculateCasesData(CH1, CH2, CH3, CH4, CA1, CA2, CA3, CA4));
 
         float avgHuman = avg(CH1, CH2, CH3, CH4);
-        ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("AvgOfProgressOfHumanCases", avgHuman));
+        ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("AvgOfProgressOfHumanCases", avgHuman));
         float avgAnimal = avg(CA1, CA2, CA3, CA4);
-        ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, float>("AvgOfProgressOfAnimalCases", avgAnimal));
+        ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("AvgOfProgressOfAnimalCases", avgAnimal));
 
         //Figuring out if they included optimizing on resources in general
 

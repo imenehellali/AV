@@ -18,6 +18,14 @@ public class TMObjects : MonoBehaviour
     public int _amount;
     public Type type;
 
+    private void Start()
+    {
+       
+        if (type == Type.Mystery)
+        {
+            _amount = Random.Range(-100, 101);
+        }
+    }
     private void OnTriggerEnter(Collider other)
     {
         //Raise amount to TM Manager 
@@ -40,6 +48,8 @@ public class TMObjects : MonoBehaviour
 
     private void SlowRotate()
     {
+        float rotationSpeed = 45.0f;
+        transform.rotation *= Quaternion.Euler(0, rotationSpeed * Time.deltaTime, 0);
 
     }
 

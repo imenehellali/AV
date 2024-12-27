@@ -1,13 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Security;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using UnityEngine.Video;
 
 public class InstructionPanel : MonoBehaviour
 {
@@ -95,6 +92,7 @@ public class InstructionPanel : MonoBehaviour
     public void CloseInstrPanel()
     {
         instructionPanel.SetActive(false);
+        FindAnyObjectByType<ThrillMinerManager>()?.StartLevel();
     }
     private bool IsSceneLoaded(string sceneName)
     {
@@ -117,14 +115,14 @@ public class InstructionPanel : MonoBehaviour
 
        yield return new WaitForSeconds(length);
 
-        instructionPanel.SetActive(false);
-        FindAnyObjectByType<GhostBusterManager>().StartTask();
-        FindAnyObjectByType<ThrillMinerManager>().StartLevel();
-        FindAnyObjectByType<LifeSaverManager>().StartLevel();
-        FindAnyObjectByType<PopUpWerkManager>().StartLevel();
-        instructionPanel.SetActive(false);
-        GameSettings.Instance.StartLevelTimer();
-       
+        instructionPanel?.SetActive(false);
+        FindAnyObjectByType<GhostBusterManager>()?.StartTask();
+        FindAnyObjectByType<ThrillMinerManager>()?.StartLevel();
+        FindAnyObjectByType<LifeSaverManager>()?.StartLevel();
+        FindAnyObjectByType<PopUpWerkManager>()?.StartLevel();
+        instructionPanel?.SetActive(false);
+        GameSettings.Instance?.StartLevelTimer();
+
     }
      private void DisplayGameInstruction()
     {
