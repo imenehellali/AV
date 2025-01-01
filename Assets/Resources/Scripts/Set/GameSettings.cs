@@ -5,10 +5,12 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
+using System.Linq;
 
 public class GameSettings : MonoBehaviour
 {
 
+    public bool goNextLevel = false;
 
     private string _path;
     public static GameSettings Instance { get; private set; }
@@ -18,10 +20,9 @@ public class GameSettings : MonoBehaviour
 
     public float BetweenSceneDuration { get; private set; }
     public List<string> LevelSequence { get; private set; }
-    public int CurrentLevelIndex { get; private set; }
+    public int CurrLvlIdx { get; private set; }
     public List<float> LevelDurations { get; private set; }
 
-    private float levelTimer;
 
     private float _PUWBGVolume;
     private float _PUWGMVolume;
@@ -34,10 +35,19 @@ public class GameSettings : MonoBehaviour
 
 
     private List<float> purchaseDurations = new List<float>();
+    private int NonRewardDrinkBoughtCount = 0;
+    private int RewardDrinkBoughtCount = 0;
+
+    public void AddNonRewardDrinksBoughtCount(int amount) => NonRewardDrinkBoughtCount += amount;
+    public void AddRewardDrinksBoughtCount(int amount) => RewardDrinkBoughtCount += amount;
+
+    private float avgTimeToBuy = 0f;
+
     public void AddPurchaseDuration(float amount)
     {
         if (amount != 0f)
             purchaseDurations.Add(amount);
+        avgTimeToBuy=purchaseDurations.Average();
     }
     public List<float> GetPurchaseDurations() => purchaseDurations;
     public float GetPUWBGVolume() { return _PUWBGVolume; }
@@ -51,7 +61,7 @@ public class GameSettings : MonoBehaviour
 
     private async void Awake()
     {
-        CurrentLevelIndex = 1;
+        CurrLvlIdx = 0;
         if (Instance == null)
         {
             Instance = this;
@@ -65,6 +75,7 @@ public class GameSettings : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
     }
     private void OnEnable()
     {
@@ -72,9 +83,9 @@ public class GameSettings : MonoBehaviour
     }
     private void OnDisable()
     {
-        OnSceneLoaded -= SceneLoaded;   
+        OnSceneLoaded -= SceneLoaded;
     }
-    
+
     public void UpdateLevelSettings(List<string> newSequence, List<float> newLevelDuration, float newBetweenSceneDuration)
     {
         LevelSequence = new List<string>();
@@ -85,7 +96,7 @@ public class GameSettings : MonoBehaviour
 
         BetweenSceneDuration = newBetweenSceneDuration;
         SaveData();
-      
+
     }
     public void UpdateVolumeSettings(float PUWBGVolume, float PUWGMVolume, float PUWWaiterVolume, float lSHelpVolume, float lSWarnVolume, float GBFeedbackVolume, float TMFeedbackVolume, float TMBGVolume)
     {
@@ -129,8 +140,8 @@ public class GameSettings : MonoBehaviour
             {
                 Debug.LogError($"Failed to load JSON: {ex.Message}");
                 BetweenSceneDuration = 15f;
-                LevelSequence = new List<string> { "PUWScene","LSScene","GBScene","TMScene",};
-                LevelDurations = new List<float> {300f, 300f, 300f, 300f, };
+                LevelSequence = new List<string> { "PUWScene", "LSScene", "GBScene", "TMScene", };
+                LevelDurations = new List<float> { 300f, 300f, 300f, 300f, };
                 _PUWBGVolume = .5f;
                 _PUWGMVolume = .5f;
                 _PUWWaiterVolume = .5f;
@@ -176,7 +187,7 @@ public class GameSettings : MonoBehaviour
         };
         try
         {
-            
+
             string json = JsonUtility.ToJson(data, true);
             await Task.Run(() => File.WriteAllText(_path, json));
             Debug.Log("Data saved successfully.");
@@ -187,73 +198,13 @@ public class GameSettings : MonoBehaviour
         }
     }
 
-    public void StartLevelTimer()
-    {
-        levelTimer = LevelDurations[CurrentLevelIndex];
-        StartCoroutine(LevelTimerCoroutine());
-    }
 
-    private IEnumerator LevelTimerCoroutine()
-    {
-        while (levelTimer > 0)
-        {
-            levelTimer -= Time.deltaTime;
-            yield return null;
-        }
-        if (levelTimer <= 0)
-        {
-            //TODO check this is definetly wrong wtfff
-            // Check if PUWScene is loaded before saving stats
-            if (IsSceneLoaded("PUWScene"))
-            {
-                PUWStats.SaveStatsToParticipantData();
-                MoneyManager.instance.StoreMoneyInSafeAccount(CurrentLevelIndex - 1);
-
-                NonRewardObject[] nonRewardObjects = FindObjectsOfType<NonRewardObject>();
-                RewardObject[] rewardObjects = FindObjectsOfType<RewardObject>();
-
-                foreach (var nonRewardObject in nonRewardObjects)
-                {
-                    nonRewardObject.UpdateTotalFixationTime();
-                }
-                foreach (var rewardObject in rewardObjects)
-                {
-                    rewardObject.UpdateTotalFixationTime();
-                }
-            }
-
-            // Assuming levelIndex is 0-based and currentLevelIndex is 1-based
-
-            OnTimeUp.Invoke(0);
-        }
-
-    }
-    public bool IsSceneLoaded(string sceneName)
-    {
-        for (int i = 0; i < SceneManager.sceneCount; i++)
-        {
-            Scene scene = SceneManager.GetSceneAt(i);
-            if (scene.name == sceneName)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
     public void LoadNextScene()
     {
-        
-
-        if (CurrentLevelIndex <= LevelSequence.Count)
+        if (CurrLvlIdx < LevelSequence.Count)
         {
-            
-            SceneLoaders.Instance.LoadLevel(LevelSequence[CurrentLevelIndex - 1]);
-            if (CurrentLevelIndex >= 2) //not start scene
-                SceneLoaders.Instance.UnloadCurrentScene(LevelSequence[CurrentLevelIndex - 2]);
-            else //start scene
-                SceneLoaders.Instance.UnloadCurrentScene("StartScene");
-            SceneLoaders.Instance.LoadPUSScene();
-            CurrentLevelIndex++;
+            SceneLoaders.Instance.LoadLevel(LevelSequence[CurrLvlIdx]);
+            ++CurrLvlIdx;
         }
         else
         {
@@ -263,14 +214,19 @@ public class GameSettings : MonoBehaviour
 
     public void SceneLoaded(string sceneName)
     {
-        if (sceneName != "PUSScene")
+        InstructionPanel instructionPanel = FindObjectOfType<InstructionPanel>();
+        if (instructionPanel != null)
         {
-            InstructionPanel instructionPanel = FindObjectOfType<InstructionPanel>();
-            if (instructionPanel != null)
-            {
-                instructionPanel.sceneLoaded.Invoke(sceneName);
-            }
+            instructionPanel.sceneLoaded.Invoke(sceneName);
+        }
+
+    }
+    private void Update()
+    {
+        if(goNextLevel)
+        {
+            goNextLevel = false;
+            LoadNextScene();
         }
     }
-
 }

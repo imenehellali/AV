@@ -1,19 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
 
-public class MoneyManager: MonoBehaviour
+public class MoneyManager : MonoBehaviour
 {
     private float _money;
     public float GetMoney() => _money;
-    public float ResetMoney() => _money = 0; 
-
-    private List<float> _safeAccount;
+   
+    private List<float> _safeAccount=new List<float>();
     public List<float> GetSafeAccount() => _safeAccount;
 
-    private  float _gameAccount=2000f;
+    private float _gameAccount = 2000f;
     public float GetGameAccount() => _gameAccount;
 
     public UnityAction OnMoneyWon;
@@ -22,13 +22,22 @@ public class MoneyManager: MonoBehaviour
     public static MoneyManager instance;
     private void Awake()
     {
-        if(instance == null)    
-            { instance = this; }
+        if (instance == null)
+        {
+            instance = this;
+
+            DontDestroyOnLoad(gameObject);
+        }
         else
         {
             Destroy(gameObject);
         }
-        
+
+    }
+    public void ResetMoney() 
+    { 
+        _money = 0; 
+        TaskProgress.Instance.updateMoney();
     }
     public void UpdateGameAccount(float amount)
     {
@@ -42,7 +51,7 @@ public class MoneyManager: MonoBehaviour
     }
     private void SaveSafeAccount()
     {
-        ParticipantSettings.Instance.WholeGamePair.Invoke(new KeyValuePair<string, float>("SafeAccount", _gameAccount));
+        ParticipantSettings.Instance.WholeGamePair.Invoke(new KeyValuePair<string, float>("SafeAccount", _safeAccount[_safeAccount.Count - 1]));
     }
 
 
@@ -62,9 +71,10 @@ public class MoneyManager: MonoBehaviour
         {
             _safeAccount[levelIndex] = _money;
             _money = 0;  // Reset the money for the next level
+            SaveSafeAccount();
         }
     }
 
-    
+
 }
 

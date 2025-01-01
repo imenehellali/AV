@@ -6,10 +6,12 @@ using UnityEngine;
 public class LifeSaverManager : MonoBehaviour
 {
     private float levelDuration = 300f;
+    private float levelTimer = 0f;
     private bool startUrgency = true;
     private float timeToStartUrgeny = 0f;
-    private bool levelStarted = false;
     private int _rewardAmount = 200;
+    private float _time = 0f;
+
 
     [Header("Cases List")]
     [SerializeField]
@@ -95,16 +97,15 @@ public class LifeSaverManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        // _IDataService = new FileDataService(new JsonSerializer());
+        levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx];
+
 
     }
     private void Start()
     {
-        //TODO add receive level duration here 
         timeToStartUrgeny = levelDuration - 40f;
         InitCases();
         InitResources();
-        StartLevel();   
     }
     private void InitCases()
     {
@@ -128,26 +129,33 @@ public class LifeSaverManager : MonoBehaviour
 
         Debug.Log("finished initiating resources");
     }
-
-    private void Update()
-    {
-        if (levelStarted)
-        {
-            levelDuration -= Time.deltaTime;
-            if (levelDuration <= timeToStartUrgeny)
-                startUrgency = true;
-        }
-    }
     public void StartLevel()
     {
-        levelStarted = true;
         foreach (Case _case in _cases.Values)
         {
             _case.Startcase();
         }
+        MoneyManager.instance.ResetMoney();
         StartCoroutine(Flicker());
+        StartCoroutine(StartLevelTimer());
     }
-
+    private IEnumerator StartLevelTimer()
+    {
+        while (levelTimer < levelDuration)
+        {
+            levelTimer += Time.deltaTime;
+            _time = levelDuration - levelTimer;
+            TaskProgress.Instance.updateTimer(_time);
+            if (levelTimer>=timeToStartUrgeny)
+                startUrgency=true;
+            yield return null;
+        }
+        if (levelTimer >= levelDuration)
+        {
+            EndLevel();
+            
+        }
+    }
     //Functions to call from Game to behvae
     //
     //
@@ -167,8 +175,9 @@ public class LifeSaverManager : MonoBehaviour
     //
     //
     //
-    private void AddRewardToMoneyManager()
+    private void EndLevel()
     {
+        StopAllCoroutines();
         float amount = 0f;
         bool stopped = true;
         foreach (var item in _cases.Values)
@@ -183,30 +192,33 @@ public class LifeSaverManager : MonoBehaviour
             amount = MoneyManager.instance.GetGameAccount() * 0.8f * (-1f);
             MoneyManager.instance.UpdateGameAccount(amount);
         }
-        else if (stopped && amount > 0f) MoneyManager.instance.UpdateMoney(amount);
-
+        else if (stopped && amount > 0f)
+        {
+            MoneyManager.instance.UpdateMoney(amount);
+            MoneyManager.instance.StoreMoneyInSafeAccount(GameSettings.Instance.CurrLvlIdx);
+        }
         LSData.Data.SaveData();
-        Debug.Log($"added  {amount}  to money   & saved Data");
+        GameSettings.Instance.LoadNextScene();
     }
 
     private IEnumerator Flicker()
     {
-
-        while (levelDuration > 0)
+        float _ti = _urgencyAudioClip.length;
+        while (!startUrgency)
         {
-            if (startUrgency)
+            yield return null;
+        }
+        if(startUrgency)
+        {
+            while (timeToStartUrgeny > 0)
             {
+                timeToStartUrgeny-=_ti;
                 _audioSource.PlayOneShot(_urgencyAudioClip);
                 _envMaterial.material.EnableKeyword("_EMISSION");
-                yield return new WaitForSeconds(_urgencyAudioClip.length);
+                yield return new WaitForSeconds(_ti);
                 _envMaterial.material.DisableKeyword("_EMISSION");
+
             }
-
         }
-        if (levelDuration < 0)
-        {
-            AddRewardToMoneyManager();
-        }
-
     }
 }

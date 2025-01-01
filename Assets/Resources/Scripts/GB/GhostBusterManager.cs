@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class GhostBusterManager : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class GhostBusterManager : MonoBehaviour
     private float _Q3Time = 0f;
     private float _Q4Time = 0f;
     private float levelDuration = 300f;
-
+    private float _time = 0f;
 
     //Room Effects variables
     [Header("Room Effect Materials")]
@@ -47,8 +48,6 @@ public class GhostBusterManager : MonoBehaviour
 
     //Actions Variables
     [Header("Action Variables")]
-    [SerializeField]
-    private GameObject _boundaries;
     private const int _correctActionCost = 20;
     private const int _wrongActionCost = -20;
 
@@ -77,13 +76,13 @@ public class GhostBusterManager : MonoBehaviour
         }
         AssignQTime();
     }
-
-    // Update is called once per frame
     private void Start()
     {
-        MoneyManager.instance.ResetMoney();
-        StartTask();
+        levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx];
+        Debug.Log($"idx {GameSettings.Instance.CurrLvlIdx}   levelDurationsCount   {GameSettings.Instance.LevelDurations.Count}");
+       
     }
+
     private void OnEnable()
     {
         killedGhost += Q1Ghostbusting;
@@ -98,19 +97,23 @@ public class GhostBusterManager : MonoBehaviour
         killedGhost += Q3Ghostbusting;
         killedGhost -= Q4Ghostbusting;
     }
+   
     public void StartTask()
     {
+        MoneyManager.instance.ResetMoney();
         StartCoroutine(Q1());
     }
     private IEnumerator Q1()
     {
         audioSource.PlayOneShot(_Q1InstructionClip);
+        StartCoroutine(SpawnRoomEffect(true));
         yield return new WaitForSeconds(_Q1InstructionClip.length);
         StartCoroutine(StartQ1());
     }
     private IEnumerator Q2()
     {
         audioSource.PlayOneShot(_Q2InstructionClip);
+        StartCoroutine(SpawnRoomEffect(false));
         yield return new WaitForSeconds(_Q2InstructionClip.length);
         StartCoroutine(StartQ2());
     }
@@ -150,12 +153,12 @@ public class GhostBusterManager : MonoBehaviour
     //Shoot the Red Ghost + room red
     private IEnumerator StartQ1()
     {
-        StartCoroutine(SpawnRoomEffect(true));
         StartCoroutine(SpawnGhost(_Q1Time, _ghostSpawnTO, 10f));
         while (_Q1Time > 0)
         {
             _Q1Time -= Time.deltaTime;
-            yield return null;
+            _time = _Q1Time+ _Q2Time + _Q3Time + _Q4Time;
+            TaskProgress.Instance.updateTimer(_time); yield return null;
         }
         if (_Q1Time <= 0)
         {
@@ -187,11 +190,12 @@ public class GhostBusterManager : MonoBehaviour
     //Shoot the blue ghost + room lit blue
     private IEnumerator StartQ2()
     {
-        StartCoroutine(SpawnRoomEffect(false));
         StartCoroutine(SpawnGhost(_Q2Time, _ghostSpawnTO, 20f));
         while (_Q2Time > 0)
         {
             _Q2Time -= Time.deltaTime;
+            _time = _Q2Time + _Q3Time + _Q4Time;
+            TaskProgress.Instance.updateTimer(_time);
             yield return null;
         }
         if (_Q2Time <= 0)
@@ -230,6 +234,8 @@ public class GhostBusterManager : MonoBehaviour
         while (_Q3Time > 0)
         {
             _Q3Time -= Time.deltaTime;
+            _time = _Q4Time + _Q3Time;
+            TaskProgress.Instance.updateTimer(_time);
             yield return null;
         }
         if (_Q3Time <= 0)
@@ -268,17 +274,24 @@ public class GhostBusterManager : MonoBehaviour
         while (_Q4Time > 0)
         {
             _Q4Time -= Time.deltaTime;
+            TaskProgress.Instance.updateTimer(_Q4Time); 
             yield return null;
         }
         //Save all data here 
         if (_Q4Time <= 0)
         {
-            StopAllCoroutines();
-            StartCoroutine(Q4()); GBData.Data.SaveData();
-            //Update the money manager 
-            //See what happens with the 
+            EndLevel();
+            
         }
     }
+    private void EndLevel()
+    {
+        StopAllCoroutines();
+        GBData.Data.SaveData();
+        MoneyManager.instance.StoreMoneyInSafeAccount(GameSettings.Instance.CurrLvlIdx);
+        GameSettings.Instance.LoadNextScene();
+    }
+
     private void AssignQTime()
     {
         //levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrentLevelIndex - 1];
@@ -307,15 +320,15 @@ public class GhostBusterManager : MonoBehaviour
     
     private IEnumerator SpawnRoomEffect(bool red)
     {
-        _roomEffectMat.material.SetColor("_Color", red ? _redEffectRoomMaterial : _greenEffectRoomMaterial);
+        _roomEffectMat.material.color= red ? _redEffectRoomMaterial : _greenEffectRoomMaterial;
         yield return new WaitForSeconds(4);
-        _roomEffectMat.material.SetColor("_Color", Color.white);
+        _roomEffectMat.material.color= _blackEffectRoomMaterial;
     }
     private IEnumerator SpawnRoomEffectQ4(Color _color)
     {
-        _roomEffectMat.material.SetColor("_Color", _color);
+        _roomEffectMat.material.color= _color;
         yield return new WaitForSeconds(4);
-        _roomEffectMat.material.SetColor("_Color", Color.white);
+        _roomEffectMat.material.color=_blackEffectRoomMaterial;
     }
     private IEnumerator RoomEffectQ3()
     {

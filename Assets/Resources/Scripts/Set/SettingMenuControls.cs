@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using Unity.XR.PXR;
 using Unity.XR.PXR.Input;
 using UnityEngine;
@@ -7,6 +8,7 @@ using UnityEngine.InputSystem;
 
 public class SettingMenuControls : MonoBehaviour
 {
+    public bool startTeilnahme=false;
 
     [Header("Controls")]
     [SerializeField]
@@ -71,16 +73,20 @@ public class SettingMenuControls : MonoBehaviour
         _CGidx = AllParticiipantDataManager.Instance.getCGidx();
         _ADidx = AllParticiipantDataManager.Instance.getADidx();
     }
-    private void Start()
+    private void OnEnable()
     {
+        if(!Menu.IsUnityNull())
         Menu.action.started += OpenSettingMenu;
-        StartGame.action.started += LaunchGame;
+        if (!StartGame.IsUnityNull())
+            StartGame.action.started += LaunchGame;
 
     }
-    private void OnDestroy()
+    private void OnDisable()
     {
-        Menu.action.started -= OpenSettingMenu;
-        StartGame.action.started -= LaunchGame; 
+        if (!Menu.IsUnityNull())
+            Menu.action.started -= OpenSettingMenu;
+        if (!StartGame.IsUnityNull())
+            StartGame.action.started -= LaunchGame; 
     }
     public void TherapistEntry()
     {
@@ -193,5 +199,13 @@ public class SettingMenuControls : MonoBehaviour
     public void ClickenOnMe()
     {
         Debug.Log("Clicked On me the button");
+    }
+    private void Update()
+    {
+        if(startTeilnahme)
+        {
+            startTeilnahme = false;
+            ParticipantGroup(true);
+        }
     }
 }

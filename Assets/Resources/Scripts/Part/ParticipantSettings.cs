@@ -10,8 +10,6 @@ using UnityEngine.Events;
 
 public class ParticipantSettings : MonoBehaviour
 {
-    private string participantFilePath;
-
     private string ParticipantID;
 
     //Data from all the differetn levels to fetch

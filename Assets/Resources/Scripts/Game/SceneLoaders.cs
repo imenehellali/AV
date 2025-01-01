@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SceneLoaders : MonoBehaviour
 {
     public static SceneLoaders Instance { get; private set; }
-
     private void Awake()
     {
 
@@ -23,6 +23,7 @@ public class SceneLoaders : MonoBehaviour
     private void Start()
     {
         SceneManager.LoadScene("StartScene");
+       
     }
 
     public void LoadLevel(string levelName)
@@ -39,52 +40,34 @@ public class SceneLoaders : MonoBehaviour
         }
         if (asyncLoad.isDone)
         {
-            GameSettings.Instance.OnSceneLoaded(levelName);
+            RepositionOnLoad.Instance.repositionOnLoad(levelName);
+            if (levelName.Equals("EndScene"))
+            {
+                float avgPusPurchaseDur = 0f;
+                GameSettings.Instance.GetPurchaseDurations().ForEach(duration => { avgPusPurchaseDur += duration; });
+                avgPusPurchaseDur /= GameSettings.Instance.GetPurchaseDurations().Count * GameSettings.Instance.BetweenSceneDuration;
+            }
+            else
+            {
+                AsyncOperation _asyncLoad = SceneManager.LoadSceneAsync("PUSScene", LoadSceneMode.Additive);
+                while (!_asyncLoad.isDone)
+                {
+                    yield return null;
+                }
+                if(_asyncLoad.isDone)
+                {
+                    yield return new WaitForSeconds(GameSettings.Instance.BetweenSceneDuration);
+                    AsyncOperation unloadOp= SceneManager.UnloadSceneAsync("PUSScene");
+                    while(!unloadOp.isDone)
+                    {
+                        yield return null;
+                    }
+                    if(unloadOp.isDone)
+                        GameSettings.Instance.OnSceneLoaded(levelName);
+                }
+                
+            }
         }
        
-    }
-
-    public void UnloadCurrentScene(string levelName)
-    {
-        SceneManager.UnloadSceneAsync(levelName);
-    }
-    private IEnumerator LoadPUSSceneAndNotify()
-    {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("PUSScene", LoadSceneMode.Additive);
-        while (!asyncLoad.isDone)
-        {
-            yield return null;
-        }
-
-        GameSettings.Instance.OnSceneLoaded("PUSScene");
-    }
-    public void LoadPUSScene()
-    {
-        if (GameSettings.Instance.CurrentLevelIndex >= GameSettings.Instance.LevelSequence.Count)
-        {
-            LoadEndScene();
-        }
-        else
-        {
-            StartCoroutine(LoadPUSSceneAndNotify());
-            StartCoroutine(UnloadPUSScene());
-        }
-
-    }
-
-    private IEnumerator UnloadPUSScene()
-    {
-        yield return new WaitForSeconds(GameSettings.Instance.BetweenSceneDuration);
-        UnloadCurrentScene("PUSScene");
-
-    }
-    private void LoadEndScene()
-    {
-        float avgPusPurchaseDur = 0f;
-        GameSettings.Instance.GetPurchaseDurations().ForEach(duration => { avgPusPurchaseDur += duration; });
-        avgPusPurchaseDur /= GameSettings.Instance.GetPurchaseDurations().Count * GameSettings.Instance.BetweenSceneDuration;
-        //PUWStats.Instance.SetAVGAvgPurchaseTimeFromPUS(avgPusPurchaseDur);
-
-        StartCoroutine(LoadSceneAndNotify("EndScene"));
     }
 }

@@ -1,4 +1,5 @@
 
+using Pico.Platform;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using Unity.XR.PXR;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class ThrillMinerManager : MonoBehaviour
 {
@@ -23,7 +25,14 @@ public class ThrillMinerManager : MonoBehaviour
     public static ThrillMinerManager Instance { get; private set; }
 
     private int temporaryAmount = 0;
-    private float remainingTime = 300f;
+    private float levelDuration = 300f;
+    private float levelTimer = 0f;
+    private float _time = 0f;
+
+
+    public XRInteractionManager _xrManager;
+    [SerializeField]
+    private PathSetting _EndPath;
     [SerializeField]
     private PathSetting _startPath;
     [SerializeField]
@@ -67,6 +76,8 @@ public class ThrillMinerManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        _xrManager=FindFirstObjectByType<XRInteractionManager>();
+       levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx];
     }
     private void BGTMSceneHandler()
     {
@@ -147,17 +158,17 @@ public class ThrillMinerManager : MonoBehaviour
         node.AddSpentTime();
         node.isPassed = false;
 
-        if (node.remainingTrials >= 0 && node.rp != PathSetting.RP.R4P4 && remainingTime >= -0.5f)
+        if (node.remainingTrials >= 0 && node.rp != PathSetting.RP.R4P4 && levelTimer <= levelDuration)
         {
             //Restart Current Node
             node.ResetRPObjs();
             FindAnyObjectByType<PXR_Manager>().gameObject.transform.SetPositionAndRotation(node.startPos.position, node.startPos.rotation);
         }
-        else if (node.remainingTrials < 0 && node.rp != PathSetting.RP.R4P4 && remainingTime >= -0.5f)
+        else if (node.remainingTrials < 0 && node.rp != PathSetting.RP.R4P4 && levelTimer <= levelDuration)
         {
             RestartPath(node);
         }
-        else if (node.remainingTrials < 0 && node.rp == PathSetting.RP.R4P4 && remainingTime >= -0.5f)
+        else if (node.remainingTrials < 0 && node.rp == PathSetting.RP.R4P4 && levelTimer <= levelDuration)
         {
             temporaryAmount = 0;
             RestartPath(node);
@@ -189,10 +200,26 @@ public class ThrillMinerManager : MonoBehaviour
         });
 
     }
-
+    private IEnumerator StartLevelTimer()
+    {
+        while (levelTimer < levelDuration)
+        {
+            levelTimer += Time.deltaTime;
+            _time = levelDuration - levelTimer;
+            TaskProgress.Instance.updateTimer(_time);
+            yield return null;
+        }
+        if (levelTimer >= levelDuration)
+        {
+            EndLevel(_EndPath);
+            
+        }
+    }
     public void StartLevel()
     {
+        MoneyManager.instance.ResetMoney();
         BGTMSceneHandler();
+        StartCoroutine(StartLevelTimer());
         
     }
  /*   public void TestChosenPathAsync()
@@ -325,6 +352,7 @@ public class ThrillMinerManager : MonoBehaviour
 
     public void EndLevel(PathSetting R4P4)
     {
+        StopAllCoroutines();
         Dictionary<int, List<PathSetting>> _allPaths = R4P4.GetAllPaths().Result;
 
         foreach (var singlePath in _allPaths.Values)
@@ -339,14 +367,14 @@ public class ThrillMinerManager : MonoBehaviour
             };
 
             float totalTime = 0f;
-            int successfullyPassedNodes = 0; // Track nodes where isPassed == true
+            int successfullyPassedNodes = 0; 
 
             for (int i = 0; i < singlePath.Count; i++)
             {
                 PathSetting currentNode = singlePath[i];
                 totalTime += currentNode.avgSpentTime.Count > 0 ? currentNode.avgSpentTime.Average() : 0;
 
-                if (currentNode.isPassed) successfullyPassedNodes++; // Count only successfully passed nodes
+                if (currentNode.isPassed) successfullyPassedNodes++; 
 
                 if (i > 0)
                 {
@@ -357,12 +385,17 @@ public class ThrillMinerManager : MonoBehaviour
                     newPath.incDecOverNodes += ratio;
                 }
             }
-
-            // Update the percentage of progress based on successfully passed nodes
             newPath.percentageOfProgress = (float)successfullyPassedNodes / singlePath.Count;
             newPath.incDecOverNodes /= (singlePath.Count - 1);
             _pathList.Add(newPath);
         }
+        TMStats.ChosenPath(_pathList);
+        if (temporaryAmount > 0)
+        {
+            MoneyManager.instance.UpdateMoney(temporaryAmount);
+            MoneyManager.instance.StoreMoneyInSafeAccount(GameSettings.Instance.CurrLvlIdx);
+        }
+        GameSettings.Instance.LoadNextScene();
     }
 
 

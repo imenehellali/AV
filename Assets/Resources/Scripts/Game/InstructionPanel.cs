@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -8,7 +9,6 @@ using UnityEngine.SceneManagement;
 
 public class InstructionPanel : MonoBehaviour
 {
-   
 
     [SerializeField] private GameObject instructionPanel;
     [SerializeField] private InputActionReference Menu;
@@ -25,111 +25,134 @@ public class InstructionPanel : MonoBehaviour
     public List<AudioClip> levelVideos;
 
     public UnityAction<string> sceneLoaded;
-    public string _testVariableSceneName="LSScene";
     private int lvlIdx = 0;
+    private string currLoadedScene;
 
-    private void OnDestroy()
-    {
-        Menu.action.started -= OpenInstrPanel;
-    }
+    //All additional visits start from 2, 1 is the default count which is mendatory 
+    private Dictionary<string, int> perLevelOpenCount = new Dictionary<string, int>();
+
     private void OnEnable()
     {
+        if (!Menu.IsUnityNull()) 
+            Menu.action.started += OpenInstrPanel;
         sceneLoaded += StartInstructionPanel;
-
+        int count = GameSettings.Instance.LevelDurations.Count;
+        for (int i = 0; i < count; i++)
+        {
+            perLevelOpenCount.TryAdd(GameSettings.Instance.LevelSequence[i], 0);
+        }
     }
     private void OnDisable()
     {
-        sceneLoaded-=StartInstructionPanel;
+        sceneLoaded -= StartInstructionPanel;
+        if (!Menu.IsUnityNull()) 
+            Menu.action.started -= OpenInstrPanel;
     }
     private void StartInstructionPanel(string sceneName)
     {
+        currLoadedScene = sceneName;
         instructionPanel.SetActive(true);
 
         DisplayGameInstruction();
-        if (IsSceneLoaded("StartScene"))
+        if (SceneManager.GetSceneByName("StartScene").isLoaded)
         {
-            _audioSourceInstr.PlayOneShot(gameVideo); 
+            _audioSourceInstr.PlayOneShot(gameVideo);
             levelTranscript.text = "Sie befinden sich in der Startszene, bevor eine der eigentlichen Aufgaben beginnt! Dies ist ein Platzhalter. Die spezifischen Anweisungen zu jeder Aufgabe werden hier angezeigt! Die Anweisungen zu jeder Aufgabe werden zu Beginn jeder Aufgabe abgespielt! Sie können sie unten pausieren und wieder fortsetzen oder jederzeit von diesem Panel aus abspielen!";
         }
 
-        else if (IsSceneLoaded("PUWScene"))
+        else if (SceneManager.GetSceneByName("PUWScene").isLoaded)
         {
             lvlIdx = 0;
             DisplayLevelInstruction(lvlIdx);
             StartCoroutine(StartLevelAfterPlay());
         }
-        else if (IsSceneLoaded("LSScene"))
+        else if (SceneManager.GetSceneByName("LSScene").isLoaded)
         {
             lvlIdx = 1;
             DisplayLevelInstruction(lvlIdx);
             StartCoroutine(StartLevelAfterPlay());
         }
-        else if (IsSceneLoaded("GBScene"))
+        else if (SceneManager.GetSceneByName("GBScene").isLoaded)
         {
-            lvlIdx = 2; 
+            lvlIdx = 2;
             DisplayLevelInstruction(lvlIdx);
             StartCoroutine(StartLevelAfterPlay());
         }
-        else if (IsSceneLoaded("TMScene"))
+        else if (SceneManager.GetSceneByName("TMScene").isLoaded)
         {
             lvlIdx = 3;
             DisplayLevelInstruction(lvlIdx);
             StartCoroutine(StartLevelAfterPlay());
         }
-       
-    }
-    private void Start()
-    {
-        
-        Menu.action.started += OpenInstrPanel;
-        StartInstructionPanel(_testVariableSceneName);
-    }
 
+    }
+    //I don't play it automatically when they open, if they wanna play instr they gotta click
     private void OpenInstrPanel(InputAction.CallbackContext callbackContext)
     {
-        instructionPanel.SetActive(!instructionPanel.activeSelf);
+        if (instructionPanel.activeSelf)
+        {
+            if (_audioSourceInstr.isPlaying)
+                _audioSourceInstr.Stop();
+            //Case 1st close with menuButton
+            if (lvlIdx > 0)
+            {
+                //First close will start the tasks of course!
+                if (perLevelOpenCount[currLoadedScene] < 1)
+                {
+                    FindAnyObjectByType<GhostBusterManager>()?.StartTask();
+                    FindAnyObjectByType<ThrillMinerManager>()?.StartLevel();
+                    FindAnyObjectByType<LifeSaverManager>()?.StartLevel();
+                    FindAnyObjectByType<PopUpWerkManager>()?.StartLevel();
+                }
+                perLevelOpenCount[currLoadedScene]++;
+            }
+            instructionPanel.SetActive(false);
+        }
+        instructionPanel.SetActive(true);
+       
     }
     public void CloseInstrPanel()
     {
-        instructionPanel.SetActive(false);
-        FindAnyObjectByType<ThrillMinerManager>()?.StartLevel();
-    }
-    private bool IsSceneLoaded(string sceneName)
-    {
-        for (int i = 0; i < SceneManager.sceneCount; i++)
+        if (_audioSourceInstr.isPlaying)
+            _audioSourceInstr.Stop();
+
+        if (lvlIdx > 0)
         {
-            Scene scene = SceneManager.GetSceneAt(i);
-            if (scene.name == sceneName && scene.isLoaded)
+            //First close will start the tasks of course!
+            if (perLevelOpenCount[currLoadedScene] < 1)
             {
-                return true;
+                FindAnyObjectByType<GhostBusterManager>()?.StartTask();
+                FindAnyObjectByType<ThrillMinerManager>()?.StartLevel();
+                FindAnyObjectByType<LifeSaverManager>()?.StartLevel();
+                FindAnyObjectByType<PopUpWerkManager>()?.StartLevel();
             }
+            perLevelOpenCount[currLoadedScene]++;
         }
-        return false;
+        instructionPanel.SetActive(false);
+
     }
 
     private IEnumerator StartLevelAfterPlay()
     {
 
         _audioSourceInstr.PlayOneShot(levelVideos[lvlIdx]);
-        float length= levelVideos[lvlIdx].length;
+        float length = levelVideos[lvlIdx].length;
 
-       yield return new WaitForSeconds(length);
+        yield return new WaitForSeconds(length);
+        perLevelOpenCount[currLoadedScene]++;
+        instructionPanel.SetActive(false);
 
-        instructionPanel?.SetActive(false);
         FindAnyObjectByType<GhostBusterManager>()?.StartTask();
         FindAnyObjectByType<ThrillMinerManager>()?.StartLevel();
         FindAnyObjectByType<LifeSaverManager>()?.StartLevel();
         FindAnyObjectByType<PopUpWerkManager>()?.StartLevel();
         instructionPanel?.SetActive(false);
-        GameSettings.Instance?.StartLevelTimer();
-
     }
-     private void DisplayGameInstruction()
+    private void DisplayGameInstruction()
     {
         if (!string.IsNullOrEmpty(gameTranscriptText))
         {
-            //gameTranscript.text = gameTranscriptText;
-            gameTranscript.text = gameTranscriptText; 
+            gameTranscript.text = gameTranscriptText;
         }
     }
 
@@ -137,41 +160,51 @@ public class InstructionPanel : MonoBehaviour
     {
         if (levelTranscripts != null && index >= 0 && index < levelTranscripts.Count && !string.IsNullOrEmpty(levelTranscripts[index]))
         {
-            //levelTranscript.text = levelTranscripts[index];
             levelTranscript.text = levelTranscripts[index].ToString();
         }
     }
 
     public void PlayOrUnpauseGameInstr()
     {
-        
-        if ( IsSceneLoaded("StartScene") && _audioSourceInstr.clip.Equals(gameVideo))
+        string currName = _audioSourceInstr.clip.name;
+        bool sceneLoaded = SceneManager.GetSceneByName("StartScene").isLoaded;
+
+        if (sceneLoaded && currName.Equals(gameVideo.name))
         {
             _audioSourceInstr.UnPause();
         }
-        else if(IsSceneLoaded("StartScene") && !_audioSourceInstr.clip.Equals(gameVideo) )
+        else if (sceneLoaded && !currName.Equals(gameVideo.name))
         {
-            _audioSourceInstr.PlayOneShot(gameVideo);
-        
-        }
-        else if (!IsSceneLoaded("StartScene") && !_audioSourceInstr.clip.Equals(gameVideo) )
-        {
+            if (_audioSourceInstr.isPlaying)
+                _audioSourceInstr.Stop();
             _audioSourceInstr.PlayOneShot(gameVideo);
         }
-        else if (!IsSceneLoaded("StartScene") && _audioSourceInstr.clip.Equals(gameVideo))
+        else if (!sceneLoaded && !currName.Equals(gameVideo.name))
+        {
+            if (_audioSourceInstr.isPlaying)
+                _audioSourceInstr.Stop();
+            _audioSourceInstr.PlayOneShot(gameVideo);
+        }
+        else if (!sceneLoaded && currName.Equals(gameVideo.name))
         {
             _audioSourceInstr.UnPause();
         }
     }
     public void PlayOrUnpauseLevelInstr()
     {
-
-        if (!IsSceneLoaded("StartScene") && 
-            _audioSourceInstr.clip.Equals(gameVideo))
+        bool sceneLoaded = SceneManager.GetSceneByName("StartScene").isLoaded;
+        string currName = _audioSourceInstr.clip.name;
+        if (sceneLoaded)
         {
+
+        }
+        else if (!sceneLoaded && currName.Equals(gameVideo.name))
+        {
+            if (_audioSourceInstr.isPlaying)
+                _audioSourceInstr.Stop();
             _audioSourceInstr.PlayOneShot(levelVideos[lvlIdx]);
         }
-        else if (!IsSceneLoaded("StartScene") && !_audioSourceInstr.clip.Equals(gameVideo))
+        else if (!sceneLoaded && currName.Equals(levelVideos[lvlIdx].name))
         {
             _audioSourceInstr.UnPause();
         }
