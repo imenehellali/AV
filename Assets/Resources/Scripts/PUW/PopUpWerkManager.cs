@@ -26,6 +26,11 @@ public class PopUpWerkManager : MonoBehaviour
 
     public UnityAction<string> OnPlayMachine;
 
+    [SerializeField]
+    private List<AudioClip> _clips = new List<AudioClip>();
+    [SerializeField]
+    private AudioSource _audioSource;
+
     private void Awake()
     {
         if (Instance == null)
@@ -67,9 +72,14 @@ public class PopUpWerkManager : MonoBehaviour
             EndLevel();
         }
     }
+    private void EndEnvironmentSound()
+    {
+        _audioSource.Stop();
+    }
     private void EndLevel()
     {
         StopAllCoroutines();
+        EndEnvironmentSound();
         PUWStats.SaveStatsToParticipantData();
         MoneyManager.instance.StoreMoneyInSafeAccount(GameSettings.Instance.CurrLvlIdx);
         NonRewardObject[] nonRewardObjects = FindObjectsOfType<NonRewardObject>();
@@ -108,6 +118,22 @@ public class PopUpWerkManager : MonoBehaviour
         StartCoroutine(ReduceMoneyOverTime());
         StartCoroutine(CheckSlotMachinePlays());
         PUWStats.AddOVerallTaskTime(levelDuration);
+        PlayEnvironmentSound();
+    }
+    private void PlayEnvironmentSound()
+    {
+        int _curr = 0;
+        StartCoroutine(PlaySound(_clips[_curr],_curr));
+    }
+    private IEnumerator PlaySound(AudioClip _clip,int curr)
+    {
+        float _dur = _clip.length;
+        yield return new WaitForSeconds(_dur);
+        curr++;
+        if (curr>=_clips.Count)
+            curr = 0;
+
+        StartCoroutine(PlaySound(_clips[curr],curr));
     }
     private void ConsumeCoins(string slotType)
     {

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class LifeSaverManager : MonoBehaviour
 {
-    private float levelDuration = 300f;
+    private float levelDuration=0f;
     private float levelTimer = 0f;
     private bool startUrgency = false;
     private float timeToStartUrgeny = 0f;

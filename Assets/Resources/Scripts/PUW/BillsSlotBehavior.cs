@@ -51,8 +51,8 @@ public class BillsSlotMachine : MonoBehaviour
 
         float _dur = notEnoughClip.length;
         audioSource.PlayOneShot(notEnoughClip);
-        billsAnimator.Play("NotEnoughCoins", -1, -0f);
-        yield return new WaitForSeconds(_dur);
+        billsAnimator.Play("NotEnoughCoinsBill");
+        yield return new WaitForSeconds(10f);
     }
 
 
@@ -68,7 +68,7 @@ public class BillsSlotMachine : MonoBehaviour
 
         float randomValue = Random.Range(0f, 1f);
         float winnings = 0f;
-        string winLoseAnimation = "LosingAnim";
+        string winLoseAnimation = "BillLoseAnim";
         AudioClip winLoseSE = null;
 
         if (randomValue >= 0f && randomValue < 0.25f) // 2/8 chance of winning 50 euros

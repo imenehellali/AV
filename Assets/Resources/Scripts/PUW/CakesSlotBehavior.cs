@@ -53,8 +53,8 @@ public class CakesSlotBehavior : MonoBehaviour
 
         float _dur = notEnoughClip.length;
         audioSource.PlayOneShot(notEnoughClip);
-        cakeAnimator.Play("NotEnoughCoins");
-        yield return new WaitForSeconds(_dur);  
+        cakeAnimator.Play("NotEnoughCoinsCake");
+        yield return new WaitForSeconds(10f);  
     }
 
     private IEnumerator PlaySlot(string winLooseAnimation, AudioClip winLooseSE, float winnings)
