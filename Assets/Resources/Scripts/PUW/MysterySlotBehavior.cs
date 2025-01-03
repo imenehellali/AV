@@ -1,6 +1,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -11,7 +12,9 @@ public class MysterySlotBehavior : MonoBehaviour
     [SerializeField] private GameObject diamondPanel;
     [SerializeField] private GameObject billsPanel;
     [SerializeField] private GameObject cakePanel;
+
     [SerializeField] private Animator nothingAnimator;
+
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip nothingSE;
     [SerializeField] private TextMeshProUGUI gewinn;
@@ -48,40 +51,59 @@ public class MysterySlotBehavior : MonoBehaviour
             DeactivateAllPanels();
 
             float randomValue = Random.Range(0f, 1f);
-
+            Debug.Log($"Radnom Value for the slots:   {randomValue}");
             if (randomValue >= 0f && randomValue < 0.25f)
             {
                 ActivatePanel(diamondPanel, diamondSlotBehavior);
                 PUWStats.UpdateMysterySlotsTotalDurations(diamondSlotDuration);
-
+                StartCoroutine(WaitForTheSlot());
             }
             else if (randomValue >= 0.25f && randomValue < 0.5f)
             {
                 ActivatePanel(billsPanel, billsSlotBehavior);
                 PUWStats.UpdateMysterySlotsTotalDurations(billSlotDuration);
-
+                StartCoroutine(WaitForTheSlot());
             }
             else if (randomValue >= 0.5f && randomValue < 0.75f)
             {
                 ActivatePanel(cakePanel, cakesSlotBehavior);
                 PUWStats.UpdateMysterySlotsTotalDurations(cakeSlotDuration);
-
+                StartCoroutine(WaitForTheSlot());
             }
             else
             {
-                ActivateNothingPanel();
+
+                gewinn.text = "GEWINN: 0";
+                mysteryPanel.SetActive(true);
+                StartCoroutine(PlayNothingPanel());
                 PUWStats.UpdateMysterySlotsTotalDurations(nothingSlotDuration);
             }
         }
         else
         {
-            // Trigger the NotEnoughCoins animation and play the NotEnoughCoins sound effect
+            // Trigger the NotEnoughCoins anim + clip
             notEnoughPanel.SetActive(true);
-            PlayAnimation("NotEnoughCoins");
-            PlaySound(notEnoughClip);
+            StartCoroutine(PlaySlot());
+           
         }
     }
+    private IEnumerator WaitForTheSlot()
+    {
+        yield return new WaitForSeconds(8f);
+        buttonBlocker.UnblockButton();
+    }
+    private IEnumerator PlaySlot()
+    {
+        nothingAnimator.Play("NotEnoughCoins");
+        audioSource.PlayOneShot(notEnoughClip);
 
+        AnimationClip _clip = nothingAnimator.runtimeAnimatorController.animationClips.ToList<AnimationClip>().FirstOrDefault(x => x.name.Equals("NotEnoughCoins"));
+        float _dur = _clip != null ? _clip.length : 0f;
+        _dur += 3f;
+        yield return new WaitForSeconds(_dur);
+
+        notEnoughPanel.SetActive(false);
+    }
     private void ActivatePanel(GameObject panel, MonoBehaviour slotBehavior)
     {
         panel.SetActive(true);
@@ -104,55 +126,26 @@ public class MysterySlotBehavior : MonoBehaviour
             }
         }
     }
-    private void ActivateNothingPanel()
+
+    private IEnumerator PlayNothingPanel()
     {
-        gewinn.text = "GEWINN: 0";
-        mysteryPanel.SetActive(true);
-        PlayAnimation("NothingAnim");
-        PlaySound(nothingSE);
-        StartCoroutine(WaitForCompletion("NothingAnim"));
-    }
-    private IEnumerator WaitForCompletion(string animName)
-    {
-        float animDuration = GetAnimationClipLength(animName);
-        yield return new WaitForSeconds(animDuration);
+        nothingAnimator.Play("nothingAnim");
+        audioSource.PlayOneShot(nothingSE);
+
+        AnimationClip _clip = nothingAnimator.runtimeAnimatorController.animationClips.ToList<AnimationClip>().FirstOrDefault(x => x.name.Equals("nothingAnim"));
+        float _dur = _clip != null ? _clip.length : 0f;
+        _dur += 3f;
+        yield return new WaitForSeconds(_dur);
+
         buttonBlocker.UnblockButton();
         ResetAnimatorTriggers();
     }
 
-    private void PlayAnimation(string animName)
-    {
-        if (nothingAnimator != null)
-        {
-            nothingAnimator.SetTrigger(animName);
-        }
-    }
-
-    private void PlaySound(AudioClip clip)
-    {
-        if (audioSource != null && clip != null)
-        {
-            audioSource.PlayOneShot(clip);
-        }
-    }
     private void ResetAnimatorTriggers()
     {
-        nothingAnimator.ResetTrigger("DiamondSpinAnim");
+        nothingAnimator.ResetTrigger("NothingAnim");
         nothingAnimator.ResetTrigger("NotEnoughCoins");
         notEnoughPanel.SetActive(false);
-    }
-
-    private float GetAnimationClipLength(string animName)
-    {
-        AnimationClip[] clips = nothingAnimator.runtimeAnimatorController.animationClips;
-        foreach (AnimationClip clip in clips)
-        {
-            if (clip.name == animName)
-            {
-                return clip.length;
-            }
-        }
-        return 0f;
     }
 
     private void DeactivateAllPanels()

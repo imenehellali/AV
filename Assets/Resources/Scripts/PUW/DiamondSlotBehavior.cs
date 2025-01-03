@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using TMPro;
 using Pico.Platform;
 using System.Net;
+using System.Linq;
 
 public class DiamondSlotBehavior : MonoBehaviour
 {
@@ -17,11 +18,9 @@ public class DiamondSlotBehavior : MonoBehaviour
     [SerializeField] private AudioClip notEnoughClip;
     [SerializeField] private GameObject notEnoughPanel;
 
-    public UnityEvent OnDiamondWin = new UnityEvent();
 
     private void Start()
     {
-        OnDiamondWin.AddListener(() => NotifyMoneyManager(1000f));
         gewinn.text = "GEWINN: 0"; 
         notEnoughPanel.SetActive(false);
 
@@ -29,64 +28,48 @@ public class DiamondSlotBehavior : MonoBehaviour
 
     public void OnPlayMachine(bool _fromMystery)
     {
+        Debug.Log("Entered Diamond Slot MAchine");
+
         if (PopUpWerkManager.Instance.GetCoins() >= 2)
         {
             buttonBlocker.BlockButton();
             if (!_fromMystery)
                 PopUpWerkManager.Instance.OnPlayMachine.Invoke("DiamondSlot");
 
-            PlayAnimation("WinningAnim");
-            PlaySound(diamondClip);
-
-            StartCoroutine(WaitForCompletion("WinningAnim"));
-
+            StartCoroutine(PlaySlot());
         }
         else
         {
-            // Trigger the NotEnoughCoins animation and play the NotEnoughCoins sound effect
             notEnoughPanel.SetActive(true);
-            PlayAnimation("NotEnoughCoins");
-            PlaySound(notEnoughClip);
+            StartCoroutine(ShowNotEnoughPanel());
         }
     }
 
-    private IEnumerator WaitForCompletion(string animName)
+    private IEnumerator ShowNotEnoughPanel()
     {
-        float animDuration = GetAnimationClipLength(animName);
-        yield return new WaitForSeconds(animDuration);
+        Debug.Log("Not Enough Coins to play");
+
+        audioSource.PlayOneShot(notEnoughClip);
+        diamondAnimator.Play("NotEnoughCoinsDiamond");
+
+        float _dur = notEnoughClip.length;
+        yield return new WaitForSeconds(10f);
+    }
+    private IEnumerator PlaySlot()
+    {
+        diamondAnimator.Play("diamondAnim");
+        audioSource.PlayOneShot(diamondClip);
+
+
+        AnimationClip _clip = diamondAnimator.runtimeAnimatorController.animationClips.ToList<AnimationClip>().FirstOrDefault(x => x.name.Equals("diamondAnim"));
+        float _dur = _clip != null ? _clip.length : 0f;
+        _dur += 3f;
+
+        yield return new WaitForSeconds(_dur);
         gewinn.text = "GEWINN: 1.000";
-        OnDiamondWin.Invoke(); // Trigger the win event
+        MoneyManager.instance.UpdateMoney(1000f);
         buttonBlocker.UnblockButton();
         ResetAnimatorTriggers();
-    }
-
-    private void PlayAnimation(string animName)
-    {
-        if (diamondAnimator != null)
-        {
-            diamondAnimator.Play(animName, -1, 0f);
-        }
-    }
-
-    private void PlaySound(AudioClip clip)
-    {
-        if (audioSource != null && clip != null)
-        {
-            audioSource.PlayOneShot(clip);
-        }
-    }
-
-    private float GetAnimationClipLength(string animName)
-    {
-        AnimationClip[] clips = diamondAnimator.runtimeAnimatorController.animationClips;
-        foreach (AnimationClip clip in clips)
-        {
-            if (clip.name == animName)
-            {
-                return clip.length;
-            }
-        }
-        return 0f;
     }
 
     private void ResetAnimatorTriggers()

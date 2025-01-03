@@ -3,110 +3,97 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.XR.Interaction.Toolkit.Interactors.Casters;
+using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
+using static UnityEngine.InputSystem.InputAction;
 
 public class JumpManager : MonoBehaviour
 {
-   
     [SerializeField]
     private CharacterController _characterController;
-
     [SerializeField]
-    private InputActionReference _joystickAction;
+    private TextMeshProUGUI _testVariable;
+
+   [SerializeField]
+    private InputActionReference _triggerAction;
 
     [SerializeField]
     private LineRenderer _lineRenderer;
 
     [SerializeField]
-    private float _jumpSpeed = 5f;
+    private float _moveSpeed = 5f;
 
     [SerializeField]
-    private float _gravity = -9.81f;
+    private DynamicMoveProvider _dynamicMoveProvider;
 
     private bool _isJumping = false;
-    private bool _isGrounded = true;
-    private float _verticalVelocity = 0f;
     private List<Vector3> _savedArcPoints = new List<Vector3>();
-
-    [SerializeField]
-    private TextMeshProUGUI _debugVar;
+    private int _currentPointIndex = 0;
 
     private void OnEnable()
     {
-        _joystickAction.action.performed += OnJoystickPerformed;
-        _joystickAction.action.canceled += OnJoystickCanceled;
-        _joystickAction.action.Enable();
+        _triggerAction.action.started += OnTriggerPressed;
     }
 
     private void OnDisable()
     {
-        _joystickAction.action.performed -= OnJoystickPerformed;
-        _joystickAction.action.canceled -= OnJoystickCanceled;
-        _joystickAction.action.Disable();
+        _triggerAction.action.started -= OnTriggerPressed;
     }
-    private void Update()
+
+    private void OnTriggerPressed(InputAction.CallbackContext callbackContext)
     {
-        if (!_isJumping)
+       if(callbackContext.ReadValueAsButton())
         {
-            _isGrounded = _characterController.isGrounded;
+            _testVariable.text = "triggered ME from Jump";
 
-            if (_isGrounded && _verticalVelocity < 0)
+                if (!_lineRenderer.enabled || _lineRenderer.positionCount == 0)
+                return;
+            else
             {
-                _verticalVelocity = 0f; 
+                _dynamicMoveProvider.enabled = false;
+                StartCoroutine(MoveAlongArc());
             }
+           
         }
-    }
-    private void OnJoystickPerformed(InputAction.CallbackContext context)
-    {
-        if (_isJumping || !_isGrounded) return;
 
-        if (_lineRenderer.enabled && _lineRenderer.positionCount > 0)
+
+    }
+    private IEnumerator MoveAlongArc()
+    {
+        if (_isJumping)
+        {
+            _dynamicMoveProvider.enabled = true;
+            _lineRenderer.positionCount = 0;
+            _lineRenderer.enabled = false;
+            _savedArcPoints.Clear();
+            yield break;
+        }
+        else
         {
             _savedArcPoints.Clear();
+
             for (int i = 0; i < _lineRenderer.positionCount; i++)
             {
                 _savedArcPoints.Add(_lineRenderer.transform.TransformPoint(_lineRenderer.GetPosition(i)));
             }
-            _debugVar.text = $"numPoints:  {_lineRenderer.positionCount}";
-        }
-    }
-
-    private void OnJoystickCanceled(InputAction.CallbackContext context)
-    {
-        if (context.canceled && !_isJumping && _savedArcPoints.Count > 0)
-        {
-            StartCoroutine(JumpAlongArc());
-        }
-    }
-
-    private IEnumerator JumpAlongArc()
-    {
-        _isJumping = true;
-
-        for (int i = 0; i < _savedArcPoints.Count; i++)
-        {
-            Vector3 targetPoint = _savedArcPoints[i];
-
-            while (Vector3.Distance(_characterController.transform.position, targetPoint) > 0.1f)
+            _isJumping = true;
+            _currentPointIndex = 0;
+            while (_currentPointIndex < _savedArcPoints.Count)
             {
-                Vector3 direction = (targetPoint - _characterController.transform.position).normalized;
-                Vector3 movement = direction * _jumpSpeed * Time.deltaTime;
-                _verticalVelocity += _gravity * Time.deltaTime;
-                movement.y += _verticalVelocity * Time.deltaTime;
-
-                _characterController.Move(movement);
-                if (_isGrounded && _verticalVelocity < 0)
-                {
-                    _verticalVelocity = 0f;
-                }
+                Vector3 currentPoint = _characterController.transform.position;
+                Vector3 targetPoint = _savedArcPoints[_currentPointIndex];
+                _currentPointIndex++;
+                _characterController.Move(Vector3.Lerp(currentPoint, targetPoint, _moveSpeed * Time.deltaTime) - currentPoint);
 
                 yield return null;
             }
+            if (_currentPointIndex >= _savedArcPoints.Count)
+            {
+                _dynamicMoveProvider.enabled = true;
+                _isJumping = false;
+                _savedArcPoints.Clear();
+            }
         }
 
-        _savedArcPoints.Clear();
-        _isJumping = false;
-        _isGrounded =  true;
-        _verticalVelocity = 0f;
     }
+
 }

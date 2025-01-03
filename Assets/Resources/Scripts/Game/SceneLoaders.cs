@@ -23,7 +23,7 @@ public class SceneLoaders : MonoBehaviour
     private void Start()
     {
         SceneManager.LoadScene("StartScene");
-       
+
     }
 
     public void LoadLevel(string levelName)
@@ -54,20 +54,24 @@ public class SceneLoaders : MonoBehaviour
                 {
                     yield return null;
                 }
-                if(_asyncLoad.isDone)
+                if (_asyncLoad.isDone)
                 {
                     yield return new WaitForSeconds(GameSettings.Instance.BetweenSceneDuration);
-                    AsyncOperation unloadOp= SceneManager.UnloadSceneAsync("PUSScene");
-                    while(!unloadOp.isDone)
+                    if (SceneManager.GetSceneByName("PUScene").isLoaded)
                     {
-                        yield return null;
+                        AsyncOperation unloadOp = SceneManager.UnloadSceneAsync("PUSScene");
+                        while (!unloadOp.isDone)
+                        {
+                            yield return null;
+                        }
+                        if (unloadOp.isDone)
+                            GameSettings.Instance.OnSceneLoaded(levelName);
                     }
-                    if(unloadOp.isDone)
-                        GameSettings.Instance.OnSceneLoaded(levelName);
+                    else GameSettings.Instance.OnSceneLoaded(levelName);
                 }
-                
+
             }
         }
-       
+
     }
 }

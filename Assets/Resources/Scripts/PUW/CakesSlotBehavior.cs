@@ -1,9 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
-using TMPro;
+using System.Linq;
 public class CakesSlotBehavior : MonoBehaviour
 {
     [SerializeField] private Animator cakeAnimator;
@@ -18,11 +16,9 @@ public class CakesSlotBehavior : MonoBehaviour
     [SerializeField] private AudioClip notEnoughClip;
     [SerializeField] private GameObject notEnoughPanel;
 
-    public UnityEvent OnCakeWin = new UnityEvent();
 
     private void Start()
     {
-        OnCakeWin.AddListener(() => NotifyMoneyManager(8f));
         gewinn.text = "GEWINN: 0";
         notEnoughPanel.SetActive(false);
 
@@ -30,75 +26,73 @@ public class CakesSlotBehavior : MonoBehaviour
 
     public void OnPlayMachine(bool _fromMystery)
     {
+        Debug.Log("Entered Cake Slot MAchine");
+
         if (PopUpWerkManager.Instance.GetCoins() >= 5)
         {
             buttonBlocker.BlockButton();
             if (!_fromMystery)
                 PopUpWerkManager.Instance.OnPlayMachine.Invoke("CakeSlot");
 
-            PlayAnimation("CakeSpinAnim");
-            PlaySound(spinSE);
-
             float randomValue = Random.Range(0f, 1f);
-            string winAnimation = randomValue < 0.7f ? "CakeWinAnim" : "LoseAnim";
+            string winLooseAnimation = randomValue < 0.7f ? "CakeWin" : "CakeLose";
             AudioClip winLoseSE = randomValue < 0.7f ? cakeWinSE : cakeLoseSE;
 
-            StartCoroutine(PlaySpinAndWinAnimation(winAnimation, winLoseSE, randomValue < 0.7f ? 8f : 0f));
+            StartCoroutine(PlaySlot(winLooseAnimation, winLoseSE, randomValue < 0.7f ? 8f : 0f));
         }
         else
         {
             notEnoughPanel.SetActive(true);
-            PlayAnimation("NotEnoughCoins");
-            PlaySound(notEnoughClip);
+            StartCoroutine(ShowNotEnoughPanel());
         }
     }
 
-
-    private IEnumerator PlaySpinAndWinAnimation(string winAnimation, AudioClip winSE, float winnings)
+    private IEnumerator ShowNotEnoughPanel()
     {
-        yield return new WaitForSeconds(GetAnimationClipLength("CakeSpinAnim"));
+        Debug.Log("Not Enough Coins to play");
 
-        PlayAnimation(winAnimation);
-        PlaySound(winSE);
+        float _dur = notEnoughClip.length;
+        audioSource.PlayOneShot(notEnoughClip);
+        cakeAnimator.Play("NotEnoughCoins");
+        yield return new WaitForSeconds(_dur);  
+    }
 
-        yield return new WaitForSeconds(GetAnimationClipLength(winAnimation));
+    private IEnumerator PlaySlot(string winLooseAnimation, AudioClip winLooseSE, float winnings)
+    {
+        // Play Spin Anim + sound
+        cakeAnimator.Play("CakeSpin");
+        audioSource.PlayOneShot(spinSE);
+
+        AnimationClip _clip= cakeAnimator.runtimeAnimatorController.animationClips.ToList<AnimationClip>().FirstOrDefault(x=>x.name.Equals("CakeSpin"));
+        float _dur = _clip!=null?_clip.length:0f;
+        yield return new WaitForSeconds(_dur);
+
+        //Play either win or loose behavior
+
+        StartCoroutine(PlayResult(winLooseAnimation, winLooseSE, winnings));
+
+    }
+    private IEnumerator PlayResult(string winLooseAnimation, AudioClip winLooseSE, float winnings)
+    {
+        cakeAnimator.Play(winLooseAnimation);
+        audioSource.PlayOneShot(winLooseSE);
+
+
+        AnimationClip _clip = cakeAnimator.runtimeAnimatorController.animationClips.ToList<AnimationClip>().FirstOrDefault(x => x.name.Equals(winLooseAnimation));
+        float _dur = _clip != null ? _clip.length : 0f;
+        _dur += 3f;
+        yield return new WaitForSeconds(_dur);
 
         if (winnings > 0)
         {
             gewinn.text = "GEWINN: 8";
-            NotifyMoneyManager(winnings);
-            OnCakeWin.Invoke();
+            MoneyManager.instance.UpdateMoney(winnings);
         }
 
         buttonBlocker.UnblockButton();
         ResetAnimatorTriggers();
     }
-    private void PlaySound(AudioClip clip)
-    {
-        if (audioSource != null && clip != null)
-        {
-            audioSource.PlayOneShot(clip);
-        }
-    }
 
-    private void PlayAnimation(string animName)
-    {
-        if (cakeAnimator != null)
-        {
-            cakeAnimator.Play(animName, -1, 0f);
-        }
-    }
-    private float GetAnimationClipLength(string animName)
-    {
-        AnimationClip[] clips = cakeAnimator.runtimeAnimatorController.animationClips;
-        foreach (AnimationClip clip in clips)
-        {          if (clip.name == animName)
-            {
-                return clip.length;
-            }
-        }
-        return 0f;
-    }
 
     private void ResetAnimatorTriggers()
     {
@@ -109,11 +103,5 @@ public class CakesSlotBehavior : MonoBehaviour
         notEnoughPanel.SetActive(false);
     }
 
-    private void NotifyMoneyManager(float amount)
-    {
-        if (amount > 0)
-        {
-            MoneyManager.instance.UpdateMoney(amount);
-        }
-    }
+   
 }

@@ -1,5 +1,7 @@
 using Unity.XR.CoreUtils;
+using UnityEngine.AI;
 using UnityEngine.Assertions;
+using UnityEngine.Windows;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Movement;
 
 namespace UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets
@@ -55,7 +57,7 @@ namespace UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets
             get => m_LeftControllerTransform;
             set => m_LeftControllerTransform = value;
         }
-
+        
         [SerializeField]
         [Tooltip("Directs the XR Origin's movement when using the hand-relative mode with the right hand.")]
         Transform m_RightControllerTransform;
@@ -65,7 +67,7 @@ namespace UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets
             get => m_RightControllerTransform;
             set => m_RightControllerTransform = value;
         }
-
+        
         [SerializeField]
         [Tooltip("Whether to use the specified head transform or left controller transform to direct the XR Origin's movement for the left hand.")]
         MovementDirection m_LeftHandMovementDirection;
@@ -112,7 +114,8 @@ namespace UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets
         }
 
         /// <inheritdoc />
-        protected override Vector3 ComputeDesiredMove(Vector2 input)
+
+/*        protected override Vector3 ComputeDesiredMove(Vector2 input)
         {
             // Don't need to do anything if the total input is zero.
             // This is the same check as the base method.
@@ -151,7 +154,7 @@ namespace UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets
                     break;
             }
 
-            // Get the forward source for the right hand input
+           // Get the forward source for the right hand input
             switch (m_RightHandMovementDirection)
             {
                 case MovementDirection.HeadRelative:
@@ -170,7 +173,7 @@ namespace UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets
                     Assert.IsTrue(false, $"Unhandled {nameof(MovementDirection)}={m_RightHandMovementDirection}");
                     break;
             }
-
+           
             // Combine the two poses into the forward source based on the magnitude of input
             var leftHandValue = leftHandMoveInput.ReadValue();
             var rightHandValue = rightHandMoveInput.ReadValue();
@@ -183,8 +186,76 @@ namespace UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets
             var combinedPosition = Vector3.Lerp(m_RightMovementPose.position, m_LeftMovementPose.position, leftHandBlend);
             var combinedRotation = Quaternion.Slerp(m_RightMovementPose.rotation, m_LeftMovementPose.rotation, leftHandBlend);
             m_CombinedTransform.SetPositionAndRotation(combinedPosition, combinedRotation);
-
             return base.ComputeDesiredMove(input);
+
         }
+
+*/
+        protected override Vector3 ComputeDesiredMove(Vector2 input)
+        {
+            // Return zero movement if there is no input
+            if (input == Vector2.zero)
+                return Vector3.zero;
+
+            // Ensure the head transform is initialized
+            if (m_HeadTransform == null)
+            {
+                var xrOrigin = mediator.xrOrigin;
+                if (xrOrigin != null)
+                {
+                    var xrCamera = xrOrigin.Camera;
+                    if (xrCamera != null)
+                        m_HeadTransform = xrCamera.transform;
+                }
+            }
+
+            // Determine the forward source based on the left controller
+            switch (m_LeftHandMovementDirection)
+            {
+                case MovementDirection.HeadRelative:
+                    if (m_HeadTransform != null)
+                        m_LeftMovementPose = m_HeadTransform.GetWorldPose();
+                    break;
+
+                case MovementDirection.HandRelative:
+                    if (m_LeftControllerTransform != null)
+                        m_LeftMovementPose = m_LeftControllerTransform.GetWorldPose();
+                    break;
+
+                default:
+                    Assert.IsTrue(false, $"Unhandled {nameof(MovementDirection)}={m_LeftHandMovementDirection}");
+                    break;
+            }
+
+            // Smoothly update position and rotation using Lerp and Slerp
+            Vector3 targetPosition = m_LeftMovementPose.position;
+            Quaternion targetRotation = m_LeftMovementPose.rotation;
+
+            m_CombinedTransform.position = Vector3.Lerp(m_CombinedTransform.position, targetPosition, 0.5f);
+            m_CombinedTransform.rotation = Quaternion.Slerp(m_CombinedTransform.rotation, targetRotation, 0.5f);
+
+            // Calculate movement based on the left controller's forward direction
+            Vector3 forwardDirection = m_CombinedTransform.forward;
+            Vector3 rightDirection = m_CombinedTransform.right;
+            Vector3 desiredMove = forwardDirection * input.y + rightDirection * input.x;
+            desiredMove *= moveSpeed * Time.deltaTime;
+
+            // Constrain movement to NavMesh
+            Vector3 constrainedPosition = transform.position + desiredMove;
+            NavMeshHit hit;
+
+            if (NavMesh.SamplePosition(constrainedPosition, out hit, 1.0f, NavMesh.AllAreas))
+            {
+                desiredMove = (hit.position - transform.position).normalized * desiredMove.magnitude;
+            }
+            else
+            {
+                desiredMove = Vector3.zero; // Stop movement if outside NavMesh
+            }
+
+            return desiredMove;
+        }
+
+
     }
 }

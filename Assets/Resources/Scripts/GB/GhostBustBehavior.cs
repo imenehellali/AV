@@ -68,11 +68,15 @@ public class GhostBustBehavior : MonoBehaviour
     
     private void ShootGhost(InputAction.CallbackContext callbackContext)
     {
-        if (GazeObject.IsGazeLocked())
+        if(callbackContext.ReadValueAsButton())
         {
-            ghostDead = true;
-            GhostBusterManager.Instance.killedGhost.Invoke(this);
+            if (GazeObject.IsGazeLocked())
+            {
+                ghostDead = true;
+                GhostBusterManager.Instance.killedGhost.Invoke(this);
+            }
         }
+        
     }
 
     public void ResetGlow()

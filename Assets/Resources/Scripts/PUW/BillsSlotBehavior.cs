@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
+using System.Linq;
 
 public class BillsSlotMachine : MonoBehaviour
 {
@@ -22,10 +23,8 @@ public class BillsSlotMachine : MonoBehaviour
     [SerializeField] private AudioClip notEnoughClip;
     [SerializeField] private GameObject notEnoughPanel;
 
-    public UnityEvent OnBillsWin = new UnityEvent();
     private void Start()
     {
-        OnBillsWin.AddListener(() => NotifyMoneyManager(0));
         gewinn.text = "GEWINN: 0";
         notEnoughPanel.SetActive(false);
     }
@@ -38,85 +37,86 @@ public class BillsSlotMachine : MonoBehaviour
             if (!_fromMystery)
                 PopUpWerkManager.Instance.OnPlayMachine.Invoke("BillSlot");
 
-            
-            DetermineWinnings();
+            StartCoroutine(PlaySlot());
         }
         else
         {
             notEnoughPanel.SetActive(true);
-            PlayAnimation("NotEnoughCoins");
-            PlaySound(notEnoughClip);
+            StartCoroutine(ShowNotEnoughPanel());
         }
+    }
+    private IEnumerator ShowNotEnoughPanel()
+    {
+        Debug.Log("Not Enough Coins to play");
+
+        float _dur = notEnoughClip.length;
+        audioSource.PlayOneShot(notEnoughClip);
+        billsAnimator.Play("NotEnoughCoins", -1, -0f);
+        yield return new WaitForSeconds(_dur);
     }
 
 
-    private void DetermineWinnings()
+    private IEnumerator PlaySlot()
     {
-        PlayAnimation("BillSpinAnim");
-        PlaySound(spinSE);
+        audioSource.PlayOneShot(spinSE);
+        billsAnimator.Play("BillSpinAnim");
+
+        AnimationClip _clip = billsAnimator.runtimeAnimatorController.animationClips.ToList<AnimationClip>().FirstOrDefault(x => x.name.Equals("BillSpinAnim"));
+        float _dur = _clip != null ? _clip.length : 0f;
+        yield return new WaitForSeconds(_dur);
+
 
         float randomValue = Random.Range(0f, 1f);
         float winnings = 0f;
-        string animName = "LosingAnim";
-        AudioClip winSE = null;
+        string winLoseAnimation = "LosingAnim";
+        AudioClip winLoseSE = null;
 
         if (randomValue >= 0f && randomValue < 0.25f) // 2/8 chance of winning 50 euros
         {
             winnings = 50f;
-            animName = "50WinAnim";
-            winSE = _50WinSE;
+            winLoseAnimation = "50WinAnim";
+            winLoseSE = _50WinSE;
         }
         else if (randomValue >= 0.25f && randomValue < 0.375f) // 1/8 chance of winning 200 euros
         {
             winnings = 200f;
-            animName = "200WinAnim";
-            winSE = _200WinSE;
+            winLoseAnimation = "200WinAnim";
+            winLoseSE = _200WinSE;
         }
         else if (randomValue >= 0.375f && randomValue < 0.5f) // 1/8 chance of winning 10 euros
         {
             winnings = 10f;
-            animName = "10WinAnim";
-            winSE = _10WinSE;
+            winLoseAnimation = "10WinAnim";
+            winLoseSE = _10WinSE;
         }
         else if (randomValue >= 0.5f && randomValue < 0.625f) // 1/8 chance of winning 20 euros
         {
             winnings = 20f;
-            animName = "20WinAnim";
-            winSE = _20WinSE;
+            winLoseAnimation = "20WinAnim";
+            winLoseSE = _20WinSE;
         }
         gewinn.text = $"GEWINN: {winnings}";
-        StartCoroutine(PlaySpinAndWinAnimation(animName,winSE, winnings));
-        // Else 3/8 chance of winning nothing, winnings remain 0
-        
+        StartCoroutine(PlayResult(winLoseAnimation, winLoseSE, winnings));
     }
-    private IEnumerator PlaySpinAndWinAnimation(string winAnimation,AudioClip winSE, float winnings)
+
+
+    private IEnumerator PlayResult(string winLooseAnimation, AudioClip winLooseSE, float winnings)
     {
-        yield return new WaitForSeconds(GetAnimationClipLength("BillSpinAnim"));
+        audioSource.PlayOneShot(winLooseSE);
+        billsAnimator.Play(winLooseAnimation);
 
-        PlayAnimation(winAnimation);
-        if (winSE != null)
-        {
-            PlaySound(winSE);
-        }
-
-
-        yield return new WaitForSeconds(GetAnimationClipLength(winAnimation));
+        AnimationClip _clip = billsAnimator.runtimeAnimatorController.animationClips.ToList<AnimationClip>().FirstOrDefault(x => x.name.Equals(winLooseAnimation));
+        float _dur = _clip != null ? _clip.length : 0f;
+        _dur += 3f;
+        yield return new WaitForSeconds(_dur);
 
         if (winnings > 0)
         {
-            NotifyMoneyManager(winnings);
-            OnBillsWin.Invoke();
+            MoneyManager.instance.UpdateMoney(winnings);
         }
 
         buttonBlocker.UnblockButton();
         ResetAnimatorTriggers();
-    }
-    private void PlaySound(AudioClip clip)
-    {
-        if (audioSource != null && clip != null)
-        {
-            audioSource.PlayOneShot(clip);
-        }
     }
     private void ResetAnimatorTriggers()
     {
@@ -129,32 +129,6 @@ public class BillsSlotMachine : MonoBehaviour
         billsAnimator.ResetTrigger("NotEnoughCoins");
         notEnoughPanel.SetActive(false);
     }
-    private float GetAnimationClipLength(string animName)
-    {
-        float animduration = 0f;
-        AnimationClip[] clips = billsAnimator.runtimeAnimatorController.animationClips;
-        foreach (AnimationClip clip in clips)
-        {
-            if (clip.name == animName)
-               return clip.length;
 
-        }
-        return animduration;
-    }
-    private void PlayAnimation(string animName)
-    {
-        if (billsAnimator != null)
-        {
-            billsAnimator.Play(animName, -1, 0f);
-        }
-    }
-
-    private void NotifyMoneyManager(float amount)
-    {
-        if (amount > 0)
-        {
-            MoneyManager.instance.UpdateMoney(amount);
-        }
-    }
 }
 

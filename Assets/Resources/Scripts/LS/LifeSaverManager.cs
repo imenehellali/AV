@@ -7,8 +7,10 @@ public class LifeSaverManager : MonoBehaviour
 {
     private float levelDuration = 300f;
     private float levelTimer = 0f;
-    private bool startUrgency = true;
+    private bool startUrgency = false;
     private float timeToStartUrgeny = 0f;
+
+
     private int _rewardAmount = 200;
     private float _time = 0f;
 
@@ -99,7 +101,7 @@ public class LifeSaverManager : MonoBehaviour
         }
         levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx];
 
-
+        Debug.Log($"duration LS Scene:   {levelDuration}");
     }
     private void Start()
     {

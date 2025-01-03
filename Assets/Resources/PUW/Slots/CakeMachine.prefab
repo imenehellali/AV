@@ -1120,7 +1120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
+  m_IgnoreReversedGraphics: 0
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
@@ -1230,6 +1230,7 @@ GameObject:
   - component: {fileID: 1490655008735918141}
   - component: {fileID: 6863550336265990746}
   - component: {fileID: 7031962476888362242}
+  - component: {fileID: 1357866984194789043}
   m_Layer: 5
   m_Name: Background_Diamonds
   m_TagString: Untagged
@@ -1298,6 +1299,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1357866984194789043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3114903245062173370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7951c64acb0fa62458bf30a60089fe2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 0
+  m_CheckFor2DOcclusion: 0
+  m_CheckFor3DOcclusion: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RaycastTriggerInteraction: 1
 --- !u!1 &3213020159301145622
 GameObject:
   m_ObjectHideFlags: 0
@@ -1430,9 +1450,6 @@ MonoBehaviour:
   cakeLoseSE: {fileID: 8300000, guid: 97ce565b74391fa42922f5e2a6251796, type: 3}
   notEnoughClip: {fileID: 8300000, guid: 65470925291dbe641bc7bfa8006e1169, type: 3}
   notEnoughPanel: {fileID: 1167037789328224834}
-  OnCakeWin:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!95 &8244539596538214170
 Animator:
   serializedVersion: 5
@@ -3171,18 +3188,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6154944850159622822}
-        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-        m_MethodName: PlayOneShot
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 8300000, guid: c47a64e652f6aca4692372ff221cb724, type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
       - m_Target: {fileID: 5373325982734876214}
         m_TargetAssemblyTypeName: CakesSlotBehavior, Assembly-CSharp
         m_MethodName: OnPlayMachine

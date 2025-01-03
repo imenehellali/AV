@@ -80,7 +80,7 @@ public class GhostBusterManager : MonoBehaviour
     {
         levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx];
         Debug.Log($"idx {GameSettings.Instance.CurrLvlIdx}   levelDurationsCount   {GameSettings.Instance.LevelDurations.Count}");
-       
+
     }
 
     private void OnEnable()

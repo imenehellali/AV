@@ -2136,7 +2136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
+  m_IgnoreReversedGraphics: 0
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
@@ -2492,18 +2492,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5737402028701766166}
-        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
-        m_MethodName: PlayOneShot
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 8300000, guid: c47a64e652f6aca4692372ff221cb724, type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
       - m_Target: {fileID: 4351071294707459129}
         m_TargetAssemblyTypeName: BillsSlotMachine, Assembly-CSharp
         m_MethodName: OnPlayMachine
@@ -2976,9 +2964,6 @@ MonoBehaviour:
   audioSource: {fileID: 8850067057244289373}
   notEnoughClip: {fileID: 8300000, guid: 65470925291dbe641bc7bfa8006e1169, type: 3}
   notEnoughPanel: {fileID: 6978411053559239975}
-  OnBillsWin:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!95 &6658674310024718320
 Animator:
   serializedVersion: 5
@@ -4152,6 +4137,7 @@ GameObject:
   - component: {fileID: 2243845437440814779}
   - component: {fileID: 4411727328188128879}
   - component: {fileID: 8089707663817780551}
+  - component: {fileID: 2571009608085290371}
   m_Layer: 5
   m_Name: Background_Bills
   m_TagString: Untagged
@@ -4220,6 +4206,25 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2571009608085290371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8824330313206174805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7951c64acb0fa62458bf30a60089fe2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 0
+  m_CheckFor2DOcclusion: 0
+  m_CheckFor3DOcclusion: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RaycastTriggerInteraction: 1
 --- !u!1 &9176660250457329376
 GameObject:
   m_ObjectHideFlags: 0

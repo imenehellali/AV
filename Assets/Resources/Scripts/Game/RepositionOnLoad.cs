@@ -13,8 +13,7 @@ public class RepositionOnLoad : MonoBehaviour
     private GameObject _instrPanel;
     [SerializeField]
     private SettingMenuControls _settingControls;
-    [SerializeField]
-    private GameObject _participant;
+    public GameObject _participant;
     [SerializeField]
     private RectTransform _taskProgressPanel;
     private void Awake()
@@ -49,26 +48,35 @@ public class RepositionOnLoad : MonoBehaviour
            _settingManager.SetActive(false);
             _settingControls.enabled = false;
             _instrPanel.SetActive(true);
-            
         }
         if(levelName.Equals("PUWScene"))
         {
+            _participant.transform.position = new Vector3(-1.61399996f, 0.100000001f, 0.449999988f);
             _taskProgressPanel.position = new Vector3(-1.0446161f, 2.17185879f, 8.8579998f);
             _taskProgressPanel.rotation = Quaternion.identity;
+            _participant.GetComponent<JumpManager>().enabled = false; 
+            _participant.GetComponent<ClimbManager>().enabled = false;  
+
         }
         else if (levelName.Equals("GBScene"))
         {
             _taskProgressPanel.position = new Vector3(-5.30937386f, 2.5f, 6.61999989f);
             _taskProgressPanel.Rotate(0f, 180f, 0f);
+            _participant.GetComponent<JumpManager>().enabled = false;
+            _participant.GetComponent<ClimbManager>().enabled = false;
         }
         else if (levelName.Equals("LSScene"))
         {
             _taskProgressPanel.position = new Vector3(3.44938493f, 1.62993073f, -3.97199988f);
             _taskProgressPanel.Rotate(0f, 180f, 0f);
+            _participant.GetComponent<JumpManager>().enabled = false;
+            _participant.GetComponent<ClimbManager>().enabled = false;
         }
         else if (levelName.Equals("TMScene"))
         {
             _taskProgressPanel.position = new Vector3(2.82274318f, 2.5f, 5.48126125f);
+            _participant.GetComponent<JumpManager>().enabled = true;
+            _participant.GetComponent<ClimbManager>().enabled = true;
         }
     }
 }

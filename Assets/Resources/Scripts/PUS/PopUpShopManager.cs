@@ -21,7 +21,9 @@ public class PopUpShopManager : MonoBehaviour
 
     private float totalSum = 0f;
     private float requiredTimeToBuy = 0f;
-    private bool isPUWScene=false;  
+    private float _pusTime = 0f;
+    private bool isPUWScene=false;
+    private GameObject _participantPos;
 
     private void Start()
     {
@@ -41,18 +43,20 @@ public class PopUpShopManager : MonoBehaviour
                     item.gameObject.SetActive(false);
                 }
             }
-            item.increaseButton.onClick.AddListener(UpdateTotalSum);
-            item.decreaseButton.onClick.AddListener(UpdateTotalSum);
         }
-        buyButton.onClick.AddListener(OnBuyButtonClick);
+        _participantPos = RepositionOnLoad.Instance._participant;
+        _pusTime = GameSettings.Instance.BetweenSceneDuration;
+        Debug.Log($" PUW Time:   {_pusTime}");
     }
 
     private void Update()
     {
+        gameObject.transform.position = new Vector3(_participantPos.transform.position.x, 2f, _participantPos.transform.position.z + 0.8f);
         requiredTimeToBuy += Time.deltaTime;
         TaskProgress.Instance.updateTimer(requiredTimeToBuy);
+        UpdateTimerDisplay(_pusTime- requiredTimeToBuy);
     }
-    private void UpdateTotalSum()
+    public void UpdateTotalSum()
     {
         totalSum = 0f;
 
@@ -64,10 +68,11 @@ public class PopUpShopManager : MonoBehaviour
         _totalSum.text = "Gesamtsumme: " + totalSum.ToString("F2") + " €";
     }
 
-    private void OnBuyButtonClick()
+    public void OnBuyButtonClick()
     {
         MoneyManager.instance.UpdateGameAccount(-totalSum);
-        GameSettings.Instance.AddPurchaseDuration(requiredTimeToBuy);
+        Debug.Log($"total game sum:   {MoneyManager.instance.GetGameAccount()}");
+        GameSettings.Instance.AddPurchaseDuration(_pusTime-requiredTimeToBuy);
 
         int totalCoins = 0;
         foreach (var item in purchasableItems)
@@ -96,6 +101,7 @@ public class PopUpShopManager : MonoBehaviour
             GameSettings.Instance.AddNonRewardDrinksBoughtCount(nonRewardDrinks);
             GameSettings.Instance.AddNonRewardDrinksBoughtCount(rewardDrinks);
         }
+        SceneManager.UnloadSceneAsync("PUSScene");
     }
 
     private void ResetShop()

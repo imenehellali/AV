@@ -10,10 +10,12 @@ public class BlockSpinButton : MonoBehaviour
     public void BlockButton()
     {
         spinButton.interactable = false;
+        Debug.Log("Blocking spin button");
     }
     public void UnblockButton()
     {
-        spinButton.interactable = true; 
+        spinButton.interactable = true;
+        Debug.Log(" unblocking spin button ");
     }
 
 }

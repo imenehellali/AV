@@ -18,8 +18,6 @@ public class PurchasableItemUI : MonoBehaviour
     private void Start()
     {
         UpdateUI();
-        increaseButton.onClick.AddListener(IncreaseQuantity);
-        decreaseButton.onClick.AddListener(DecreaseQuantity);
     }
 
     public void UpdateUI()

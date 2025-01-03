@@ -23,10 +23,8 @@ public class PopUpWerkManager : MonoBehaviour
     private float levelDuration;
     private float levelTimer = 0f;
     private float _time = 0f;
-    private float pusAppearAfter = 0f;
 
     public UnityAction<string> OnPlayMachine;
-    public UnityAction<int> OnPurchase;
 
     private void Awake()
     {
@@ -42,20 +40,18 @@ public class PopUpWerkManager : MonoBehaviour
     private void Start()
     {
         levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx];
-        
+
     }
     private void OnEnable()
     {
-        OnPlayMachine+=UpdatePlayCount;
-        OnPlayMachine+=ConsumeCoins;
-        OnPurchase+=AddCoins;
+        OnPlayMachine += UpdatePlayCount;
+        OnPlayMachine += ConsumeCoins;
     }
 
     private void OnDisable()
     {
-        OnPlayMachine-=UpdatePlayCount;
-        OnPlayMachine-=ConsumeCoins;
-        OnPurchase-=AddCoins;
+        OnPlayMachine -= UpdatePlayCount;
+        OnPlayMachine -= ConsumeCoins;
     }
     private IEnumerator StartLevelTimer()
     {
@@ -66,7 +62,7 @@ public class PopUpWerkManager : MonoBehaviour
             TaskProgress.Instance.updateTimer(_time);
             yield return null;
         }
-        if(levelTimer>=levelDuration)
+        if (levelTimer >= levelDuration)
         {
             EndLevel();
         }
@@ -92,11 +88,12 @@ public class PopUpWerkManager : MonoBehaviour
     private IEnumerator ShowPUS()
     {
         yield return new WaitForSeconds(15f);
-        SceneManager.UnloadSceneAsync("PUSScene");
+        if (SceneManager.GetSceneByName("PUSScene").isLoaded)
+            SceneManager.UnloadSceneAsync("PUSScene");
     }
     private IEnumerator StartPUSRandShow()
     {
-        while(levelTimer<levelDuration)
+        while (levelTimer < levelDuration)
         {
             SceneManager.LoadSceneAsync("PUSScene", LoadSceneMode.Additive);
             StartCoroutine(ShowPUS());
@@ -114,31 +111,23 @@ public class PopUpWerkManager : MonoBehaviour
     }
     private void ConsumeCoins(string slotType)
     {
-        int coinsRequired = 0;
-
         switch (slotType)
         {
             case "DiamondSlot":
-                coinsRequired = 2;
+                _coins -= 2;
                 break;
             case "BillSlot":
-                coinsRequired = 3;
+                _coins -= 3;
                 break;
             case "CakeSlot":
-                coinsRequired = 5;
+                _coins-= 5;
                 break;
             case "MysterySlot":
-                coinsRequired = 1;
+                _coins -= 1;
                 break;
             default:
                 Debug.LogError("Invalid slot type");
                 return;
-        }
-
-        if (_coins >= coinsRequired)
-        {
-            _coins -= coinsRequired;
-            Debug.Log($"Coins consumed: {coinsRequired}, Coins left: {_coins}");
         }
     }
     private void UpdatePlayCount(string slotType)
@@ -173,7 +162,9 @@ public class PopUpWerkManager : MonoBehaviour
     public void AddCoins(int amount)
     {
         _coins += amount;
-        PUWStats.AddCoins(amount);  
+
+        Debug.Log($"coins amount:  {_coins}");
+        PUWStats.AddCoins(amount);
 
     }
     public int GetDiamondSlotPlays() => diamondSlotPlays;
@@ -186,8 +177,8 @@ public class PopUpWerkManager : MonoBehaviour
     }
     private IEnumerator CheckSlotMachinePlays()
     {
-        float currTime=levelDuration;
-        while (currTime>0)
+        float currTime = levelDuration;
+        while (currTime > 0)
         {
             yield return new WaitForSeconds(60);
             currTime -= 60;
@@ -208,11 +199,11 @@ public class PopUpWerkManager : MonoBehaviour
     private IEnumerator ReduceMoneyOverTime()
     {
         float _1min = 0f;
-        while (_1min<levelDuration)
+        while (_1min < levelDuration)
         {
             _1min += 60f;
             yield return new WaitForSeconds(60);  // Wait for 1 minute
-            MoneyManager.instance.UpdateMoney(MoneyManager.instance.GetMoney() * -0.2f);
+            MoneyManager.instance.UpdateGameAccount(MoneyManager.instance.GetGameAccount() * -0.2f);
         }
     }
 }

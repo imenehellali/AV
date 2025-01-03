@@ -62,6 +62,8 @@ public class GameSettings : MonoBehaviour
     private async void Awake()
     {
         CurrLvlIdx = 0;
+        LevelDurations = new List<float>();
+        LevelSequence = new List<string>();
         if (Instance == null)
         {
             Instance = this;

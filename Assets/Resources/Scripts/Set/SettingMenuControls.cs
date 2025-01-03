@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 using Unity.VisualScripting;
 using Unity.XR.PXR;
 using Unity.XR.PXR.Input;
@@ -8,19 +11,19 @@ using UnityEngine.InputSystem;
 
 public class SettingMenuControls : MonoBehaviour
 {
-    public bool startTeilnahme=false;
-
+    public bool startTeilnahme = false;
+    [SerializeField]
+    private TextMeshProUGUI _testVariable;
     [Header("Controls")]
     [SerializeField]
     private InputActionReference Menu;
     [SerializeField]
     private InputActionReference StartGame;
 
+
     [Header("Wall Panels")]
-    [SerializeField]
-    private GameObject _rMenuToClickPanel;
-    [SerializeField]
-    private GameObject _participantTryPanel;
+    public GameObject _rMenuToClickPanel;
+    public GameObject _participantTryPanel;
 
     [Header("Both Users")]
     [SerializeField]
@@ -53,13 +56,11 @@ public class SettingMenuControls : MonoBehaviour
     private int _CGidx = 0;
     private int _ADidx = 0;
 
-   
-    private bool _userTherapist = false;
 
+    private bool _userTherapist = false;
+   
     private void Awake()
     {
-        _rMenuToClickPanel.SetActive(true);
-        _participantTryPanel.SetActive(false);
 
         _selectionPanel.SetActive(false);
         _step0.SetActive(false);
@@ -73,25 +74,23 @@ public class SettingMenuControls : MonoBehaviour
         _CGidx = AllParticiipantDataManager.Instance.getCGidx();
         _ADidx = AllParticiipantDataManager.Instance.getADidx();
     }
+    
     private void OnEnable()
     {
-        if(!Menu.IsUnityNull())
+
         Menu.action.started += OpenSettingMenu;
-        if (!StartGame.IsUnityNull())
-            StartGame.action.started += LaunchGame;
+        StartGame.action.started += LaunchGame;
 
     }
     private void OnDisable()
     {
-        if (!Menu.IsUnityNull())
-            Menu.action.started -= OpenSettingMenu;
-        if (!StartGame.IsUnityNull())
-            StartGame.action.started -= LaunchGame; 
+        Menu.action.started -= OpenSettingMenu;
+        StartGame.action.started -= LaunchGame;
     }
     public void TherapistEntry()
     {
         _selectionPanel.SetActive(false);
-        _step0.SetActive(false);
+        _step0?.SetActive(false);
 
         _settingPanel.SetActive(true);
         _settingStep0.SetActive(true);
@@ -129,36 +128,55 @@ public class SettingMenuControls : MonoBehaviour
     }
     private void LaunchGame(InputAction.CallbackContext callbackContext)
     {
+        Debug.Log("entered launch game menu");
+
+        _testVariable.text = "triggered ME from setting menu controls Launching";
+        if (callbackContext.ReadValueAsButton())
+        {
+            GameSettings.Instance.LoadNextScene();
+        }
 
     }
     private void OpenSettingMenu(InputAction.CallbackContext callbackContext)
     {
-        if (_rMenuToClickPanel.activeSelf)
+        Debug.Log("entered open setting menu");
+        if (callbackContext.ReadValueAsButton())
         {
-            _selectionPanel.SetActive(true);
-            _step0.SetActive(true);
-            _rMenuToClickPanel.SetActive(false);
+            _testVariable.text = "triggered ME from setting menu controls";
+
+            if (_rMenuToClickPanel.activeSelf)
+            {
+                _selectionPanel.SetActive(true);
+                _step0.SetActive(true);
+                _rMenuToClickPanel.SetActive(false);
+            }
+            else if (!_step0.activeSelf)
+            {
+                _selectionPanel.SetActive(true);
+                _step0?.SetActive(true);
+            }
+            else if (_userTherapist && !_settingPanel.activeSelf)
+            {
+                _settingPanel.SetActive(true);
+            }
+
+            else if (_userTherapist && _settingPanel.activeSelf)
+                _settingPanel.SetActive(false);
+            else if (!_userTherapist && _inGameInstrPanel.activeSelf)
+                _inGameInstrPanel.SetActive(true);
+            else if (!_userTherapist && !_inGameInstrPanel.activeSelf)
+                _inGameInstrPanel.SetActive(false);
         }
-        else if (_userTherapist && !_settingPanel.activeSelf)
-        {
-            _settingPanel.SetActive(true);
-        }
-            
-        else if (_userTherapist && _settingPanel.activeSelf)
-            _settingPanel.SetActive(false);
-        else if (!_userTherapist && _inGameInstrPanel.activeSelf)
-            _inGameInstrPanel.SetActive(true);
-        else if (!_userTherapist && !_inGameInstrPanel.activeSelf)
-            _inGameInstrPanel.SetActive(false);
+
 
     }
 
     public void ParticipantGroup(bool cg)
     {
-        _selectionPanel.SetActive(false);
+        _selectionPanel?.SetActive(false);
         string _participantID = ParticipantIDAssignment(cg);
         ParticipantSettings.Instance.PID.Invoke(_participantID);
-        _step1.SetActive(false);
+        _step1?.SetActive(false);
         _participantTryPanel.SetActive(true);
     }
 
@@ -184,16 +202,16 @@ public class SettingMenuControls : MonoBehaviour
 
     public void GoBackAfterSetting()
     {
-       _userTherapist = false;
-        _participantTryPanel.SetActive(false);
-        _inGameInstrPanel.SetActive(false);
-        _settingPanel.SetActive(false);
-        _step1.SetActive(false);
-        _settingStep0.SetActive(false);
-        _settingStep4.SetActive(false);
+        _userTherapist = false;
+        _participantTryPanel?.SetActive(false);
+        _inGameInstrPanel?.SetActive(false);
+        _settingPanel?.SetActive(false);
+        _step1?.SetActive(false);
+        _settingStep0?.SetActive(false);
+        _settingStep4?.SetActive(false);
 
-        _selectionPanel.SetActive(true);
-        _step0.SetActive(true);
+        _selectionPanel?.SetActive(true);
+        _step0?.SetActive(true);
         FindAnyObjectByType<InstructionPanel>().gameObject.SetActive(true);
     }
     public void ClickenOnMe()
@@ -202,10 +220,11 @@ public class SettingMenuControls : MonoBehaviour
     }
     private void Update()
     {
-        if(startTeilnahme)
+        if (startTeilnahme)
         {
             startTeilnahme = false;
             ParticipantGroup(true);
         }
+       
     }
 }

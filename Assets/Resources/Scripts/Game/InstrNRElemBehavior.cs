@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using static UnityEngine.InputSystem.InputAction;
+using static UnityEngine.Rendering.DebugUI;
 
 public class InstrNRElemBehavior :ETObject
 {
@@ -26,9 +28,13 @@ public class InstrNRElemBehavior :ETObject
         _highlightSelection=GetComponentInParent<Image>();  
     }
 
-    private void ShootElement(InputAction.CallbackContext context)
+    private void ShootElement(InputAction.CallbackContext callbackContext)
     {
-        Destroy(this.gameObject);
+        Debug.Log("entered shooting elemet");
+      if(callbackContext.ReadValueAsButton() && isFocused)
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     private void OnDisable()
