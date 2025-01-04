@@ -19,9 +19,9 @@ public class GameSettings : MonoBehaviour
     public UnityAction<float> OnTimeUp;
 
     public float BetweenSceneDuration { get; private set; }
-    public List<string> LevelSequence { get; private set; }
+    public string[] LevelSequence { get; private set; }
     public int CurrLvlIdx { get; private set; }
-    public List<float> LevelDurations { get; private set; }
+    public float[] LevelDurations { get; private set; }
 
 
     private float _PUWBGVolume;
@@ -62,8 +62,6 @@ public class GameSettings : MonoBehaviour
     private async void Awake()
     {
         CurrLvlIdx = 0;
-        LevelDurations = new List<float>();
-        LevelSequence = new List<string>();
         if (Instance == null)
         {
             Instance = this;
@@ -90,11 +88,13 @@ public class GameSettings : MonoBehaviour
 
     public void UpdateLevelSettings(List<string> newSequence, List<float> newLevelDuration, float newBetweenSceneDuration)
     {
-        LevelSequence = new List<string>();
-        LevelDurations = new List<float>();
-
-        newSequence.ForEach(sequence => { LevelSequence.Add(sequence); });
-        newLevelDuration.ForEach(levelDuration => { LevelDurations.Add(levelDuration); });
+        LevelSequence = new string[newSequence.Count];
+        LevelDurations = new float[newLevelDuration.Count];
+        for(int i=0; i<LevelDurations.Length; i++)
+        {
+            LevelDurations[i] = newLevelDuration[i];
+            LevelSequence[i] = newSequence[i];
+        }
 
         BetweenSceneDuration = newBetweenSceneDuration;
         SaveData();
@@ -142,8 +142,8 @@ public class GameSettings : MonoBehaviour
             {
                 Debug.LogError($"Failed to load JSON: {ex.Message}");
                 BetweenSceneDuration = 15f;
-                LevelSequence = new List<string> { "PUWScene", "LSScene", "GBScene", "TMScene", };
-                LevelDurations = new List<float> { 300f, 300f, 300f, 300f, };
+                LevelSequence = new string[] { "PUWScene", "LSScene", "GBScene", "TMScene", };
+                LevelDurations = new float[] { 300f, 300f, 300f, 300f, };
                 _PUWBGVolume = .5f;
                 _PUWGMVolume = .5f;
                 _PUWWaiterVolume = .5f;
@@ -158,8 +158,8 @@ public class GameSettings : MonoBehaviour
         {
             Debug.Log("JSON file not found. Initializing with default values.");
             BetweenSceneDuration = 15f;
-            LevelSequence = new List<string> { "PUWScene", "LSScene", "GBScene", "TMScene", };
-            LevelDurations = new List<float> { 300f, 300f, 300f, 300f, };
+            LevelSequence = new string[] { "PUWScene", "LSScene", "GBScene", "TMScene", };
+            LevelDurations = new float[] { 300f, 300f, 300f, 300f };
             _PUWBGVolume = .5f;
             _PUWGMVolume = .5f;
             _PUWWaiterVolume = .5f;
@@ -203,7 +203,7 @@ public class GameSettings : MonoBehaviour
 
     public void LoadNextScene()
     {
-        if (CurrLvlIdx < LevelSequence.Count)
+        if (CurrLvlIdx < LevelSequence.Length)
         {
             SceneLoaders.Instance.LoadLevel(LevelSequence[CurrLvlIdx]);
             ++CurrLvlIdx;

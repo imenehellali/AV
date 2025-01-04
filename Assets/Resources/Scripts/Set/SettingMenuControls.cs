@@ -59,7 +59,7 @@ public class SettingMenuControls : MonoBehaviour
 
     private bool _userTherapist = false;
    
-    private void Awake()
+    private void Start()
     {
 
         _selectionPanel.SetActive(false);
@@ -73,6 +73,9 @@ public class SettingMenuControls : MonoBehaviour
 
         _CGidx = AllParticiipantDataManager.Instance.getCGidx();
         _ADidx = AllParticiipantDataManager.Instance.getADidx();
+
+        _participantTryPanel.SetActive(false);
+
     }
     
     private void OnEnable()

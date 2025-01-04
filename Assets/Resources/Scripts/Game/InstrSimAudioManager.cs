@@ -20,17 +20,26 @@ public class InstrSimAudioManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.GetComponent<XROrigin>()!=null)
+        if (other.gameObject.GetComponent<XROrigin>() != null)
         {
             audioSource.Play();
             if (simL == SimL.L3)
             {
                 InstrGBSimManager.setContinueGBSim.Invoke(true);
             }
-            else if(simL ==SimL.L1)
+            else if (simL == SimL.L1)
             {
 
             }
         }
     }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.GetComponent<XROrigin>() != null)
+        {
+            audioSource.Stop();
+        }
+    }
+
 }

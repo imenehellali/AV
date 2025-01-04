@@ -90,7 +90,9 @@ public class MysterySlotBehavior : MonoBehaviour
     private IEnumerator WaitForTheSlot()
     {
         yield return new WaitForSeconds(8f);
+        DeactivateAllPanels();
         buttonBlocker.UnblockButton();
+        mysteryPanel.SetActive(true);
     }
     private IEnumerator PlaySlot()
     {

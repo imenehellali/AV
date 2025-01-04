@@ -57,7 +57,7 @@ public class SceneLoaders : MonoBehaviour
                 if (_asyncLoad.isDone)
                 {
                     yield return new WaitForSeconds(GameSettings.Instance.BetweenSceneDuration);
-                    if (SceneManager.GetSceneByName("PUScene").isLoaded)
+                    if (SceneManager.GetSceneByName("PUSScene").isLoaded)
                     {
                         AsyncOperation unloadOp = SceneManager.UnloadSceneAsync("PUSScene");
                         while (!unloadOp.isDone)

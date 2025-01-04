@@ -54,6 +54,8 @@ public class DiamondSlotBehavior : MonoBehaviour
 
         float _dur = notEnoughClip.length;
         yield return new WaitForSeconds(10f);
+
+        notEnoughPanel.SetActive(false);
     }
     private IEnumerator PlaySlot()
     {

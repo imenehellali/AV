@@ -54,7 +54,8 @@ public class CakesSlotBehavior : MonoBehaviour
         float _dur = notEnoughClip.length;
         audioSource.PlayOneShot(notEnoughClip);
         cakeAnimator.Play("NotEnoughCoinsCake");
-        yield return new WaitForSeconds(10f);  
+        yield return new WaitForSeconds(10f);
+        notEnoughPanel.SetActive(false);
     }
 
     private IEnumerator PlaySlot(string winLooseAnimation, AudioClip winLooseSE, float winnings)
@@ -88,7 +89,6 @@ public class CakesSlotBehavior : MonoBehaviour
             gewinn.text = "GEWINN: 8";
             MoneyManager.instance.UpdateMoney(winnings);
         }
-
         buttonBlocker.UnblockButton();
         ResetAnimatorTriggers();
     }

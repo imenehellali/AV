@@ -53,6 +53,7 @@ public class BillsSlotMachine : MonoBehaviour
         audioSource.PlayOneShot(notEnoughClip);
         billsAnimator.Play("NotEnoughCoinsBill");
         yield return new WaitForSeconds(10f);
+        notEnoughPanel.SetActive(false);
     }
 
 

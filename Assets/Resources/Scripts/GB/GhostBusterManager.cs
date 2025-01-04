@@ -26,7 +26,7 @@ public class GhostBusterManager : MonoBehaviour
     [SerializeField]
     private Color _blackEffectRoomMaterial;
     [SerializeField]
-    private Renderer _roomEffectMat;
+    private Material _roomEffectMat;
 
 
     //Room Sound Effect Variables
@@ -79,8 +79,8 @@ public class GhostBusterManager : MonoBehaviour
     private void Start()
     {
         levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx];
-        Debug.Log($"idx {GameSettings.Instance.CurrLvlIdx}   levelDurationsCount   {GameSettings.Instance.LevelDurations.Count}");
-
+        Debug.Log($"idx {GameSettings.Instance.CurrLvlIdx}   levelDurationsCount   {GameSettings.Instance.LevelDurations.Length}");
+        Debug.Log($"GB Duration:   {levelDuration}");
     }
 
     private void OnEnable()
@@ -320,15 +320,15 @@ public class GhostBusterManager : MonoBehaviour
     
     private IEnumerator SpawnRoomEffect(bool red)
     {
-        _roomEffectMat.material.color= red ? _redEffectRoomMaterial : _greenEffectRoomMaterial;
+        _roomEffectMat.color= red ? _redEffectRoomMaterial : _greenEffectRoomMaterial;
         yield return new WaitForSeconds(4);
-        _roomEffectMat.material.color= _blackEffectRoomMaterial;
+        _roomEffectMat.color= _blackEffectRoomMaterial;
     }
     private IEnumerator SpawnRoomEffectQ4(Color _color)
     {
-        _roomEffectMat.material.color= _color;
+        _roomEffectMat.color= _color;
         yield return new WaitForSeconds(4);
-        _roomEffectMat.material.color=_blackEffectRoomMaterial;
+        _roomEffectMat.color=_blackEffectRoomMaterial;
     }
     private IEnumerator RoomEffectQ3()
     {

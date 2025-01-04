@@ -13,7 +13,7 @@ public class SceneMisMatchHandler : MonoBehaviour
    }
 
     public ObjType _objType;
-    private void Start()
+    private void Awake()
     {
         if (_objType == ObjType._rMenuToClickPanel)
         {

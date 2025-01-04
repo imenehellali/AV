@@ -45,7 +45,7 @@ public class PopUpWerkManager : MonoBehaviour
     private void Start()
     {
         levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx];
-
+        Debug.Log($"PUW Duartion: {levelDuration}");
     }
     private void OnEnable()
     {
@@ -69,17 +69,13 @@ public class PopUpWerkManager : MonoBehaviour
         }
         if (levelTimer >= levelDuration)
         {
+            _audioSource.Stop();
             EndLevel();
         }
-    }
-    private void EndEnvironmentSound()
-    {
-        _audioSource.Stop();
     }
     private void EndLevel()
     {
         StopAllCoroutines();
-        EndEnvironmentSound();
         PUWStats.SaveStatsToParticipantData();
         MoneyManager.instance.StoreMoneyInSafeAccount(GameSettings.Instance.CurrLvlIdx);
         NonRewardObject[] nonRewardObjects = FindObjectsOfType<NonRewardObject>();
@@ -127,13 +123,18 @@ public class PopUpWerkManager : MonoBehaviour
     }
     private IEnumerator PlaySound(AudioClip _clip,int curr)
     {
-        float _dur = _clip.length;
-        yield return new WaitForSeconds(_dur);
-        curr++;
-        if (curr>=_clips.Count)
-            curr = 0;
+        if (SceneManager.GetSceneByName("PUWScene").isLoaded)
+        {
+            float _dur = _clip.length;
+            _audioSource.PlayOneShot(_clip);
+            yield return new WaitForSeconds(_dur);
+            curr++;
+            if (curr >= _clips.Count)
+                curr = 0;
 
-        StartCoroutine(PlaySound(_clips[curr],curr));
+            StartCoroutine(PlaySound(_clips[curr], curr));
+        }
+       
     }
     private void ConsumeCoins(string slotType)
     {

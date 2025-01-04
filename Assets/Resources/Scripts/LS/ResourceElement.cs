@@ -1,9 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 using static ResourceElement;
 
 public class ResourceElement : MonoBehaviour
@@ -37,7 +34,7 @@ public class ResourceElement : MonoBehaviour
 
     private void Start()
     {
-        Assignable?.Invoke(assignable);
+        Assignable.Invoke(assignable);
     }
 
     public ResourceElement(Type type, BelongTo belongs, int amount)
@@ -52,8 +49,29 @@ public class ResourceElement : MonoBehaviour
     //consume resource will also notify player to update its inventory NO
     public void ConsumeResource()
     {
-        if(type.Equals(Type.Antidote) && LifeSaverManager.Instance.AllowAntidoteConsumption())
+        Debug.Log("entered Consume resource Resource lement");
+        if (type.Equals(Type.Antidote) && LifeSaverManager.Instance.AllowAntidoteConsumption())
         {
+            Debug.Log("entered Consume resource Antidote");
+            if (amount <= 0)
+            {
+                assignable = false;
+                Assignable.Invoke(assignable);
+            }
+            else
+            {
+                if (belongs.Equals(BelongTo.Case))
+                    StartCoroutine(StartTO());
+                else
+                {
+                    --amount;
+                    AmountChanged.Invoke(amount, type);
+                }
+            }
+        }
+        if (type.Equals(Type.Air) && LifeSaverManager.Instance.AllowAirConsumption())
+        {
+            Debug.Log("entered Consume resource Air");
             if (amount <= 0)
             {
                 assignable = false;
@@ -70,12 +88,13 @@ public class ResourceElement : MonoBehaviour
                 }
             }
         }
-        else if (type.Equals(Type.Air) && LifeSaverManager.Instance.AllowAirConsumption())
+        if (type.Equals(Type.Water) && LifeSaverManager.Instance.AllowWaterConsumption())
         {
+            Debug.Log("entered Consume resource Water");
             if (amount <= 0)
             {
                 assignable = false;
-                Assignable?.Invoke(assignable);
+                Assignable.Invoke(assignable);
             }
             else
             {
@@ -84,25 +103,7 @@ public class ResourceElement : MonoBehaviour
                 else
                 {
                     --amount;
-                    AmountChanged?.Invoke(amount, type);
-                }
-            }
-        }
-        else if (type.Equals(Type.Water) && LifeSaverManager.Instance.AllowWaterConsumption())
-        {
-            if (amount <= 0)
-            {
-                assignable = false;
-                Assignable?.Invoke(assignable);
-            }
-            else
-            {
-                if (belongs.Equals(BelongTo.Case))
-                    StartCoroutine(StartTO());
-                else
-                {
-                    --amount;
-                    AmountChanged?.Invoke(amount, type);
+                    AmountChanged.Invoke(amount, type);
                 }
             }
         }
@@ -110,29 +111,31 @@ public class ResourceElement : MonoBehaviour
     }
     private IEnumerator StartTO()
     {
+        Debug.Log("starting time out");
+
         if (assignable)
         {
             assignable = false;
-            Assignable?.Invoke(assignable);
+            Assignable.Invoke(assignable);
             --amount;
             AmountChanged?.Invoke(amount, type);
         }
         yield return new WaitForSeconds(TO);
         assignable = true;
-        Assignable?.Invoke(assignable);
+        Assignable.Invoke(assignable);
     }
     private IEnumerator RegenerateResource()
     {
         yield return new WaitForSeconds(TO);
         amount += 2;
-        AmountChanged?.Invoke(amount, type);
+        AmountChanged.Invoke(amount, type);
     }
     private void Update()
     {
         if (belongs.Equals(BelongTo.Individual) &&
             (type.Equals(Type.Water) || type.Equals(Type.Water)))
         {
-
+            Debug.Log("Will update a resource");
             StartCoroutine(RegenerateResource());
         }
     }

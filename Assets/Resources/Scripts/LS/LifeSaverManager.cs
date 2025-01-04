@@ -37,7 +37,7 @@ public class LifeSaverManager : MonoBehaviour
 
     [Header("Environmnet Variables")]
     [SerializeField]
-    private MeshRenderer _envMaterial;
+    private Material _envMaterial;
     [SerializeField]
     private AudioSource _audioSource;
     [SerializeField]
@@ -75,6 +75,7 @@ public class LifeSaverManager : MonoBehaviour
     }
     public void ConsumeResource(GameObject obj)
     {
+        Debug.Log("entered Consume resource LS");
         ResourceElement.Type type = obj.GetComponent<ResourceElement>().type;
         _Resources.Find(x => x.type.Equals(type)).ConsumeResource();
     }
@@ -101,7 +102,7 @@ public class LifeSaverManager : MonoBehaviour
         }
         levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx];
 
-        Debug.Log($"duration LS Scene:   {levelDuration}");
+        Debug.Log($"LS Duration:   {levelDuration}");
     }
     private void Start()
     {
@@ -140,6 +141,7 @@ public class LifeSaverManager : MonoBehaviour
         MoneyManager.instance.ResetMoney();
         StartCoroutine(Flicker());
         StartCoroutine(StartLevelTimer());
+
     }
     private IEnumerator StartLevelTimer()
     {
@@ -212,15 +214,21 @@ public class LifeSaverManager : MonoBehaviour
         }
         if(startUrgency)
         {
+            StartOpenDoor();
             while (timeToStartUrgeny > 0)
             {
                 timeToStartUrgeny-=_ti;
                 _audioSource.PlayOneShot(_urgencyAudioClip);
-                _envMaterial.material.EnableKeyword("_EMISSION");
+                _envMaterial.color = Color.red;
                 yield return new WaitForSeconds(_ti);
-                _envMaterial.material.DisableKeyword("_EMISSION");
+                _envMaterial.color = Color.white;
 
             }
         }
+    }
+
+    private void StartOpenDoor()
+    {
+        FindObjectOfType<LSExitDoor>().PlayEnd();
     }
 }

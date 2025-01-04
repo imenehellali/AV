@@ -106,7 +106,7 @@ public class Case : MonoBehaviour
             if (!startedAssigning) 
                 startedAssigning = true;
             timeOut += incTime;
-            UpdateCaseToIndividual?.Invoke(type);
+            UpdateCaseToIndividual.Invoke(type);
             switch (type)
             {
                 case ResourceElement.Type.Air:

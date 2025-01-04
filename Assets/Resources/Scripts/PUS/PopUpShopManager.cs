@@ -46,14 +46,12 @@ public class PopUpShopManager : MonoBehaviour
         }
         _participantPos = RepositionOnLoad.Instance._participant;
         _pusTime = GameSettings.Instance.BetweenSceneDuration;
-        Debug.Log($" PUW Time:   {_pusTime}");
     }
 
     private void Update()
     {
         gameObject.transform.position = new Vector3(_participantPos.transform.position.x, 2f, _participantPos.transform.position.z + 0.8f);
         requiredTimeToBuy += Time.deltaTime;
-        TaskProgress.Instance.updateTimer(requiredTimeToBuy);
         UpdateTimerDisplay(_pusTime- requiredTimeToBuy);
     }
     public void UpdateTotalSum()

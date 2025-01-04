@@ -10,8 +10,8 @@ public class GameData
 {
 
     public float BetweenSceneDuration;
-    public List<string> LevelSequence;
-    public List<float> LevelDurations;
+    public string[] LevelSequence;
+    public float[] LevelDurations;
 
     public float PUWBGVolume;
     public float PUWGMVolume;
