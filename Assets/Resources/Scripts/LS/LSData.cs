@@ -28,6 +28,5 @@ public class LSData : MonoBehaviour
         visitedCases = LifeSaverManager.Instance.GetCases();
         string strategy = (await LSStats.FollowedStrategy(visitedCases)).Value;
         ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("Strategy",strategy));
-
     }
 }

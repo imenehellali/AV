@@ -44,7 +44,7 @@ public class PopUpWerkManager : MonoBehaviour
     }
     private void Start()
     {
-        levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx];
+        levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx-1];
         Debug.Log($"PUW Duartion: {levelDuration}");
     }
     private void OnEnable()
@@ -77,7 +77,7 @@ public class PopUpWerkManager : MonoBehaviour
     {
         StopAllCoroutines();
         PUWStats.SaveStatsToParticipantData();
-        MoneyManager.instance.StoreMoneyInSafeAccount(GameSettings.Instance.CurrLvlIdx);
+        MoneyManager.instance.StoreMoneyInSafeAccount(GameSettings.Instance.CurrLvlIdx-1);
         NonRewardObject[] nonRewardObjects = FindObjectsOfType<NonRewardObject>();
         RewardObject[] rewardObjects = FindObjectsOfType<RewardObject>();
 

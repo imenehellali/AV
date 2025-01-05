@@ -77,7 +77,7 @@ public class ThrillMinerManager : MonoBehaviour
             Destroy(gameObject);
         }
         _xrManager=FindFirstObjectByType<XRInteractionManager>();
-       levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx];
+       levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx - 1];
     }
     private void BGTMSceneHandler()
     {
@@ -393,7 +393,7 @@ public class ThrillMinerManager : MonoBehaviour
         if (temporaryAmount > 0)
         {
             MoneyManager.instance.UpdateMoney(temporaryAmount);
-            MoneyManager.instance.StoreMoneyInSafeAccount(GameSettings.Instance.CurrLvlIdx);
+            MoneyManager.instance.StoreMoneyInSafeAccount(GameSettings.Instance.CurrLvlIdx-1);
         }
         GameSettings.Instance.LoadNextScene();
     }

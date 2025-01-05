@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Rendering;
+using static ResourceElement;
 
 public class LifeSaverManager : MonoBehaviour
 {
-    private float levelDuration=0f;
+    private float levelDuration = 0f;
     private float levelTimer = 0f;
     private bool startUrgency = false;
     private float timeToStartUrgeny = 0f;
@@ -21,75 +25,98 @@ public class LifeSaverManager : MonoBehaviour
 
     private Dictionary<string, Case> _cases = new Dictionary<string, Case>();
     public Dictionary<string, Case> GetCases() => _cases;
-    private List<ResourceElement> _Resources = new List<ResourceElement>();
+    private List<ResourceElementParticipant> _Resources = new List<ResourceElementParticipant>();
 
     [Header("Resource List")]
     [SerializeField]
     private TextMeshProUGUI _antidote;
-    private int _antidoteAmount = 0;
     [SerializeField]
     private TextMeshProUGUI _air;
-    private int _airAmount = 0;
     [SerializeField]
     private TextMeshProUGUI _water;
-    private int _waterAmount = 0;
 
 
     [Header("Environmnet Variables")]
     [SerializeField]
-    private Material _envMaterial;
+    private List<MeshRenderer> _envMaterials;
+    [SerializeField]
+    private Material _refMaterial;
     [SerializeField]
     private AudioSource _audioSource;
     [SerializeField]
     private AudioClip _urgencyAudioClip;
 
 
-    public bool AllowAntidoteConsumption() => _antidoteAmount > 0;
-    public bool AllowAirConsumption() => _airAmount > 0;
-    public bool AllowWaterConsumption() => _waterAmount > 0;
+    public bool AllowAntidoteConsumption() => _Resources[2].amount >= 0 ? true : false;
+    public bool AllowAirConsumption() => _Resources[0].amount >= 0 ? true : false;
+    public bool AllowWaterConsumption() => _Resources[1].amount >= 0 ? true : false;
 
-    //thsi shall update the count of how many a player has each resource left after consumption or regeneration
-    private void UpdateResources(int amount, ResourceElement.Type type)
+    public UnityAction<int, ResourceElement.Type> updateResource;
+    public UnityAction<ResourceElement.Type> updateResourceUI;
+    private void OnEnable()
+    {
+        updateResource += UpdateResources;
+        updateResourceUI += UpdateResourceUI;
+    }
+    private void OnDisable()
+    {
+        updateResource -= UpdateResources;
+        updateResourceUI -= UpdateResourceUI;
+    }
+    private void UpdateResourceUI(ResourceElement.Type type)
     {
         switch (type)
         {
-            case ResourceElement.Type.Air:
-                {
-                    _airAmount = amount;
-                    _air.text = _airAmount.ToString();
-                    break;
-                }
             case ResourceElement.Type.Water:
                 {
-                    _waterAmount = amount;
-                    _water.text = _waterAmount.ToString();
+                    _water.gameObject.GetComponentInParent<RectTransform>().gameObject.SetActive(false);
+                    break;
+                }
+
+            case ResourceElement.Type.Air:
+                {
+                    _air.gameObject.GetComponentInParent<RectTransform>().gameObject.SetActive(false);
                     break;
                 }
             case ResourceElement.Type.Antidote:
                 {
-                    _antidoteAmount = amount;
-                    _antidote.text = _antidoteAmount.ToString();
+                    _antidote.gameObject.GetComponentInParent<RectTransform>().gameObject.SetActive(false);
                     break;
                 }
         }
     }
-    public void ConsumeResource(GameObject obj)
+    private void UpdateResources(int amount, ResourceElement.Type type)
     {
-        Debug.Log("entered Consume resource LS");
-        ResourceElement.Type type = obj.GetComponent<ResourceElement>().type;
-        _Resources.Find(x => x.type.Equals(type)).ConsumeResource();
+        Debug.Log($"updating player resources {amount}  -  {type}");
+        switch (type)
+        {
+            case ResourceElement.Type.Air:
+                {
+                    _air.gameObject.GetComponentInParent<RectTransform>().gameObject.SetActive(true);
+                    _air.text = amount.ToString();
+                    break;
+                }
+            case ResourceElement.Type.Water:
+                {
+                    _water.gameObject.GetComponentInParent<RectTransform>().gameObject.SetActive(true);
+                    _water.text = amount.ToString();
+                    break;
+                }
+            case ResourceElement.Type.Antidote:
+                {
+                    _antidote.text = amount.ToString();
+                    break;
+                }
+        }
+    }
+    public void ConsumeResource(ResourceElement.Type _type)
+    {
+        Debug.Log($"Invoking Consume resource LS for {_type}");
+        _Resources.Find(x => x.type.Equals(_type)).ConsumeResource();
     }
 
     public static LifeSaverManager Instance { get; private set; }
 
-    private void OnEnable()
-    {
-        _Resources.ForEach(r => { r.AmountChanged += UpdateResources; });
-    }
-    private void OnDisable()
-    {
-        _Resources.ForEach(r => { r.AmountChanged -= UpdateResources; });
-    }
     private void Awake()
     {
         if (Instance == null)
@@ -100,15 +127,18 @@ public class LifeSaverManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx];
+        levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx - 1];
 
-        Debug.Log($"LS Duration:   {levelDuration}");
     }
     private void Start()
     {
         timeToStartUrgeny = levelDuration - 40f;
         InitCases();
         InitResources();
+        for (int i = 0; i < _envMaterials.Count; i++)
+        {
+            _envMaterials[i].gameObject.SetActive(false);
+        }
     }
     private void InitCases()
     {
@@ -126,22 +156,36 @@ public class LifeSaverManager : MonoBehaviour
     }
     private void InitResources()
     {
-        _Resources.Add(new ResourceElement(ResourceElement.Type.Air, ResourceElement.BelongTo.Individual, 2));
-        _Resources.Add(new ResourceElement(ResourceElement.Type.Water, ResourceElement.BelongTo.Individual, 2));
-        _Resources.Add(new ResourceElement(ResourceElement.Type.Antidote, ResourceElement.BelongTo.Individual, 5));
+        _Resources.Add(new ResourceElementParticipant(ResourceElement.Type.Air, 2));
+        _Resources.Add(new ResourceElementParticipant(ResourceElement.Type.Water, 2));
+        _Resources.Add(new ResourceElementParticipant(ResourceElement.Type.Antidote, 5));
 
         Debug.Log("finished initiating resources");
     }
     public void StartLevel()
     {
+        MoneyManager.instance.ResetMoney();
+        StartCoroutine(Flicker());
+        StartCoroutine(StartLevelTimer());
         foreach (Case _case in _cases.Values)
         {
             _case.Startcase();
         }
-        MoneyManager.instance.ResetMoney();
-        StartCoroutine(Flicker());
-        StartCoroutine(StartLevelTimer());
+        Debug.Log("Will start the coroutine of regenerating resource");
+        StartCoroutine(RegenerateResource());
+    }
 
+    private IEnumerator RegenerateResource()
+    {
+        float _dur = 30f;
+        while (true)
+        {
+            yield return new WaitForSeconds(_dur);
+          _Resources[0].RegenerateAmount();
+            _Resources[1].RegenerateAmount();
+
+            Debug.Log($"Regenrated resources DONE {_Resources[1].amount}   -   {_Resources[0].amount}");
+        }
     }
     private IEnumerator StartLevelTimer()
     {
@@ -150,14 +194,14 @@ public class LifeSaverManager : MonoBehaviour
             levelTimer += Time.deltaTime;
             _time = levelDuration - levelTimer;
             TaskProgress.Instance.updateTimer(_time);
-            if (levelTimer>=timeToStartUrgeny)
-                startUrgency=true;
+            if (levelTimer >= timeToStartUrgeny)
+                startUrgency = true;
             yield return null;
         }
         if (levelTimer >= levelDuration)
         {
             EndLevel();
-            
+
         }
     }
     //Functions to call from Game to behvae
@@ -168,6 +212,8 @@ public class LifeSaverManager : MonoBehaviour
 
     public void StopHelping(string CName)
     {
+        Debug.Log("Stopped helping");
+
         if (levelDuration >= 30f)
             _cases[CName].StopHelping();
         else
@@ -182,6 +228,13 @@ public class LifeSaverManager : MonoBehaviour
     private void EndLevel()
     {
         StopAllCoroutines();
+
+        for (int i = 0; i < _envMaterials.Count; i++)
+        {
+            Destroy(_envMaterials[i].gameObject);
+        }
+        _envMaterials.Clear();
+
         float amount = 0f;
         bool stopped = true;
         foreach (var item in _cases.Values)
@@ -199,7 +252,7 @@ public class LifeSaverManager : MonoBehaviour
         else if (stopped && amount > 0f)
         {
             MoneyManager.instance.UpdateMoney(amount);
-            MoneyManager.instance.StoreMoneyInSafeAccount(GameSettings.Instance.CurrLvlIdx);
+            MoneyManager.instance.StoreMoneyInSafeAccount(GameSettings.Instance.CurrLvlIdx - 1);
         }
         LSData.Data.SaveData();
         GameSettings.Instance.LoadNextScene();
@@ -212,16 +265,22 @@ public class LifeSaverManager : MonoBehaviour
         {
             yield return null;
         }
-        if(startUrgency)
+        if (startUrgency)
         {
+            _envMaterials.ForEach(_env =>
+            {
+                _env.gameObject.SetActive(true);
+                _env.material = Instantiate(_refMaterial);
+            });
+
             StartOpenDoor();
             while (timeToStartUrgeny > 0)
             {
-                timeToStartUrgeny-=_ti;
+                timeToStartUrgeny -= _ti;
                 _audioSource.PlayOneShot(_urgencyAudioClip);
-                _envMaterial.color = Color.red;
+                _envMaterials.ForEach(_env => _env.material.EnableKeyword("_EMISSION"));
                 yield return new WaitForSeconds(_ti);
-                _envMaterial.color = Color.white;
+                _envMaterials.ForEach(_env => _env.material.EnableKeyword("_EMISSION"));
 
             }
         }

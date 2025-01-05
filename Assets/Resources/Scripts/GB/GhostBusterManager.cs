@@ -78,8 +78,7 @@ public class GhostBusterManager : MonoBehaviour
     }
     private void Start()
     {
-        levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx];
-        Debug.Log($"idx {GameSettings.Instance.CurrLvlIdx}   levelDurationsCount   {GameSettings.Instance.LevelDurations.Length}");
+        levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx-1];
         Debug.Log($"GB Duration:   {levelDuration}");
     }
 
@@ -288,7 +287,7 @@ public class GhostBusterManager : MonoBehaviour
     {
         StopAllCoroutines();
         GBData.Data.SaveData();
-        MoneyManager.instance.StoreMoneyInSafeAccount(GameSettings.Instance.CurrLvlIdx);
+        MoneyManager.instance.StoreMoneyInSafeAccount(GameSettings.Instance.CurrLvlIdx - 1);
         GameSettings.Instance.LoadNextScene();
     }
 

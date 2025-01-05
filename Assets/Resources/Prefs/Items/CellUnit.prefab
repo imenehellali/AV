@@ -862,8 +862,6 @@ GameObject:
   - component: {fileID: 2799286654645419832}
   - component: {fileID: 5908060160212170737}
   - component: {fileID: 4627903375570845705}
-  - component: {fileID: 7503908268567931585}
-  - component: {fileID: 8697144274226461843}
   m_Layer: 5
   m_Name: Assign_Wat
   m_TagString: Untagged
@@ -975,25 +973,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7503908268567931585}
-        m_TargetAssemblyTypeName: ResourceElement, Assembly-CSharp
+      - m_Target: {fileID: 2024811810176031593}
+        m_TargetAssemblyTypeName: ResourceElementCase, Assembly-CSharp
         m_MethodName: ConsumeResource
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ThrillMinerManager, Assembly-CSharp
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1018,36 +1004,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RaycastTriggerInteraction: 1
---- !u!114 &7503908268567931585
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1368334835775439270}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd66394153b0a154da8c6b7621d70015, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  amount: 0
-  type: 2
-  belongs: 0
---- !u!114 &8697144274226461843
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1368334835775439270}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a056adbcc0bfece489e6b190eeb85f53, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  assignButton: {fileID: 1368334835775439270}
-  resourceObjUI: {fileID: 3205298037865574483}
-  resourceObjamount: {fileID: 2405758715227623829}
 --- !u!1 &1493133341394068453
 GameObject:
   m_ObjectHideFlags: 0
@@ -1476,6 +1432,8 @@ GameObject:
   m_Component:
   - component: {fileID: 9030865221289164525}
   - component: {fileID: 6836347786912509464}
+  - component: {fileID: 2657592184840502349}
+  - component: {fileID: 1579864626431197798}
   m_Layer: 5
   m_Name: Resource_Anti
   m_TagString: Untagged
@@ -1517,6 +1475,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1706311311538466787}
   m_CullTransparentMesh: 1
+--- !u!114 &2657592184840502349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1706311311538466787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdff602979379d439f771685dcf58bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
+  amount: 0
+  assignable: 0
+  _resourceUI: {fileID: 1579864626431197798}
+  _case: {fileID: 688256809844782407}
+--- !u!114 &1579864626431197798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1706311311538466787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a056adbcc0bfece489e6b190eeb85f53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  assignButton: {fileID: 5061943795556531277}
+  resourceObjUI: {fileID: 1706311311538466787}
+  resourceObjamount: {fileID: 4051685513262790678}
 --- !u!1 &1950690929529846864
 GameObject:
   m_ObjectHideFlags: 0
@@ -1654,7 +1644,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8a33914c6394ba44f9501b096c7456ea, type: 2}
+  - {fileID: 2100000, guid: ffdefc2c145dd1e4da521d300cf6f67f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1742,7 +1732,7 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 1, g: 0, b: 0, a: 1}
-  m_Intensity: 10
+  m_Intensity: 2
   m_Range: 2
   m_SpotAngle: 46.20221
   m_InnerSpotAngle: 46.20221
@@ -1781,7 +1771,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 4
+  m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1.6257353, y: 0.61685526}
   m_BounceIntensity: 0
@@ -2145,6 +2135,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2745088184911776956}
   - component: {fileID: 742686404494646571}
+  - component: {fileID: 2024811810176031593}
+  - component: {fileID: 2823175997378042409}
   m_Layer: 5
   m_Name: Resource_Wat
   m_TagString: Untagged
@@ -2186,6 +2178,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3205298037865574483}
   m_CullTransparentMesh: 1
+--- !u!114 &2024811810176031593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3205298037865574483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdff602979379d439f771685dcf58bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 2
+  amount: 0
+  assignable: 0
+  _resourceUI: {fileID: 2823175997378042409}
+  _case: {fileID: 688256809844782407}
+--- !u!114 &2823175997378042409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3205298037865574483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a056adbcc0bfece489e6b190eeb85f53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  assignButton: {fileID: 1368334835775439270}
+  resourceObjUI: {fileID: 3205298037865574483}
+  resourceObjamount: {fileID: 2405758715227623829}
 --- !u!1 &3371772110721370921
 GameObject:
   m_ObjectHideFlags: 0
@@ -2199,8 +2223,6 @@ GameObject:
   - component: {fileID: 3836729989406027818}
   - component: {fileID: 5201743236797054336}
   - component: {fileID: 5178551635253174138}
-  - component: {fileID: 7332902516757464153}
-  - component: {fileID: 8737775582878052719}
   m_Layer: 5
   m_Name: Assign_Air
   m_TagString: Untagged
@@ -2274,25 +2296,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7332902516757464153}
-        m_TargetAssemblyTypeName: ResourceElement, Assembly-CSharp
+      - m_Target: {fileID: 4723688370174084390}
+        m_TargetAssemblyTypeName: ResourceElementCase, Assembly-CSharp
         m_MethodName: ConsumeResource
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ThrillMinerManager, Assembly-CSharp
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2355,36 +2365,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RaycastTriggerInteraction: 1
---- !u!114 &7332902516757464153
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3371772110721370921}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd66394153b0a154da8c6b7621d70015, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  amount: 0
-  type: 1
-  belongs: 0
---- !u!114 &8737775582878052719
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3371772110721370921}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a056adbcc0bfece489e6b190eeb85f53, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  assignButton: {fileID: 3371772110721370921}
-  resourceObjUI: {fileID: 7118385990357766672}
-  resourceObjamount: {fileID: 2568744061385956795}
 --- !u!1 &3602611260246370486
 GameObject:
   m_ObjectHideFlags: 0
@@ -3145,7 +3125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.13333334, g: 0.6039216, b: 0.8235295, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -3379,8 +3359,6 @@ GameObject:
   - component: {fileID: 9102758915754706828}
   - component: {fileID: 7191581823469259197}
   - component: {fileID: 1982737091420612516}
-  - component: {fileID: 2351811174085211322}
-  - component: {fileID: 128581508609021757}
   m_Layer: 5
   m_Name: Assign_Anti
   m_TagString: Untagged
@@ -3492,25 +3470,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2351811174085211322}
-        m_TargetAssemblyTypeName: ResourceElement, Assembly-CSharp
+      - m_Target: {fileID: 2657592184840502349}
+        m_TargetAssemblyTypeName: ResourceElementCase, Assembly-CSharp
         m_MethodName: ConsumeResource
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
-      - m_Target: {fileID: 8082125973727990559}
-        m_TargetAssemblyTypeName: ThrillMinerManager, Assembly-CSharp
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -3535,36 +3501,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RaycastTriggerInteraction: 1
---- !u!114 &2351811174085211322
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5061943795556531277}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd66394153b0a154da8c6b7621d70015, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  amount: 0
-  type: 0
-  belongs: 0
---- !u!114 &128581508609021757
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5061943795556531277}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a056adbcc0bfece489e6b190eeb85f53, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  assignButton: {fileID: 5061943795556531277}
-  resourceObjUI: {fileID: 1706311311538466787}
-  resourceObjamount: {fileID: 4051685513262790678}
 --- !u!1 &5106945299928091627
 GameObject:
   m_ObjectHideFlags: 0
@@ -4806,6 +4742,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7875204966305921404}
   - component: {fileID: 1755043504639446797}
+  - component: {fileID: 4723688370174084390}
+  - component: {fileID: 918981630914066309}
   m_Layer: 5
   m_Name: Resource_Air
   m_TagString: Untagged
@@ -4847,6 +4785,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7118385990357766672}
   m_CullTransparentMesh: 1
+--- !u!114 &4723688370174084390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7118385990357766672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cdff602979379d439f771685dcf58bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 1
+  amount: 0
+  assignable: 0
+  _resourceUI: {fileID: 918981630914066309}
+  _case: {fileID: 688256809844782407}
+--- !u!114 &918981630914066309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7118385990357766672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a056adbcc0bfece489e6b190eeb85f53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  assignButton: {fileID: 3371772110721370921}
+  resourceObjUI: {fileID: 7118385990357766672}
+  resourceObjamount: {fileID: 2568744061385956795}
 --- !u!1 &7255330123081664987
 GameObject:
   m_ObjectHideFlags: 0
@@ -5394,6 +5364,10 @@ MonoBehaviour:
   healed: 0
   dead: 0
   watchedVid: 0
+  _resources:
+  - {fileID: 4723688370174084390}
+  - {fileID: 2024811810176031593}
+  - {fileID: 2657592184840502349}
   _timerDisplay: {fileID: 127522721854951064}
   _urgencyLight: {fileID: 970226752005983382}
   _vp: {fileID: 5974084695310708326}
@@ -6089,7 +6063,7 @@ PrefabInstance:
     - target: {fileID: 7022265961686803948, guid: 6e7bafe0100fed24d9c8b18ec3059904, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: c1531388cb9fae040bea0c4954766154, type: 2}
+      objectReference: {fileID: 2100000, guid: 6d785774984365a42b6261726ed4f7c2, type: 2}
     - target: {fileID: 9097833684977726662, guid: 6e7bafe0100fed24d9c8b18ec3059904, type: 3}
       propertyPath: m_Name
       value: Wall
@@ -6116,10 +6090,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8613132673477606696}
     m_Modifications:
-    - target: {fileID: 2308958095217174151, guid: 23a7a3112379cb74598c7971ef51bf8c, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: ee5b3b77283dd064784edbafcce7b250, type: 2}
     - target: {fileID: 5067367493893108861, guid: 23a7a3112379cb74598c7971ef51bf8c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 7.88

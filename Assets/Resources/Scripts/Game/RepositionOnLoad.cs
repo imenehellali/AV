@@ -68,6 +68,7 @@ public class RepositionOnLoad : MonoBehaviour
         else if (levelName.Equals("LSScene"))
         {
             _taskProgressPanel.position = new Vector3(3.44938493f, 1.62993073f, -3.97199988f);
+            _taskProgressPanel.rotation = Quaternion.identity;
             _taskProgressPanel.Rotate(0f, 180f, 0f);
             _participant.GetComponent<JumpManager>().enabled = false;
             _participant.GetComponent<ClimbManager>().enabled = false;

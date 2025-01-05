@@ -11,6 +11,7 @@ public class LSExitDoor : MonoBehaviour
     [SerializeField]
     private float speed = 2.0f;
 
+   
     public void PlayEnd()
     {
         _audioSource.Play();
@@ -23,8 +24,7 @@ public class LSExitDoor : MonoBehaviour
         while (_dur>0f)
         {
             _dur -= Time.deltaTime;
-            _x -= 0.1f * speed;
-
+            _x -= speed * Time.deltaTime;
             _door.position = new Vector3(_x, _door.position.y, _door.position.z);
             yield return null;
         }

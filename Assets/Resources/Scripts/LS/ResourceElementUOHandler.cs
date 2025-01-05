@@ -9,41 +9,37 @@ public class ResourceElementUOHandler : MonoBehaviour
 {
     [SerializeField]
     private GameObject assignButton;
-    private ResourceElement _element;
+  
     [SerializeField]
     private GameObject resourceObjUI;
     [SerializeField]
     private TextMeshProUGUI resourceObjamount;
-    private void Start()
-    {
-        _element = GetComponent<ResourceElement>();
-    }
+
+    public UnityAction<bool> TimeOut;
+    public UnityAction<int> AmountUpdate;
+
 
     private void OnEnable()
     {
-        if (_element != null)
-        {
-            _element.Assignable += ActivateButton;
-            _element.AmountChanged -= DisactivateResourceUI;
-        }
+        AmountUpdate += ResourceUI;
+        TimeOut += ActivateButton;
     }
-
     private void OnDisable()
     {
-        if (_element != null)
-        {
-            _element.Assignable -= ActivateButton;
-            _element.AmountChanged-=DisactivateResourceUI;
-        }
+        AmountUpdate -= ResourceUI;
+        TimeOut -= ActivateButton;
     }
-   
     private void ActivateButton(bool activated)
     {
+        Debug.Log("diactivating button");
+
         assignButton.SetActive(activated);
     }
 
-    private void DisactivateResourceUI(int amount, ResourceElement.Type type)
+    private void ResourceUI(int amount)
     {
+        Debug.Log("Updating amount UI case");
+
         if (amount<=0) 
             resourceObjUI.SetActive(false);
         else

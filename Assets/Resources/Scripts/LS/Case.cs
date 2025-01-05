@@ -34,7 +34,7 @@ public class Case : MonoBehaviour
     public float percentageDone = 0f;
     public bool healed = false;
     public bool dead = false;
-    private bool stoppedHelping = true;
+    private bool stoppedHelping = false;
     public bool StoppedHelping() => stoppedHelping;
     //add variables video + sound ....
 
@@ -46,12 +46,13 @@ public class Case : MonoBehaviour
     private float startTime = 0f;
     private float endTime = 0f;
 
-    private List<ResourceElement> _resources = new List<ResourceElement>();
-    public UnityAction<ResourceElement.Type> UpdateCaseToIndividual;
+    [Header("Air, Water, Anti, !!Social")]
+    [SerializeField]
+    private List<ResourceElementCase> _resources = new List<ResourceElementCase>();
+    public UnityAction<ResourceElement.Type> UpdateCase;
 
     [SerializeField]
     private TextMeshProUGUI _timerDisplay;
-    private bool startUrgency = false;
     [SerializeField]
     private Light _urgencyLight;
 
@@ -63,17 +64,32 @@ public class Case : MonoBehaviour
     public float SpenTimeOnCase() => endTime - startTime;
     public Case InitCase(bool animalCase, bool requiredSocial, int requiredAntidote, int requiredWater, int requiredAir, float timeOut)
     {
+        int _curr = 0;
+
         this.animalCase = animalCase;
         this.requiredSocial = requiredSocial;
-        this.requiredAntidote = requiredAntidote;
-        if (requiredAntidote > 0) _resources.Add(new ResourceElement(ResourceElement.Type.Antidote, ResourceElement.BelongTo.Case, requiredAntidote));
-        
-        this.requiredWater = requiredWater;
-        if(requiredWater > 0) _resources.Add(new ResourceElement(ResourceElement.Type.Water, ResourceElement.BelongTo.Case, requiredWater));
-        
+
         this.requiredAir = requiredAir;
-        if (requiredAir>0) _resources.Add(new ResourceElement(ResourceElement.Type.Air, ResourceElement.BelongTo.Case, requiredAir));
-        
+        if (requiredAir > 0)
+        {
+           _resources[_curr].UpdateResource(requiredAir);
+            Debug.Log($"intiialized air to case with amount {requiredAir}");
+            _curr++;
+        }
+        this.requiredWater = requiredWater;
+        if (requiredWater > 0)
+        {
+            _resources[_curr].UpdateResource(requiredWater);
+            _curr++;
+        }
+        this.requiredAntidote = requiredAntidote;
+        if (requiredAntidote > 0)
+        {
+           _resources[_curr].UpdateResource(requiredAntidote);
+            _curr++;
+        }
+            
+       
         this.timeOut = timeOut;
 
         return this;
@@ -98,42 +114,40 @@ public class Case : MonoBehaviour
         }
         _vpPlayButton.SetActive(true);
     }
-    private void UpdateResources(int amount, ResourceElement.Type type)
+    private void UpdateResources(ResourceElement.Type type)
     {
-        if (stoppedHelping)
+        Debug.Log("from case --> to update resource");
+         stoppedHelping = false;
+        Debug.Log("updating resource now");
+        if (!startedAssigning)
+            startedAssigning = true;
+        timeOut += incTime;
+        switch (type)
         {
-            stoppedHelping = false;
-            if (!startedAssigning) 
-                startedAssigning = true;
-            timeOut += incTime;
-            UpdateCaseToIndividual.Invoke(type);
-            switch (type)
-            {
-                case ResourceElement.Type.Air:
-                    {
-                        assignedAir++;
-                        break;
-                    }
-                case ResourceElement.Type.Water:
-                    {
-                        assignedWater++;
-                        break;
-                    }
-                case ResourceElement.Type.Antidote:
-                    {
-                        assignedAntidote++;
-                        break;
-                    }
-            }
+            case ResourceElement.Type.Air:
+                {
+                    assignedAir++;
+                    break;
+                }
+            case ResourceElement.Type.Water:
+                {
+                    assignedWater++;
+                    break;
+                }
+            case ResourceElement.Type.Antidote:
+                {
+                    assignedAntidote++;
+                    break;
+                }
         }
     }
     private void OnEnable()
     {
-        _resources.ForEach(r => { r.AmountChanged += UpdateResources; });
+        UpdateCase += UpdateResources;
     }
     private void OnDisable()
     {
-        _resources.ForEach(r => { r.AmountChanged -= UpdateResources; });
+        UpdateCase -= UpdateResources;
     }
     public void UpdateProgress()
     {
@@ -168,6 +182,7 @@ public class Case : MonoBehaviour
     public void StopHelping()
     {
         stoppedHelping = true;
+        Debug.Log("stopped helping from case");
     }
     public void Startcase()
     {
@@ -232,14 +247,12 @@ public class Case : MonoBehaviour
     }
     private void StartUrgencyOfCase()
     {
-        startUrgency = true;
         if(!_urgencyLight.enabled)
             _urgencyLight.enabled = true;
         
     }
     private void RemoveUrgency()
     {
-        startUrgency = false;
         if(_urgencyLight.enabled)
             _urgencyLight.enabled=false;
     }
