@@ -142,15 +142,15 @@ public class LifeSaverManager : MonoBehaviour
     }
     private void InitCases()
     {
-        _cases.Add("CH1", _casesObjs[0].GetComponent<Case>().InitCase(false, true, 3, 1, 0, 90f)); //check time 1:30sec //CH1
-        _cases.Add("CH2", _casesObjs[1].GetComponent<Case>().InitCase(false, true, 2, 0, 2, 120f)); //CH2 2min
-        _cases.Add("CH3", _casesObjs[2].GetComponent<Case>().InitCase(false, true, 2, 0, 1, 180f)); //CH3 3min
-        _cases.Add("CH4", _casesObjs[3].GetComponent<Case>().InitCase(false, false, 0, 3, 2, 210f)); //CH4 3:30
+        _cases.Add("CH1", _casesObjs[0].GetComponent<Case>().InitCase(false, true, 3, 1, 0, 210f)); //check time 1:30sec //CH1
+        _cases.Add("CH2", _casesObjs[1].GetComponent<Case>().InitCase(false, true, 2, 0, 2, 240f)); //CH2 2min
+        _cases.Add("CH3", _casesObjs[2].GetComponent<Case>().InitCase(false, true, 2, 0, 1, 250f)); //CH3 3min
+        _cases.Add("CH4", _casesObjs[3].GetComponent<Case>().InitCase(false, false, 0, 3, 2, 300f)); //CH4 3:30
 
-        _cases.Add("CA1", _casesObjs[4].GetComponent<Case>().InitCase(true, false, 4, 2, 0, 90f)); //check time 1:30sec //CA1
-        _cases.Add("CA2", _casesObjs[5].GetComponent<Case>().InitCase(true, false, 1, 0, 2, 120f)); //CA2 2min
-        _cases.Add("CA3", _casesObjs[6].GetComponent<Case>().InitCase(true, false, 1, 1, 1, 180f)); //CA3 3min
-        _cases.Add("CA4", _casesObjs[7].GetComponent<Case>().InitCase(true, false, 0, 1, 4, 210f)); //CA4 3:30
+        _cases.Add("CA1", _casesObjs[4].GetComponent<Case>().InitCase(true, false, 4, 2, 0, 210f)); //check time 1:30sec //CA1
+        _cases.Add("CA2", _casesObjs[5].GetComponent<Case>().InitCase(true, false, 1, 0, 2, 240f)); //CA2 2min
+        _cases.Add("CA3", _casesObjs[6].GetComponent<Case>().InitCase(true, false, 1, 1, 1, 270f)); //CA3 3min
+        _cases.Add("CA4", _casesObjs[7].GetComponent<Case>().InitCase(true, false, 0, 1, 4, 300f)); //CA4 3:30
 
         Debug.Log("finished initiating cases");
     }

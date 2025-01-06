@@ -13,7 +13,7 @@ public class JumpManager : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _testVariable;
 
-   [SerializeField]
+    [SerializeField]
     private InputActionReference _triggerAction;
 
     [SerializeField]
@@ -41,24 +41,27 @@ public class JumpManager : MonoBehaviour
 
     private void OnTriggerPressed(InputAction.CallbackContext callbackContext)
     {
-       if(callbackContext.ReadValueAsButton())
+        if (callbackContext.ReadValueAsButton())
         {
             _testVariable.text = "triggered ME from Jump";
+            Debug.Log($"Triggered Jump with Line renderer enabled ? {_lineRenderer.enabled} count {_lineRenderer.positionCount}");
 
-                if (!_lineRenderer.enabled || _lineRenderer.positionCount == 0)
+            if (!_lineRenderer.enabled || _lineRenderer.positionCount == 0)
                 return;
             else
             {
                 _dynamicMoveProvider.enabled = false;
                 StartCoroutine(MoveAlongArc());
             }
-           
+
         }
 
 
     }
     private IEnumerator MoveAlongArc()
     {
+        Debug.Log($"Entered Move along, player is Jumping {_isJumping} arc with prev savedArcPointsCount: {_savedArcPoints.Count}");
+
         if (_isJumping)
         {
             _dynamicMoveProvider.enabled = true;
@@ -74,6 +77,7 @@ public class JumpManager : MonoBehaviour
             for (int i = 0; i < _lineRenderer.positionCount; i++)
             {
                 _savedArcPoints.Add(_lineRenderer.transform.TransformPoint(_lineRenderer.GetPosition(i)));
+                Debug.Log($"New point from pos to world pos:  {_savedArcPoints[i]}");
             }
             _isJumping = true;
             _currentPointIndex = 0;
@@ -83,11 +87,12 @@ public class JumpManager : MonoBehaviour
                 Vector3 targetPoint = _savedArcPoints[_currentPointIndex];
                 _currentPointIndex++;
                 _characterController.Move(Vector3.Lerp(currentPoint, targetPoint, _moveSpeed * Time.deltaTime) - currentPoint);
-
+                Debug.Log($"Player is moving from {currentPoint} to {targetPoint}");
                 yield return null;
             }
             if (_currentPointIndex >= _savedArcPoints.Count)
             {
+                Debug.Log("Done jumping");
                 _dynamicMoveProvider.enabled = true;
                 _isJumping = false;
                 _savedArcPoints.Clear();

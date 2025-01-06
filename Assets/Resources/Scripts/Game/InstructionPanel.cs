@@ -96,7 +96,7 @@ public class InstructionPanel : MonoBehaviour
     //I don't play it automatically when they open, if they wanna play instr they gotta click
     private void OpenInstrPanel(InputAction.CallbackContext callbackContext)
     {
-        Debug.Log("entered instr panel");
+        Debug.Log($"entered instr panel for the {perLevelOpenCount[currLoadedScene]}");
         if (callbackContext.ReadValueAsButton())
         {
             _testVariable.text = "triggered ME from instruction panel";

@@ -8,7 +8,6 @@ using Unity.XR.PXR;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
-using UnityEngine.XR.Interaction.Toolkit;
 
 public class ThrillMinerManager : MonoBehaviour
 {
@@ -30,7 +29,6 @@ public class ThrillMinerManager : MonoBehaviour
     private float _time = 0f;
 
 
-    public XRInteractionManager _xrManager;
     [SerializeField]
     private PathSetting _EndPath;
     [SerializeField]
@@ -76,8 +74,8 @@ public class ThrillMinerManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        _xrManager=FindFirstObjectByType<XRInteractionManager>();
        levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx - 1];
+        Debug.Log($"TM duration:   {levelDuration}");
     }
     private void BGTMSceneHandler()
     {
@@ -115,7 +113,8 @@ public class ThrillMinerManager : MonoBehaviour
                 {
                     string _sceneName = x.rp.ToString();
                     x.RemoveRPObjs();
-                    SceneManager.UnloadSceneAsync(SceneManager.GetSceneByName(_sceneName).buildIndex);
+                   if( SceneManager.GetSceneByName(_sceneName).isLoaded) 
+                        SceneManager.UnloadSceneAsync(_sceneName);
                 }
             });
 
@@ -131,7 +130,7 @@ public class ThrillMinerManager : MonoBehaviour
             _to.nextNodes.ForEach(x =>
             {
                 string _sceneName = x.rp.ToString();
-                SceneManager.LoadSceneAsync(SceneManager.GetSceneByName(_sceneName).buildIndex, LoadSceneMode.Additive);
+                SceneManager.LoadSceneAsync(_sceneName, LoadSceneMode.Additive);
             });
         }
     }
@@ -186,7 +185,8 @@ public class ThrillMinerManager : MonoBehaviour
         {
             string _sceneName = x.rp.ToString();
             x.RemoveRPObjs();
-            SceneManager.UnloadSceneAsync(SceneManager.GetSceneByName(_sceneName).buildIndex);
+            if (SceneManager.GetSceneByName(_sceneName).isLoaded) 
+                SceneManager.UnloadSceneAsync(_sceneName);
 
         });
 
@@ -196,7 +196,7 @@ public class ThrillMinerManager : MonoBehaviour
         //Load Initial Paths Choices  --> Load R1P3, R1P4, R1P2, R1P1
         _startPath.nextNodes.ForEach(_x =>
         {
-            SceneManager.LoadSceneAsync(SceneManager.GetSceneByName(_x.rp.ToString()).buildIndex, LoadSceneMode.Additive);
+            SceneManager.LoadSceneAsync(_x.rp.ToString(), LoadSceneMode.Additive);
         });
 
     }

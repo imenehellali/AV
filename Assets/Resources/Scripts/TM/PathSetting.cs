@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Climbing;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
@@ -44,8 +45,8 @@ public class PathSetting : MonoBehaviour
 
     public Transform startPos;
     public GameObject RPLevelObjects;
+    public Transform _ParentSpawnObjs;
     private GameObject _currRPObjs;
-    public XRInteractionManager _xrManager;
     private Dictionary<int, List<PathSetting>> _allPaths = new Dictionary<int, List<PathSetting>>();
 
     public float GetAverageTime()
@@ -100,14 +101,11 @@ public class PathSetting : MonoBehaviour
                 Destroy(_currRPObjs);
                 _currRPObjs = null;
             }
-            _currRPObjs = Instantiate(RPLevelObjects);
+            
+            _currRPObjs = Instantiate(RPLevelObjects,_ParentSpawnObjs.position,_ParentSpawnObjs.rotation);
             List<TMObjects> _rpObjs = _currRPObjs.GetComponentsInChildren<TMObjects>(false)?.ToList();
-            List<TeleportationAnchor> _teleportsAncs=_currRPObjs.GetComponentsInChildren<TeleportationAnchor>(false)?.ToList();
-            List<ClimbInteractable> _climbs= _currRPObjs.GetComponentsInChildren<ClimbInteractable>(false)?.ToList();
-
+           
            if(_rpObjs.Count>0) _rpObjs.ForEach(rp => { rp.belongsTo = this; });
-           if(_teleportsAncs.Count>0) _teleportsAncs.ForEach(teleport => {teleport.interactionManager=_xrManager; }); 
-           if(_climbs.Count>0) _climbs.ForEach(climbs => {climbs.interactionManager=_xrManager; }); 
         }
 
     }

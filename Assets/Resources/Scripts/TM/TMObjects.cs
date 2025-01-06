@@ -39,13 +39,18 @@ public class TMObjects : MonoBehaviour
             {
                 //Raise amount to TM Manager 
                 ThrillMinerManager.Instance.addAmount(_amount);
-                //Consume
-                Destroy(this.gameObject);
+                //Consume after some time
+                StartCoroutine(WaitBeforeDestroy());
+               
             }
             
         }
     }
-
+    private IEnumerator WaitBeforeDestroy()
+    {
+        yield return new WaitForSeconds(4f);
+        Destroy(this.gameObject);
+    }
     private void SlowRotate()
     {
         float rotationSpeed = 45.0f;

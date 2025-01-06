@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class ResourceElement : MonoBehaviour
+public class ResourceElement : MonoBehaviour 
 {
     public enum Type
     {

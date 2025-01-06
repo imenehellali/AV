@@ -61,6 +61,7 @@ public class RepositionOnLoad : MonoBehaviour
         else if (levelName.Equals("GBScene"))
         {
             _taskProgressPanel.position = new Vector3(-5.30937386f, 2.5f, 6.61999989f);
+            _taskProgressPanel.rotation = Quaternion.identity;
             _taskProgressPanel.Rotate(0f, 180f, 0f);
             _participant.GetComponent<JumpManager>().enabled = false;
             _participant.GetComponent<ClimbManager>().enabled = false;
@@ -76,6 +77,7 @@ public class RepositionOnLoad : MonoBehaviour
         else if (levelName.Equals("TMScene"))
         {
             _taskProgressPanel.position = new Vector3(2.82274318f, 2.5f, 5.48126125f);
+            _taskProgressPanel.rotation = Quaternion.identity;
             _participant.GetComponent<JumpManager>().enabled = true;
             _participant.GetComponent<ClimbManager>().enabled = true;
         }
