@@ -239,7 +239,7 @@ namespace UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets
             Vector3 rightDirection = m_CombinedTransform.right;
             Vector3 desiredMove = forwardDirection * input.y + rightDirection * input.x;
             desiredMove *= moveSpeed * Time.deltaTime;
-
+            
             // Constrain movement to NavMesh
             Vector3 constrainedPosition = transform.position + desiredMove;
             NavMeshHit hit;
@@ -252,7 +252,7 @@ namespace UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets
             {
                 desiredMove = Vector3.zero; // Stop movement if outside NavMesh
             }
-
+            
             return desiredMove;
         }
 

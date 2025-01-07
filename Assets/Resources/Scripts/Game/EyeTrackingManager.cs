@@ -2,21 +2,20 @@
 using Unity.XR.PXR;
 using UnityEngine.XR;
 using TMPro;
+using UnityEngine.InputSystem.XR;
 
 public class EyeTrackingManager : MonoBehaviour
 {
-    public LineRenderer lineRendererCustom;
-    public LineRenderer lineRendererGivenWorld;
-    public Transform Origin;
+    public LineRenderer lineRendererXR;
+    public LineRenderer lineRendererPico;
+    public LineRenderer lineRendererWS;
+    public LineRenderer lineRendererWWC;
 
+
+    public Transform Origin;
     private Vector3 combineEyeGazeVector;
     private Vector3 combineEyeGazeOriginOffset;
     private Vector3 combineEyeGazeOrigin;
-    private Matrix4x4 headPoseMatrix;
-    private Matrix4x4 originPoseMatrix;
-
-    private Vector3 combineEyeGazeVectorInWorldSpace;
-    private Vector3 combineEyeGazeOriginInWorldSpace;
 
     private Vector2 primary2DAxis;
     private Vector2 leftEyePrimary2DAxis;
@@ -58,35 +57,93 @@ public class EyeTrackingManager : MonoBehaviour
 
     void Start()
     {
-        combineEyeGazeOriginOffset = Vector3.zero;
-        originPoseMatrix = Origin.localToWorldMatrix;
+        _CPose.text=$"PUSDur:  {GameSettings.Instance.BetweenSceneDuration} levels count {GameSettings.Instance.LevelSequence.Length} ";
+        combineEyeGazeOriginOffset = Origin.transform.position;
+        combineEyeGazeOriginOffset.y += 1.5f;
 
-        InitializeLineRenderer(lineRendererCustom, Color.red);
-        InitializeLineRenderer(lineRendererGivenWorld, Color.yellow);
+        InitializeLineRenderer(lineRendererXR, Color.red);
+        lineRendererXR.enabled = false;
+        InitializeLineRenderer(lineRendererPico, Color.yellow);
+        lineRendererPico.enabled = false;
+        InitializeLineRenderer(lineRendererWS, Color.cyan);
+        lineRendererWS.enabled = false;
+        InitializeLineRenderer(lineRendererWS, Color.green);
+        lineRendererWWC.enabled= false;
 
         eyeTrackingstarted = PXR_MotionTracking.StartEyeTracking(ref startInfo) == 0;
     }
 
+    private void XRCenterEye()
+    {
+        Vector3 centerEyePosition = combineEyeGazeOriginOffset;
+        Quaternion centerEyeRotation = Quaternion.identity;
+        bool hasEyePosition = InputDevices.GetDeviceAtXRNode(XRNode.CenterEye).TryGetFeatureValue(CommonUsages.centerEyePosition, out centerEyePosition);
+        bool hasEyeRotation = InputDevices.GetDeviceAtXRNode(XRNode.CenterEye).TryGetFeatureValue(CommonUsages.centerEyeRotation, out centerEyeRotation);
+        Debug.Log($"has eye position {hasEyePosition}  and has eye rotation  {hasEyeRotation}  and eye tracking started {eyeTrackingstarted}");
+
+        if (hasEyePosition && hasEyeRotation)
+        {
+            Debug.Log("From XR center Eye real Tracking ");
+
+            combineEyeGazeOrigin += centerEyePosition;//+ combineEyeGazeOriginOffset;
+            combineEyeGazeVector = centerEyeRotation * Vector3.forward;
+
+            HandleGazeTarget(lineRendererXR, combineEyeGazeOrigin, combineEyeGazeVector);
+
+            _CDPose.text = $"Custom Orientation both eyes: {combineEyeGazeVector}";
+
+        }
+    }
+   
+    private void XRPerEye()
+    {
+        Vector3 _LeyePos = Vector3.zero;
+        Vector3 _ReyePos = Vector3.zero;
+        Quaternion _LeyeRot = Quaternion.identity;
+        Quaternion _ReyeRot = Quaternion.identity;
+        bool _gotEye = InputDevices.GetDeviceAtXRNode(XRNode.LeftEye).TryGetFeatureValue(CommonUsages.leftEyePosition, out _LeyePos);
+        _gotEye &= InputDevices.GetDeviceAtXRNode(XRNode.RightEye).TryGetFeatureValue(CommonUsages.rightEyePosition, out _ReyePos);
+        _gotEye &= InputDevices.GetDeviceAtXRNode(XRNode.LeftEye).TryGetFeatureValue(CommonUsages.leftEyeRotation, out _LeyeRot);
+        _gotEye &= InputDevices.GetDeviceAtXRNode(XRNode.RightEye).TryGetFeatureValue(CommonUsages.rightEyeRotation, out _ReyeRot);
+
+
+        if (_gotEye)
+        {
+            Debug.Log("From XR eye approximation tracking");
+
+            combineEyeGazeOrigin = (_LeyePos + _ReyePos) / 2.0f;
+            combineEyeGazeVector = ((_LeyeRot * Vector3.forward) + (_ReyeRot * Vector3.forward)).normalized;
+
+            HandleGazeTarget(lineRendererWS, (combineEyeGazeOriginOffset + combineEyeGazeOrigin), combineEyeGazeVector);
+        }
+
+    }
     void Update()
     {
-        AdjustOffsetWithControllerInput();
-
-        PXR_EyeTracking.GetHeadPosMatrix(out headPoseMatrix);
-        PXR_EyeTracking.GetCombineEyeGazeVector(out combineEyeGazeVector);
-        PXR_EyeTracking.GetCombineEyeGazePoint(out combineEyeGazeOrigin);
-
-        combineEyeGazeOrigin += combineEyeGazeOriginOffset;
-        combineEyeGazeOriginInWorldSpace = originPoseMatrix.MultiplyPoint(headPoseMatrix.MultiplyPoint(combineEyeGazeOrigin));
-        combineEyeGazeVectorInWorldSpace = originPoseMatrix.MultiplyVector(headPoseMatrix.MultiplyVector(combineEyeGazeVector));
-
-        HandleGazeTarget(lineRendererCustom, combineEyeGazeOriginInWorldSpace, combineEyeGazeVectorInWorldSpace);
 
         if (eyeTrackingstarted && PXR_MotionTracking.GetEyeTrackingData(ref _eyeDataGetInfo, ref _eyeData) == 0)
         {
+            Debug.Log("From Pico Eye tracking");
+
             UpdateEyeTrackingData();
-            Vector3 givenWorldVector = originPoseMatrix.MultiplyVector(headPoseMatrix.MultiplyVector(
-                new Vector3(_combinedEye.pose.orientation.x, _combinedEye.pose.orientation.y, _combinedEye.pose.orientation.z)));
-            HandleGazeTarget(lineRendererGivenWorld, combineEyeGazeOriginInWorldSpace, givenWorldVector);
+            Vector3 givenWorldVector = new Vector3(_eyeData.eyeDatas[2].pose.position.x,
+                _eyeData.eyeDatas[2].pose.position.y, _eyeData.eyeDatas[2].pose.position.z);
+            HandleGazeTarget(lineRendererPico, combineEyeGazeOrigin, givenWorldVector);
+        }
+
+       
+        Vector3 headPosition = Vector3.zero;
+        Quaternion headRotation = Quaternion.identity;
+
+        if (InputDevices.GetDeviceAtXRNode(XRNode.Head).TryGetFeatureValue(CommonUsages.devicePosition, out headPosition) &&
+            InputDevices.GetDeviceAtXRNode(XRNode.Head).TryGetFeatureValue(CommonUsages.deviceRotation, out headRotation))
+        {
+            Debug.Log("From middle forehead approximation tracking");
+
+            combineEyeGazeOrigin = headPosition + (headRotation * new Vector3(0, 0.1f, 0.05f));
+            combineEyeGazeVector = headRotation * Vector3.forward;
+
+            HandleGazeTarget(lineRendererWWC, (combineEyeGazeOriginOffset + combineEyeGazeOrigin), combineEyeGazeVector);
         }
     }
 
@@ -94,23 +151,12 @@ public class EyeTrackingManager : MonoBehaviour
     {
         lineRenderer.startWidth = 0.01f;
         lineRenderer.endWidth = 0.01f;
-        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.startColor = color;
         lineRenderer.endColor = color;
     }
-
-    private void AdjustOffsetWithControllerInput()
-    {
-        if (InputDevices.GetDeviceAtXRNode(XRNode.RightEye).TryGetFeatureValue(CommonUsages.primary2DAxis, out primary2DAxis) &&
-            InputDevices.GetDeviceAtXRNode(XRNode.LeftEye).TryGetFeatureValue(CommonUsages.primary2DAxis, out leftEyePrimary2DAxis))
-        {
-            combineEyeGazeOriginOffset.x += (primary2DAxis.x + leftEyePrimary2DAxis.x) * 0.0005f;
-            combineEyeGazeOriginOffset.y += (primary2DAxis.y + leftEyePrimary2DAxis.y) * 0.0005f;
-        }
-    }
-
     private void HandleGazeTarget(LineRenderer lineRenderer, Vector3 origin, Vector3 vector)
     {
+        lineRenderer.enabled=true;
         Ray ray = new Ray(origin, vector);
         lineRenderer.SetPosition(0, origin);
 
@@ -153,9 +199,7 @@ public class EyeTrackingManager : MonoBehaviour
 
         _LOpeness.text = $"Openness Left: {_leftEye.openness}";
         _ROpeness.text = $"Openness Right: {_rightEye.openness}";
-        _LPose.text = $"Both Orientation X: {_combinedEye.pose.orientation.x}";
-        _RPose.text = $"Both Orientation Y: {_combinedEye.pose.orientation.y}";
-        _CPose.text = $"Both Orientation Z: {_combinedEye.pose.orientation.z}";
-        _CDPose.text = $"Custom Orientation Z: {combineEyeGazeVectorInWorldSpace}";
+        _LPose.text = $"Both Orientation: {_combinedEye.pose.orientation.x}  {_combinedEye.pose.orientation.x}  {_combinedEye.pose.orientation.x}";
+        _RPose.text = $"Both Position: {_combinedEye.pose.position.x}  {_combinedEye.pose.position.y}  {_combinedEye.pose.position.z}";
     }
 }

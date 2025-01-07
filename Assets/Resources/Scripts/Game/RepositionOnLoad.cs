@@ -23,6 +23,7 @@ public class RepositionOnLoad : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
             gameObject.transform.position = new Vector3(0f, 0.1f, 0f);
+            Debug.Log("Set player from Reposition on load");
 
         }
         else

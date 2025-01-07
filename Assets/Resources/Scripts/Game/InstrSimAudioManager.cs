@@ -11,6 +11,8 @@ public class InstrSimAudioManager : MonoBehaviour
     private AudioSource audioSource;
     [SerializeField]
     private SimL simL;
+    [SerializeField]
+    private GameObject simL3Canvas;
     public enum SimL
     {
         L1,
@@ -25,6 +27,7 @@ public class InstrSimAudioManager : MonoBehaviour
             audioSource.Play();
             if (simL == SimL.L3)
             {
+                simL3Canvas.SetActive(true);
                 InstrGBSimManager.setContinueGBSim.Invoke(true);
             }
             else if (simL == SimL.L1)
@@ -39,6 +42,10 @@ public class InstrSimAudioManager : MonoBehaviour
         if (other.gameObject.GetComponent<XROrigin>() != null)
         {
             audioSource.Stop();
+            if (simL == SimL.L3)
+            {
+                simL3Canvas.SetActive(false);
+            }
         }
     }
 

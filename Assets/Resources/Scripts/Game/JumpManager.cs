@@ -1,104 +1,142 @@
 using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
-using static UnityEngine.InputSystem.InputAction;
+using Unity.XR.CoreUtils;
+using UnityEngine.AI;
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion;
 
 public class JumpManager : MonoBehaviour
 {
-    [SerializeField]
-    private CharacterController _characterController;
     [SerializeField]
     private TextMeshProUGUI _testVariable;
 
     [SerializeField]
     private InputActionReference _triggerAction;
-
     [SerializeField]
-    private LineRenderer _lineRenderer;
-
-    [SerializeField]
-    private float _moveSpeed = 5f;
-
+    private InputActionReference LeftHandMoveInput;
     [SerializeField]
     private DynamicMoveProvider _dynamicMoveProvider;
+    [SerializeField]
+    private Transform XROrig;
+
+    [SerializeField]
+    private float _jumpHeight = 1.5f;
+    private float jumpSpeed = 0.2f;
+    private Vector2 input = Vector2.zero;
+    private Vector3 desiredMove = Vector3.zero;
+
+
+    [SerializeField]
+    private float _gravity = -9.8f;
 
     private bool _isJumping = false;
-    private List<Vector3> _savedArcPoints = new List<Vector3>();
-    private int _currentPointIndex = 0;
+    private int _remainingJumps = 3;
+
+    private float _yVelocity = 0f;
+    private float moveStep = 0.5f;
 
     private void OnEnable()
     {
         _triggerAction.action.started += OnTriggerPressed;
+        LeftHandMoveInput.action.performed += GetMoveInput;
+        Debug.Log($"is grounded : {XROrig.gameObject.GetComponent<NavMeshAgent>().isOnNavMesh}");
     }
 
     private void OnDisable()
     {
         _triggerAction.action.started -= OnTriggerPressed;
+        LeftHandMoveInput.action.performed -= GetMoveInput;
+    }
+
+    private void Update()
+    {
+        if (!_isJumping || _yVelocity < 0f)
+        {
+            _yVelocity = 0f;
+            _isJumping = false;
+            _remainingJumps = 3;
+
+            _dynamicMoveProvider.enabled = true;
+        }
+
+        else if
+             (_isJumping && _yVelocity > 0f)
+        {
+            _yVelocity += _gravity * Time.deltaTime * jumpSpeed;
+            desiredMove.y = _yVelocity;
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(desiredMove, out hit, .5f, NavMesh.AllAreas))
+            {
+                _isJumping = false;
+            }
+            else
+            {
+
+                XROrig.position = desiredMove;
+            }
+        }
+
     }
 
     private void OnTriggerPressed(InputAction.CallbackContext callbackContext)
     {
-        if (callbackContext.ReadValueAsButton())
+        if (callbackContext.ReadValueAsButton() && !XROrig.gameObject.GetComponent<ClimbManager>()._isClimbing
+            && XROrig.gameObject.GetComponent<ClimbManager>().ropeTransform != null)
         {
-            _testVariable.text = "triggered ME from Jump";
-            Debug.Log($"Triggered Jump with Line renderer enabled ? {_lineRenderer.enabled} count {_lineRenderer.positionCount}");
-
-            if (!_lineRenderer.enabled || _lineRenderer.positionCount == 0)
-                return;
-            else
+            XROrig.gameObject.GetComponent<NavMeshAgent>().enabled = true;
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(XROrig.position, out hit, 2f, NavMesh.AllAreas))
             {
-                _dynamicMoveProvider.enabled = false;
-                StartCoroutine(MoveAlongArc());
+
+                XROrig.position = hit.position;
             }
 
-        }
-
-
-    }
-    private IEnumerator MoveAlongArc()
-    {
-        Debug.Log($"Entered Move along, player is Jumping {_isJumping} arc with prev savedArcPointsCount: {_savedArcPoints.Count}");
-
-        if (_isJumping)
-        {
+            XROrig.gameObject.GetComponent<ClimbManager>().ropeTransform = null;
             _dynamicMoveProvider.enabled = true;
-            _lineRenderer.positionCount = 0;
-            _lineRenderer.enabled = false;
-            _savedArcPoints.Clear();
-            yield break;
+        }
+        else if (callbackContext.ReadValueAsButton() && _remainingJumps > 0)
+        {
+            Debug.Log($"Jump triggered. Remaining jumps: {_remainingJumps}");
+            _dynamicMoveProvider.enabled = false;
+            _isJumping = true;
+            _remainingJumps--;
+            _yVelocity += Mathf.Sqrt(_jumpHeight * -.33f * _gravity);
+            desiredMove = new Vector3(XROrig.position.x, XROrig.position.y + _yVelocity, XROrig.position.z);
+            Debug.Log($"new jump position {desiredMove}");
+            XROrig.position = desiredMove;
+
+        }
+        
+    }
+    private void GetMoveInput(InputAction.CallbackContext context)
+    {
+        if (_isJumping && _dynamicMoveProvider.enabled == false)
+        {
+            input = context.ReadValue<Vector2>();
+            Debug.Log($"Calling input value in air : {input}");
+            ComputeDesiredMove();
         }
         else
         {
-            _savedArcPoints.Clear();
-
-            for (int i = 0; i < _lineRenderer.positionCount; i++)
-            {
-                _savedArcPoints.Add(_lineRenderer.transform.TransformPoint(_lineRenderer.GetPosition(i)));
-                Debug.Log($"New point from pos to world pos:  {_savedArcPoints[i]}");
-            }
-            _isJumping = true;
-            _currentPointIndex = 0;
-            while (_currentPointIndex < _savedArcPoints.Count)
-            {
-                Vector3 currentPoint = _characterController.transform.position;
-                Vector3 targetPoint = _savedArcPoints[_currentPointIndex];
-                _currentPointIndex++;
-                _characterController.Move(Vector3.Lerp(currentPoint, targetPoint, _moveSpeed * Time.deltaTime) - currentPoint);
-                Debug.Log($"Player is moving from {currentPoint} to {targetPoint}");
-                yield return null;
-            }
-            if (_currentPointIndex >= _savedArcPoints.Count)
-            {
-                Debug.Log("Done jumping");
-                _dynamicMoveProvider.enabled = true;
-                _isJumping = false;
-                _savedArcPoints.Clear();
-            }
+            input = Vector2.zero;
         }
 
+    }
+    private void ComputeDesiredMove()
+    {
+        if (input != Vector2.zero)
+        {
+            Pose m_HeadTransform = Camera.main.transform.GetWorldPose();
+
+            Vector3 forwardDirection = m_HeadTransform.forward;
+            Vector3 rightDirection = m_HeadTransform.right;
+            desiredMove += forwardDirection * input.y * moveStep + rightDirection * input.x * moveStep;
+
+            Debug.Log($"desired move POSITION from jump in air :  {desiredMove}");
+        }
     }
 
 }

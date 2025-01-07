@@ -1,29 +1,25 @@
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Movement;
 using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 
 public class ClimbManager : MonoBehaviour
 {
-    [SerializeField] private CharacterController _characterController;
+    [SerializeField] private Transform _xrOrig;
     [SerializeField] private InputActionReference _joystickAction;
-    [SerializeField] private LayerMask _climbableLayer;
     [SerializeField] private float _climbSpeed = 3f;
     [SerializeField] private DynamicMoveProvider _moveProvider;
 
-    private bool _isClimbing;
-    private Transform _ropeTransform;
-    private Transform _forwardSource;
+    public bool _isClimbing = false;
+    public Transform ropeTransform = null;
 
+    private Vector3 desiredMove = Vector3.zero;
     private void OnEnable()
     {
         _joystickAction.action.performed += OnJoystickMove;
         _joystickAction.action.canceled += OnJoystickStop;
 
-        if (_moveProvider != null)
-        {
-            _forwardSource = _moveProvider.forwardSource;
-        }
     }
 
     private void OnDisable()
@@ -31,59 +27,58 @@ public class ClimbManager : MonoBehaviour
         _joystickAction.action.performed -= OnJoystickMove;
         _joystickAction.action.canceled -= OnJoystickStop;
     }
-
     private void OnTriggerEnter(Collider other)
     {
-        if (((1 << other.gameObject.layer) & _climbableLayer) == 0) return;
+        Debug.Log($"entered something  {other.gameObject.layer}");
+        if (other.gameObject.layer==3 && ropeTransform==null)
+        {
+            Debug.Log("detected a climbable");
+            _isClimbing = true;
+            ropeTransform = other.transform;    
 
-        StartClimbing(other.transform);
+            if (_moveProvider.enabled) _moveProvider.enabled = false;
+            _xrOrig.gameObject.GetComponent<NavMeshAgent>().enabled = false;
+        }
+
     }
-
     private void OnTriggerExit(Collider other)
     {
-        if (other.transform != _ropeTransform) return;
-
-        StopClimbing();
-    }
-
-    private void StartClimbing(Transform rope)
-    {
-        _isClimbing = true;
-        _ropeTransform = rope;
-        _characterController.enabled = false; 
-        if (_moveProvider != null)
+        if (other.gameObject.layer == 3 && ropeTransform!=null)
         {
-            _moveProvider.enabled = false; 
+            _isClimbing = false;
+           
+            _xrOrig.gameObject.GetComponent<NavMeshAgent>().enabled = true;
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(_xrOrig.position, out hit, 2f, NavMesh.AllAreas))
+            {
+                // Move the XR Origin to the nearest NavMesh point
+                _xrOrig.position = hit.position;
+            }
+            _moveProvider.enabled = true;
+            ropeTransform = null;
         }
     }
-
-    private void StopClimbing()
+    private void OnTriggerStay(Collider other)
     {
-        _isClimbing = false;
-        _ropeTransform = null;
-        _characterController.enabled = true;
-        if (_moveProvider != null)
-        {
-            _moveProvider.enabled = true; 
-        }
+       
     }
-
     private void OnJoystickMove(InputAction.CallbackContext context)
     {
-        if (!_isClimbing || _forwardSource == null) return;
-
-        var input = context.ReadValue<Vector2>();
-        float verticalMovement = input.y * _climbSpeed * Time.deltaTime;
-
-        if (_ropeTransform == null) return;
-
-        // Move along the rope direction
-        Vector3 climbDirection = Vector3.up * verticalMovement;
-        transform.position += climbDirection;
+        if (ropeTransform!=null)
+        {
+            _isClimbing = true;
+            Debug.Log("from climbing manager");
+            var input = context.ReadValue<Vector2>();
+            float verticalMovement = input.y * _climbSpeed * Time.deltaTime;
+            _xrOrig.position+= Vector3.up * verticalMovement;
+        }
     }
-
+   
     private void OnJoystickStop(InputAction.CallbackContext context)
     {
-        // Stop any active climbing movement
+        if (context.ReadValueAsButton() && ropeTransform != null)
+        {
+            _isClimbing = false;
+        }
     }
 }
