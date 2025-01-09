@@ -22,7 +22,7 @@ public class PopUpShopManager : MonoBehaviour
     private float totalSum = 0f;
     private float requiredTimeToBuy = 0f;
     private float _pusTime = 0f;
-    private bool isPUWScene=false;
+    private bool isPUWScene = false;
     private GameObject _participantPos;
 
     private void Start()
@@ -50,9 +50,9 @@ public class PopUpShopManager : MonoBehaviour
 
     private void Update()
     {
-        gameObject.transform.position = new Vector3(_participantPos.transform.position.x, 2f, _participantPos.transform.position.z + 0.8f);
+        gameObject.transform.position = new Vector3(_participantPos.transform.position.x, 1.5f, _participantPos.transform.position.z + 0.8f);
         requiredTimeToBuy += Time.deltaTime;
-        UpdateTimerDisplay(_pusTime- requiredTimeToBuy);
+        UpdateTimerDisplay(_pusTime - requiredTimeToBuy);
     }
     public void UpdateTotalSum()
     {
@@ -70,7 +70,7 @@ public class PopUpShopManager : MonoBehaviour
     {
         MoneyManager.instance.UpdateGameAccount(-totalSum);
         Debug.Log($"total game sum:   {MoneyManager.instance.GetGameAccount()}");
-        GameSettings.Instance.AddPurchaseDuration(_pusTime-requiredTimeToBuy);
+        GameSettings.Instance.AddPurchaseDuration(_pusTime - requiredTimeToBuy);
 
         int totalCoins = 0;
         foreach (var item in purchasableItems)
@@ -91,14 +91,10 @@ public class PopUpShopManager : MonoBehaviour
         if (isPUWScene)
         {
             PopUpWerkManager.Instance.AddCoins(totalCoins);
-            PUWStats.UpdateNonRewardDrinksBoughtCount(nonRewardDrinks);
-            PUWStats.UpdateRewardDrinksBoughtCount(rewardDrinks);
         }
-        else
-        {
-            GameSettings.Instance.AddNonRewardDrinksBoughtCount(nonRewardDrinks);
-            GameSettings.Instance.AddNonRewardDrinksBoughtCount(rewardDrinks);
-        }
+        GameSettings.Instance.AddNonRewardDrinksBoughtCount(nonRewardDrinks);
+        GameSettings.Instance.AddNonRewardDrinksBoughtCount(rewardDrinks);
+
         SceneManager.UnloadSceneAsync("PUSScene");
     }
 
@@ -116,7 +112,7 @@ public class PopUpShopManager : MonoBehaviour
     {
         int minutes = Mathf.FloorToInt(timer / 60F);
         int seconds = Mathf.FloorToInt(timer % 60F);
-        _displayTime.text ="Zeit:  "+ string.Format("{0:00}:{1:00}", minutes, seconds);
+        _displayTime.text = "Zeit:  " + string.Format("{0:00}:{1:00}", minutes, seconds);
     }
-  
+
 }

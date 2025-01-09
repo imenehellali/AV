@@ -68,10 +68,8 @@ public class SettingsManager : MonoBehaviour
     }
     public void SaveSettings()
     {
-
         // Update and save the new settings
         GameSettings.Instance.UpdateLevelSettings(levelSequence, levelDurations, PUSDuration);
-        MoneyManager.instance.InitializeSafeAccount(levelSequence.Count);
         GameSettings.Instance.UpdateVolumeSettings(PUWBGVolume, PUWGMVolume, PUWWaiterVolume, lSHelpVolume, lSWarnVolume, GBFeedbackVolume, TMFeedbackVolume, TMBGVolume);
         
     }

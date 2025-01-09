@@ -7,9 +7,7 @@ public static class PUWStats
 {
     private static int _coinsQuantity = 0;
     private static int _coinsBoughtCount = 0;
-    private static int _nonRewardDrinksBoughtCount = 0;
-    private static int _rewardDrinksBoughtCount = 0;
- 
+    
     private static int _mysterySlotPlaysPerMinute = 0;
     private static int _billSlotPlaysPerMinute = 0;
     private static int _diamondSlotPlaysPerMinute = 0;
@@ -81,28 +79,6 @@ public static class PUWStats
         return _billSlotPlaysPerMinute;
     }
 
-
-
-    // Drinks
-    public static void UpdateNonRewardDrinksBoughtCount(int amount)
-    {
-        _nonRewardDrinksBoughtCount+=amount;
-    }
-
-    public static void UpdateRewardDrinksBoughtCount(int amount)
-    {
-        _rewardDrinksBoughtCount+=amount;
-    }
-
-    public static int GetNonRewardDrinksBoughtCount()
-    {
-        return _nonRewardDrinksBoughtCount;
-    }
-
-    public static int GetRewardDrinksBoughtCount()
-    {
-        return _rewardDrinksBoughtCount;
-    }
 
     // Fixation Times
     public static void AddFixationTimeAlcoholicDisplays(float time)

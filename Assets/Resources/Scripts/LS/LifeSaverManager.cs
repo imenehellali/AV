@@ -128,10 +128,7 @@ public class LifeSaverManager : MonoBehaviour
             Destroy(gameObject);
         }
         levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx - 1];
-
-    }
-    private void Start()
-    {
+        Debug.Log($"LS duration {levelDuration}");
         timeToStartUrgeny = levelDuration - 40f;
         InitCases();
         InitResources();
@@ -139,6 +136,11 @@ public class LifeSaverManager : MonoBehaviour
         {
             _envMaterials[i].gameObject.SetActive(false);
         }
+
+    }
+    private void Start()
+    {
+       
     }
     private void InitCases()
     {
@@ -280,7 +282,7 @@ public class LifeSaverManager : MonoBehaviour
                 _audioSource.PlayOneShot(_urgencyAudioClip);
                 _envMaterials.ForEach(_env => _env.material.EnableKeyword("_EMISSION"));
                 yield return new WaitForSeconds(_ti);
-                _envMaterials.ForEach(_env => _env.material.EnableKeyword("_EMISSION"));
+                _envMaterials.ForEach(_env => _env.material.DisableKeyword("_EMISSION"));
 
             }
         }

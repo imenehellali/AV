@@ -10,9 +10,6 @@ public class MoneyManager : MonoBehaviour
     private float _money;
     public float GetMoney() => _money;
    
-    private List<float> _safeAccount=new List<float>();
-    public List<float> GetSafeAccount() => _safeAccount;
-
     private float _gameAccount = 2000f;
     public float GetGameAccount() => _gameAccount;
 
@@ -34,6 +31,7 @@ public class MoneyManager : MonoBehaviour
         }
 
     }
+    public void ResetGameAccount() => _gameAccount = 2000f;
     public void ResetMoney() 
     { 
         _money = 0; 
@@ -42,22 +40,6 @@ public class MoneyManager : MonoBehaviour
     public void UpdateGameAccount(float amount)
     {
         _gameAccount += amount;
-        SaveGameAccount();  // Save the updated game account to ParticipantData
-    }
-
-    private void SaveGameAccount()
-    {
-        ParticipantSettings.Instance.WholeGamePair.Invoke(new KeyValuePair<string, float>("GameAccount", _gameAccount));
-    }
-    private void SaveSafeAccount()
-    {
-        ParticipantSettings.Instance.WholeGamePair.Invoke(new KeyValuePair<string, float>("SafeAccount", _safeAccount[_safeAccount.Count - 1]));
-    }
-
-
-    public void InitializeSafeAccount(int numberOfLevels)
-    {
-        _safeAccount = new List<float>(new float[numberOfLevels]);
     }
 
     public void UpdateMoney(float amount)
@@ -65,16 +47,10 @@ public class MoneyManager : MonoBehaviour
         _money += amount;
         OnMoneyWon.Invoke();  // Notify listeners that the money has been updated
     }
-    public void StoreMoneyInSafeAccount(int levelIndex)
-    {
-        if (_safeAccount != null && levelIndex >= 0 && levelIndex < _safeAccount.Count)
-        {
-            _safeAccount[levelIndex] = _money;
-            _money = 0;  // Reset the money for the next level
-            SaveSafeAccount();
-        }
-    }
-
+    public void StoreMoneyInSafeAccount(int levelIndex){
+        GameStats.UpdateSafeAccount(levelIndex, _money);
+        _money = 0;
+    } 
 
 }
 

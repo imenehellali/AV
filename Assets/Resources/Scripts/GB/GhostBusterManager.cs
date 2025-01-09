@@ -14,7 +14,7 @@ public class GhostBusterManager : MonoBehaviour
     private float _Q2Time = 0f;
     private float _Q3Time = 0f;
     private float _Q4Time = 0f;
-    private float levelDuration = 300f;
+    private float levelDuration;
     private float _time = 0f;
 
     //Room Effects variables
@@ -74,11 +74,12 @@ public class GhostBusterManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        AssignQTime();
+       
     }
     private void Start()
     {
         levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx-1];
+        AssignQTime();
         Debug.Log($"GB Duration:   {levelDuration}");
     }
 

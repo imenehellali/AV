@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -36,18 +37,22 @@ public class InstructionPanel : MonoBehaviour
 
     private int lvlIdx = 0;
     private string currLoadedScene;
+    private int currLoadedLxlidx = -1;
 
     //All additional visits start from 2, 1 is the default count which is mendatory 
     private Dictionary<string, int> perLevelOpenCount = new Dictionary<string, int>();
-
-    private void OnEnable()
+    public List<int> GetPerLEvelOpenCount() => perLevelOpenCount.Values.ToList<int>();
+        private void OnEnable()
     {
         Menu.action.started += OpenInstrPanel;
         sceneLoaded += StartInstructionPanel;
         int count = GameSettings.Instance.LevelDurations.Length;
         for (int i = 0; i < count; i++)
         {
-            perLevelOpenCount.TryAdd(GameSettings.Instance.LevelSequence[i], 0);
+            bool suc=perLevelOpenCount.TryAdd(GameSettings.Instance.LevelSequence[i], -1);
+            if (!suc)
+                perLevelOpenCount[GameSettings.Instance.LevelSequence[i]] = -1;
+            Debug.Log("tried to add or assigned existing per level open count -1");
         }
     }
     private void OnDisable()
@@ -55,10 +60,17 @@ public class InstructionPanel : MonoBehaviour
         sceneLoaded -= StartInstructionPanel;
         Menu.action.started -= OpenInstrPanel;
     }
+    public void ResetInstructionPanel()
+    {
+        lvlIdx = 0;
+        currLoadedScene = "";
+        currLoadedLxlidx = -1;
+    }
     private void StartInstructionPanel(string sceneName)
     {
         currLoadedScene = sceneName;
         instructionPanel.SetActive(true);
+        currLoadedLxlidx++;
 
         DisplayGameInstruction();
         if (SceneManager.GetSceneByName("StartScene").isLoaded)
@@ -94,12 +106,11 @@ public class InstructionPanel : MonoBehaviour
 
     }
     //I don't play it automatically when they open, if they wanna play instr they gotta click
+    //Close on controller invoke
     private void OpenInstrPanel(InputAction.CallbackContext callbackContext)
     {
-        Debug.Log($"entered instr panel for the {perLevelOpenCount[currLoadedScene]}");
-        if (callbackContext.ReadValueAsButton())
+        if (callbackContext.ReadValueAsButton() && !SceneManager.GetSceneByName("EndScene").isLoaded)
         {
-            _testVariable.text = "triggered ME from instruction panel";
             if (instructionPanel.activeSelf)
             {
                 if (_audioSourceInstrGame.isPlaying || _audioSourceInstrLvl.isPlaying)
@@ -113,13 +124,14 @@ public class InstructionPanel : MonoBehaviour
                     StartLevel();
                 }
                 perLevelOpenCount[currLoadedScene]++;
-
+                
                 instructionPanel.SetActive(false);
             }
             else
                 instructionPanel.SetActive(true);
         }
     }
+    //Close on Button Click
     public void CloseInstrPanel()
     {
         if (_audioSourceInstrGame.isPlaying || _audioSourceInstrLvl.isPlaying)
@@ -138,6 +150,7 @@ public class InstructionPanel : MonoBehaviour
 
     }
 
+    //Organic closing
     private IEnumerator StartLevelAfterPlay()
     {
 
@@ -148,7 +161,7 @@ public class InstructionPanel : MonoBehaviour
         perLevelOpenCount[currLoadedScene]++;
         instructionPanel.SetActive(false);
         StartLevel();
-        instructionPanel?.SetActive(false);
+        instructionPanel.SetActive(false);
     }
     private void StartLevel()
     {

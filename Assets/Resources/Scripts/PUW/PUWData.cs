@@ -33,13 +33,7 @@ public class PUWData : MonoBehaviour
         ParticipantSettings.Instance.PUWDataPair.Invoke(new KeyValuePair<string, float>("DiamondSlotPlaysPerMinute",(float)PUWStats.GetDiamondSlotPlaysPerMinute()));
         ParticipantSettings.Instance.PUWDataPair.Invoke(new KeyValuePair<string, float>("BillSlotPlaysPerMinute",(float)PUWStats.GetBillSlotPlaysPerMinute()));
 
-
-        // Drinks
-        ParticipantSettings.Instance.PUWDataPair.Invoke(new KeyValuePair<string, float>("NonRewardDrinksBoughtCount",(float)PUWStats.GetNonRewardDrinksBoughtCount()));
-        ParticipantSettings.Instance.PUWDataPair.Invoke(new KeyValuePair<string, float>("RewardDrinksBoughtCount",(float)PUWStats.GetRewardDrinksBoughtCount()));
-
-
-        // Fixation Times
+       // Fixation Times
         ParticipantSettings.Instance.PUWDataPair.Invoke(new KeyValuePair<string, float>("AvgFixationTimeAlcoholicDisplays",(float)PUWStats.GetAvgFixationTimeAlcoholicDisplays()));
         ParticipantSettings.Instance.PUWDataPair.Invoke(new KeyValuePair<string, float>("AvgFixationTimeAlcoholicVsNonAlcoholic",(float)PUWStats.GetAvgFixationTimeAlcoholicVsNonAlcoholic()));
 

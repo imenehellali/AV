@@ -35,19 +35,22 @@ public class GameSettings : MonoBehaviour
 
 
     private List<float> purchaseDurations = new List<float>();
-    private int NonRewardDrinkBoughtCount = 0;
-    private int RewardDrinkBoughtCount = 0;
+  
+    public void AddNonRewardDrinksBoughtCount(int amount) => GameStats.UpdateNonRewardDrinksBoughtCount(amount);
+    public void AddRewardDrinksBoughtCount(int amount) => GameStats.UpdateRewardDrinksBoughtCount(amount);
 
-    public void AddNonRewardDrinksBoughtCount(int amount) => NonRewardDrinkBoughtCount += amount;
-    public void AddRewardDrinksBoughtCount(int amount) => RewardDrinkBoughtCount += amount;
-
-    private float avgTimeToBuy = 0f;
 
     public void AddPurchaseDuration(float amount)
     {
         if (amount != 0f)
             purchaseDurations.Add(amount);
-        avgTimeToBuy=purchaseDurations.Average();
+        Debug.Log($"added current purchase duration {amount}");
+    }
+
+    public void ResetInGameSettings()
+    {
+        CurrLvlIdx = 0;
+        GameStats.ResetDrinksBoughtCount();
     }
     public List<float> GetPurchaseDurations() => purchaseDurations;
     public float GetPUWBGVolume() { return _PUWBGVolume; }
@@ -157,9 +160,9 @@ public class GameSettings : MonoBehaviour
         else
         {
             Debug.Log("JSON file not found. Initializing with default values.");
-            BetweenSceneDuration = 15f;
-            LevelSequence = new string[] { "PUWScene", "LSScene", "GBScene", "TMScene", };
-            LevelDurations = new float[] { 300f, 300f, 300f, 300f };
+            BetweenSceneDuration = 10f;
+            LevelSequence = new string[] { "PUWScene", "LSScene", "GBScene", };
+            LevelDurations = new float[] { 100f, 100f, 100f};
             _PUWBGVolume = .5f;
             _PUWGMVolume = .5f;
             _PUWWaiterVolume = .5f;

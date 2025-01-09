@@ -142,77 +142,77 @@ public static class GBStats
     public static float GetCorrectGhostBustingRate(float quest)
     {
         if (quest == 1)
-            return q1CorrectBustedGhosts / q1TotalGhosts;
+            return q1TotalGhosts!=0? q1CorrectBustedGhosts / q1TotalGhosts : 0f;
         if (quest == 2)
-            return q2CorrectBustedGhosts / q2TotalGhosts;
+            return q2TotalGhosts != 0 ? q2CorrectBustedGhosts / q2TotalGhosts  :0f;
         if (quest == 3)
-            return q3CorrectBustedGhosts / q3TotalGhosts;
+            return q3TotalGhosts != 0 ? q3CorrectBustedGhosts / q3TotalGhosts: 0f;
         if (quest == 4)
-            return q4CorrectBustedGhosts / q4TotalGhosts;
+            return q4TotalGhosts != 0 ? q4CorrectBustedGhosts / q4TotalGhosts: 0f;
         return 0;
     }
 
     public static float GetAnyGhostBustingRate(float quest)
     {
         if (quest == 1)
-            return (q1WrongBustedGhosts + q1CorrectBustedGhosts) / q1TotalGhosts;
+            return q1TotalGhosts != 0 ? (q1WrongBustedGhosts + q1CorrectBustedGhosts) / q1TotalGhosts : 0f;
         if (quest == 2)
-            return (q2WrongBustedGhosts + q2CorrectBustedGhosts) / q2TotalGhosts;
+            return q2TotalGhosts != 0 ? (q2WrongBustedGhosts + q2CorrectBustedGhosts) / q2TotalGhosts :0f;
         if (quest == 3)
-            return (q3WrongBustedGhosts + q3CorrectBustedGhosts) / q3TotalGhosts;
+            return q3TotalGhosts != 0 ? (q3WrongBustedGhosts + q3CorrectBustedGhosts) / q3TotalGhosts :0f;
         if (quest == 4)
-            return (q4WrongBustedGhosts + q4CorrectBustedGhosts) / q4TotalGhosts;
+            return q4TotalGhosts != 0 ? (q4WrongBustedGhosts + q4CorrectBustedGhosts) / q4TotalGhosts:0f;
         return 0;
     }
 
     public static float GetWrongGhostBustingRate(int quest)
     {
         if (quest == 1)
-            return q1WrongBustedGhosts / q1TotalGhosts;
+            return q1TotalGhosts != 0 ? q1WrongBustedGhosts / q1TotalGhosts : 0f;
         if (quest == 2)
-            return q2WrongBustedGhosts / q2TotalGhosts;
+            return q2TotalGhosts != 0 ? q2WrongBustedGhosts / q2TotalGhosts : 0f;
         if (quest == 3)
-            return q3WrongBustedGhosts / q3TotalGhosts;
+            return q3TotalGhosts != 0 ? q3WrongBustedGhosts / q3TotalGhosts : 0f;
         if (quest == 4)
-            return q4WrongBustedGhosts / q4TotalGhosts;
+            return q4TotalGhosts != 0 ? q4WrongBustedGhosts / q4TotalGhosts : 0f;
         return 0;
     }
 
     public static float GetAvgReactionTimeCorrectGhost(int quest)
     {
         if (quest == 1)
-            return q1CorrectGhostReactionTimes.Average();
+            return q1CorrectGhostReactionTimes.Count>0? q1CorrectGhostReactionTimes.Average():0f;
         if (quest == 2)
-            return q2CorrectGhostReactionTimes.Average();
+            return q2CorrectGhostReactionTimes.Count > 0 ? q2CorrectGhostReactionTimes.Average():0f;
         if (quest == 3)
-            return q3CorrectGhostReactionTimes.Average();
+            return q3CorrectGhostReactionTimes.Count > 0 ? q3CorrectGhostReactionTimes.Average():0f;
         if (quest == 4)
-            return q4CorrectGhostReactionTimes.Average();
+            return q4CorrectGhostReactionTimes.Count > 0 ? q4CorrectGhostReactionTimes.Average():0f;
         return 0;
     }
 
     public static float GetAvgReactionTimeWrongGhost(int quest)
     {
         if (quest == 1)
-            return q1WrongGhostReactionTimes.Average();
+            return q1WrongGhostReactionTimes.Count > 0 ? q1WrongGhostReactionTimes.Average() : 0f;
         if (quest == 2)
-            return q2WrongGhostReactionTimes.Average();
+            return q2WrongGhostReactionTimes.Count > 0 ? q2WrongGhostReactionTimes.Average() : 0f;
         if (quest == 3)
-            return q3WrongGhostReactionTimes.Average();
+            return q3WrongGhostReactionTimes.Count > 0 ? q3WrongGhostReactionTimes.Average() : 0f;
         if (quest == 4)
-            return q4WrongGhostReactionTimes.Average();
+            return q4WrongGhostReactionTimes.Count > 0 ? q4WrongGhostReactionTimes.Average() : 0f;
         return 0;
     }
     public static float GetAvgReactionTimeAnyGhost(int quest)
     {
         if (quest == 1)
-            return (q1CorrectGhostReactionTimes.Concat(q1WrongGhostReactionTimes)).Average();
+            return (q1CorrectGhostReactionTimes.Count>0 &&q1WrongGhostReactionTimes.Count>0)? (q1CorrectGhostReactionTimes.Concat(q1WrongGhostReactionTimes)).Average() : 0f;
         if (quest == 2)
-            return (q2CorrectGhostReactionTimes.Concat(q2WrongGhostReactionTimes)).Average();
+            return (q2CorrectGhostReactionTimes.Count > 0 && q2WrongGhostReactionTimes.Count > 0) ? (q2CorrectGhostReactionTimes.Concat(q2WrongGhostReactionTimes)).Average():0f;
         if (quest == 3)
-            return (q3CorrectGhostReactionTimes.Concat(q3WrongGhostReactionTimes)).Average();
+            return (q3CorrectGhostReactionTimes.Count > 0 && q3WrongGhostReactionTimes.Count > 0) ? (q3CorrectGhostReactionTimes.Concat(q3WrongGhostReactionTimes)).Average():0f;
         if (quest == 4)
-            return (q4CorrectGhostReactionTimes.Concat(q4WrongGhostReactionTimes)).Average();
+            return (q4CorrectGhostReactionTimes.Count > 0 && q4WrongGhostReactionTimes.Count > 0) ? (q4CorrectGhostReactionTimes.Concat(q4WrongGhostReactionTimes)).Average():0f;
         return 0;
     }
 
@@ -220,26 +220,26 @@ public static class GBStats
     public static float GetAvgGazeTimeCorrectGhost(int quest)
     {
         if (quest == 1)
-            return q1GazeTimesCorrectGhosts.Average();
+            return q1GazeTimesCorrectGhosts.Count>0? q1GazeTimesCorrectGhosts.Average():0f;
         if (quest == 2)
-            return q2GazeTimesCorrectGhosts.Average();
+            return q2GazeTimesCorrectGhosts.Count > 0 ? q2GazeTimesCorrectGhosts.Average():0f;
         if (quest == 3)
-            return q3GazeTimesCorrectGhosts.Average();
+            return q3GazeTimesCorrectGhosts.Count > 0 ? q3GazeTimesCorrectGhosts.Average():0f;
         if (quest == 4)
-            return q4GazeTimesCorrectGhosts.Average();
+            return q4GazeTimesCorrectGhosts.Count > 0 ? q4GazeTimesCorrectGhosts.Average():0f;
         return 0;
     }
 
     public static float GetAvgGazeTimeWrongGhost(int quest)
     {
         if (quest == 1)
-            return q1GazeTimesWrongGhosts.Average();
+            return q1GazeTimesWrongGhosts.Count>0? q1GazeTimesWrongGhosts.Average():0f;
         if (quest == 2)
-            return q2GazeTimesWrongGhosts.Average();
+            return q2GazeTimesWrongGhosts.Count > 0 ? q2GazeTimesWrongGhosts.Average() : 0f;
         if (quest == 3)
-            return q3GazeTimesWrongGhosts.Average();
+            return q3GazeTimesWrongGhosts.Count > 0 ? q3GazeTimesWrongGhosts.Average() : 0f;
         if (quest == 4)
-            return q4GazeTimesWrongGhosts.Average();
+            return q4GazeTimesWrongGhosts.Count > 0 ? q4GazeTimesWrongGhosts.Average() : 0f;
         return 0;
     }
 

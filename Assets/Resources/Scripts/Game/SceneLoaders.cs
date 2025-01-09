@@ -43,11 +43,9 @@ public class SceneLoaders : MonoBehaviour
             RepositionOnLoad.Instance.repositionOnLoad(levelName);
             if (levelName.Equals("EndScene"))
             {
-                float avgPusPurchaseDur = 0f;
-                GameSettings.Instance.GetPurchaseDurations().ForEach(duration => { avgPusPurchaseDur += duration; });
-                avgPusPurchaseDur /= GameSettings.Instance.GetPurchaseDurations().Count * GameSettings.Instance.BetweenSceneDuration;
+                CalculateAndSaveGameStats();
             }
-            else
+            else if(!levelName.Equals("StartScene"))
             {
                 AsyncOperation _asyncLoad = SceneManager.LoadSceneAsync("PUSScene", LoadSceneMode.Additive);
                 while (!_asyncLoad.isDone)
@@ -72,6 +70,25 @@ public class SceneLoaders : MonoBehaviour
 
             }
         }
+
+    }
+
+    private void CalculateAndSaveGameStats()
+    {
+        //Instr Panel
+        List<int> instrCounts = FindFirstObjectByType<InstructionPanel>().GetPerLEvelOpenCount();
+        GameStats.SaveCheckedInstrCount(instrCounts);
+       
+        //PUS
+        ParticipantSettings.Instance.WholeGamePair.Invoke(new KeyValuePair<string, float>(" avgPurchaseDuration", GameStats.GetAveragePurchaseDuration()));
+        ParticipantSettings.Instance.WholeGamePair.Invoke(new KeyValuePair<string, float>("NonRewardDrinksBoughtCount", (float)GameStats.GetNonRewardDrinksBoughtCount()));
+        ParticipantSettings.Instance.WholeGamePair.Invoke(new KeyValuePair<string, float>("RewardDrinksBoughtCount", (float)GameStats.GetRewardDrinksBoughtCount()));
+
+        //Money Manager
+        GameStats.SaveSafeAcount();
+        GameStats.SaveGameAccount(MoneyManager.instance.GetMoney());
+
+        ParticipantSettings.Instance.SaveRawParticipantData();
 
     }
 }
