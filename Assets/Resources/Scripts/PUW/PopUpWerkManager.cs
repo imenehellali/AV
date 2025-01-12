@@ -84,7 +84,7 @@ public class PopUpWerkManager : MonoBehaviour
     private void EndLevel()
     {
         StopAllCoroutines();
-        PUWStats.SaveStatsToParticipantData();
+        PUWData.Data.SaveData();
         MoneyManager.instance.StoreMoneyInSafeAccount(GameSettings.Instance.CurrLvlIdx-1);
         NonRewardObject[] nonRewardObjects = FindObjectsOfType<NonRewardObject>();
         RewardObject[] rewardObjects = FindObjectsOfType<RewardObject>();

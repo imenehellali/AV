@@ -112,6 +112,7 @@ public class EndLevelManager : MonoBehaviour
             _obj.GetComponent<SafeAccountUIHandler>().InitializeSafeAmount(safeAcounts[i]);
         
         }
+        Debug.Log($"Participant Position is now {FindObjectOfType<RepositionOnLoad>().gameObject.transform.position}");
     }
   
     private void OnGameStart(InputAction.CallbackContext context)

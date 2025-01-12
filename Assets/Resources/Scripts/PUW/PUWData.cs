@@ -51,21 +51,8 @@ public class PUWData : MonoBehaviour
 
         // Stagnant Time
         ParticipantSettings.Instance.PUWDataPair.Invoke(new KeyValuePair<string, float>("AvgStagnantTime",(float)PUWStats.GetAvgStagnantTime()));
-        ParticipantSettings.Instance.PUWDataPair.Invoke(new KeyValuePair<string, float>("TotalAccumulatedMoney",(float)PUWStats.GetTotalAccumulatedMoney()));
     
     }
-
-    /*
-    Further Steps in Training (Pseudo-code Explanation):
-
-    1. During model training, include Batch Normalization layers to help stabilize and speed up convergence.
-    2. Use Dropout layers between dense layers to prevent overfitting.
-    3. Test the model iteratively:
-       - Run training using the normalized dataset.
-       - Evaluate the model's performance metrics (e.g., accuracy, loss).
-       - Adjust hyperparameters or normalization scaling if needed.
-    4. Continue experimenting with other composite metrics based on model performance and feedback.
-    */
 
 
 }

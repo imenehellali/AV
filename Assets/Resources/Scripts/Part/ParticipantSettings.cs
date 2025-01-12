@@ -56,38 +56,89 @@ public class ParticipantSettings : MonoBehaviour
     //Contains purchaseDurations, GameQAccount, sAfeAccount
     private void FillWholeGameDict(KeyValuePair<string, float> pair)
     {
-        if (!WholeGameDict.ContainsKey(pair.Key))
-            WholeGameDict.Add(pair.Key, pair.Value);
+        if(pair.Key!=null)
+        {
+            if (!WholeGameDict.ContainsKey(pair.Key))
+                WholeGameDict.Add(pair.Key, pair.Value);
+            else
+                WholeGameDict[pair.Key] = pair.Value;
+        }
         else
-            WholeGameDict[pair.Key] = pair.Value;
+        {
+            if (!WholeGameDict.ContainsKey(pair.Key))
+                WholeGameDict.Add(pair.Key, 0f);
+            else
+                WholeGameDict[pair.Key] = 0f;
+        }
+       
     }
     private void FillPUWDataDict(KeyValuePair<string, float> pair)
     {
-        if (!PUWdataDict.ContainsKey(pair.Key))
-            PUWdataDict.Add(pair.Key, pair.Value);
+        if (pair.Key != null)
+        {
+            if (!PUWdataDict.ContainsKey(pair.Key))
+                PUWdataDict.Add(pair.Key, pair.Value);
+            else
+                PUWdataDict[pair.Key] = pair.Value;
+        }
         else
-            PUWdataDict[pair.Key] = pair.Value;
+        {
+            if (!PUWdataDict.ContainsKey(pair.Key))
+                PUWdataDict.Add(pair.Key, 0f);
+            else
+                PUWdataDict[pair.Key] = 0f;
+        }
     }
     private void FillGBDataDict(KeyValuePair<string, float> pair)
     {
-        if (!GBdataDict.ContainsKey(pair.Key))
-            GBdataDict.Add(pair.Key, pair.Value);
+        if (pair.Key != null)
+        {
+            if (!GBdataDict.ContainsKey(pair.Key))
+                GBdataDict.Add(pair.Key, pair.Value);
+            else
+                GBdataDict[pair.Key] = pair.Value;
+        }
         else
-            GBdataDict[pair.Key] = pair.Value;
+        {
+            if (!GBdataDict.ContainsKey(pair.Key))
+                GBdataDict.Add(pair.Key, 0f);
+            else
+                GBdataDict[pair.Key] =0f;
+        }
     }
     private void FillLSDataDict(KeyValuePair<string, object> pair)
     {
-        if (!LSdataDict.ContainsKey(pair.Key))
-            LSdataDict.Add(pair.Key, pair.Value);
+        if (pair.Key != null)
+        {
+            if (!LSdataDict.ContainsKey(pair.Key))
+                LSdataDict.Add(pair.Key, pair.Value);
+            else
+                LSdataDict[pair.Key] = pair.Value;
+        }
         else
-            LSdataDict[pair.Key] = pair.Value;
+        {
+            if (!LSdataDict.ContainsKey(pair.Key))
+                LSdataDict.Add(pair.Key,"");
+            else
+                LSdataDict[pair.Key] ="";
+        }
     }
     private void FillTMDataDict(KeyValuePair<string, object> pair)
     {
-        if (!TMdataDict.ContainsKey(pair.Key))
-            TMdataDict.Add(pair.Key, pair.Value);
+        if (pair.Key != null)
+        {
+            if (!TMdataDict.ContainsKey(pair.Key))
+                TMdataDict.Add(pair.Key, pair.Value);
+            else
+                TMdataDict[pair.Key] = pair.Value;
+        }
         else
-            TMdataDict[pair.Key] = pair.Value;
+        {
+            if (!TMdataDict.ContainsKey(pair.Key))
+                TMdataDict.Add(pair.Key, "");
+            else
+                TMdataDict[pair.Key] = "";
+        }
     }
 
     private void UpdateParticipantData(string UID)

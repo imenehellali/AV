@@ -25,7 +25,10 @@ public static class GameStats
     public static float GetAveragePurchaseDuration()
     {
         GameSettings.Instance.GetPurchaseDurations().ForEach(duration => { avgPurchaseDuration += duration; });
-        avgPurchaseDuration /= GameSettings.Instance.GetPurchaseDurations().Count * GameSettings.Instance.BetweenSceneDuration;
+        if (avgPurchaseDuration > 0f)
+        {
+            avgPurchaseDuration /= GameSettings.Instance.GetPurchaseDurations().Count * GameSettings.Instance.BetweenSceneDuration;
+        }
         return avgPurchaseDuration;
     }
 

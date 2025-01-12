@@ -18,51 +18,55 @@ public class GhostBustBehavior : MonoBehaviour
     public bool ghostDead;
 
     //Movement Variables
-    private float radius = 3f;  
+    private float radius = 3f;
     private float rotationSpeed = 30f;
+
+    //Variables for the GBStats
+    public List<float> focusDurations = new List<float>();
+    public float _elapsedTime = 0f;
+
+
+    private float circleDuration = 0f;
+    private Vector3 initialPosition = Vector3.zero;
+    private Quaternion initialRotation = Quaternion.identity;
     private void Start()
     {
-        GazeObject=GetComponent<ETObject>();
+        GazeObject = GetComponent<ETObject>();
         Activate.action.started += ShootGhost;
         _material.enabled = false;
-        StartCoroutine(MoveAndDestroyGhost(this.transform,rotationSpeed));
+        circleDuration = 360f / rotationSpeed;
+        initialPosition = gameObject.transform.position;
+        initialRotation = gameObject.transform.rotation;
     }
-    private IEnumerator MoveAndDestroyGhost(Transform ghost, float rotationSpeed)
-    {
-        float circleDuration = 360f / rotationSpeed;
-        float _elapsedTime = 0f;
-        // Save the initial position of the ghost for circular movement
-        Vector3 initialPosition = ghost.position;
-        Quaternion initialRotation = ghost.rotation;
 
-        while (_elapsedTime < circleDuration)
+    private void Update()
+    {
+        if (_elapsedTime < circleDuration && !ghostDead)
         {
             _elapsedTime += Time.deltaTime;
-            ghost.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
+            gameObject.transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
 
             float angle = rotationSpeed * _elapsedTime;
             Vector3 offset = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * radius;
-            ghost.position = initialPosition + ghost.forward * offset.magnitude;
+            gameObject.transform.position = initialPosition + gameObject.transform.forward * offset.magnitude;
 
-            ghost.position = new Vector3(ghost.position.x, Mathf.Clamp(ghost.position.y, 1f, 3f), ghost.position.z);
+            gameObject.transform.position = new Vector3(gameObject.transform.position.x, Mathf.Clamp(gameObject.transform.position.y, 1f, 3f), gameObject.transform.position.z);
 
-            yield return null;
         }
-        if (_elapsedTime >= circleDuration)
+        else if (_elapsedTime >= circleDuration && !ghostDead)
         {
             Destroy(this.gameObject);
         }
-       
-    }
 
+    }
     private void OnDestroy()
     {
         Activate.action.started -= ShootGhost;
     }
-    
+
     private void ShootGhost(InputAction.CallbackContext callbackContext)
     {
-        if(callbackContext.ReadValueAsButton())
+        if (callbackContext.ReadValueAsButton())
         {
             if (GazeObject.IsGazeLocked())
             {
@@ -70,15 +74,16 @@ public class GhostBustBehavior : MonoBehaviour
                 GhostBusterManager.Instance.killedGhost.Invoke(this);
             }
         }
-        
+
     }
 
     public void ResetGlow()
     {
-        _material.enabled=false;
+        _material.enabled = false;
+
     }
     public void SetGlow()
     {
-        _material.enabled=true; 
+        _material.enabled = true;
     }
 }

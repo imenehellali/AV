@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public static class PUWStats 
+public static class PUWStats
 {
     private static int _coinsQuantity = 0;
     private static int _coinsBoughtCount = 0;
-    
+
     private static int _mysterySlotPlaysPerMinute = 0;
     private static int _billSlotPlaysPerMinute = 0;
     private static int _diamondSlotPlaysPerMinute = 0;
@@ -29,7 +29,7 @@ public static class PUWStats
 
 
     private static float _totalAccumulatedMoney = 0f;
-   
+
     //Coins
     public static void AddCoins(int amount)
     {
@@ -102,7 +102,9 @@ public static class PUWStats
 
     public static float GetAvgFixationTimeAlcoholicVsNonAlcoholic()
     {
-        return _totalFixationTimeAlcoholicDisplays / _totalFixationTimeNonAlcoholicDisplays;
+        if (_totalFixationTimeNonAlcoholicDisplays > 0f)
+            return _totalFixationTimeAlcoholicDisplays / _totalFixationTimeNonAlcoholicDisplays;
+        return 0f;
     }
 
 
@@ -156,7 +158,9 @@ public static class PUWStats
 
     public static float GetAvgTimePlayingBillMachine()
     {
-        return (billSlotDuration * _billSlotPlayCount) / GetTotalTimePlayingMachines();
+        if (GetTotalTimePlayingMachines() > 0f)
+            return (billSlotDuration * _billSlotPlayCount) / GetTotalTimePlayingMachines();
+        return 0f;
     }
 
     public static void UpdateMysterySlotsTotalDurations(float amount)
@@ -165,12 +169,16 @@ public static class PUWStats
     }
     public static float GetAvgTimePlayingMysteryMachine()
     {
-        return mysterySlotsTotalDurations / GetTotalTimePlayingMachines();
+        if (GetTotalTimePlayingMachines() > 0f)
+            return mysterySlotsTotalDurations / GetTotalTimePlayingMachines();
+        return 0f;
     }
 
     public static float GetAvgTimePlayingCakeMachine()
     {
-        return (cakeSlotDuration * _cakeSlotPlayCount) / GetTotalTimePlayingMachines();
+        if (GetTotalTimePlayingMachines() > 0f)
+            return (cakeSlotDuration * _cakeSlotPlayCount) / GetTotalTimePlayingMachines();
+        return 0f;
     }
 
     private static float GetTotalTimePlayingMachines()
@@ -188,21 +196,4 @@ public static class PUWStats
         return (stagnantTime / _overallTaskTime);
     }
 
-    // Accumulated Money
-    public static void AddAccumulatedMoney(float amount)
-    {
-        _totalAccumulatedMoney += amount;
-    }
-
-    public static float GetTotalAccumulatedMoney()
-    {
-        return _totalAccumulatedMoney;
-    }
-
-    
-
-    public static void SaveStatsToParticipantData()
-    {
-        PUWData.Data.SaveData();  // Ensure this saves the updated stats
-    }
 }

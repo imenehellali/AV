@@ -56,8 +56,8 @@ public class GBData : MonoBehaviour
         ParticipantSettings.Instance.GBDataPair.Invoke(new KeyValuePair<string, float>("incDecMarginNumberBustCorrectQ3To21 ", GBStats.GetincDecMarginQ3To21("NumCorrect")));
         ParticipantSettings.Instance.GBDataPair.Invoke(new KeyValuePair<string, float>("incDecMarginNumberBustWrongQ3To21", GBStats.GetincDecMarginQ3To21("NumWrong")));
 
-        ParticipantSettings.Instance.GBDataPair.Invoke(new KeyValuePair<string, float>("q4AvgTimeGazeOnCorrectGhost", GBStats.GetAvgGazeTimeCorrectGhost(3)));
-        ParticipantSettings.Instance.GBDataPair.Invoke(new KeyValuePair<string, float>("q4AvgTimeGazeOnWrongGhost ", GBStats.GetAvgGazeTimeWrongGhost(3)));
+        ParticipantSettings.Instance.GBDataPair.Invoke(new KeyValuePair<string, float>("q4AvgTimeGazeOnCorrectGhost", GBStats.GetAvgGazeTimeCorrectGhost(4)));
+        ParticipantSettings.Instance.GBDataPair.Invoke(new KeyValuePair<string, float>("q4AvgTimeGazeOnWrongGhost ", GBStats.GetAvgGazeTimeWrongGhost(4)));
         ParticipantSettings.Instance.GBDataPair.Invoke(new KeyValuePair<string, float>("incDecMarginReactionTimeAnyQ4To3", GBStats.GetincDecMarginQ4To3("reactionAny")));
         ParticipantSettings.Instance.GBDataPair.Invoke(new KeyValuePair<string, float>("incDecMarginReactionTimeCorrectQ4To3", GBStats.GetincDecMarginQ4To3("reactionCorrect")));
         ParticipantSettings.Instance.GBDataPair.Invoke(new KeyValuePair<string, float>("incDecMarginReactionTimeWrongQ4To3", GBStats.GetincDecMarginQ4To3("reactionWrong")));

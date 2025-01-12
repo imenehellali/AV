@@ -1,6 +1,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -59,7 +60,11 @@ public class NonRewardObject : ETObject
         unfocusTimer = 0f;
         isUnfocusTimerRunning = true;  // Start the offset timer
         if (gameObject.GetComponent<GhostBustBehavior>() != null)
+        {
             gameObject.GetComponent<GhostBustBehavior>().ResetGlow();
+            if(focusDurations.Count>0)
+                gameObject.GetComponent<GhostBustBehavior>().focusDurations.Add(focusDurations[focusDurations.Count - 1]);
+        }
     }
     private void AddFocusDuration()
     {

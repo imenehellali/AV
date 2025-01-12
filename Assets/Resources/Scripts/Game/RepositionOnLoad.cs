@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 
@@ -45,12 +46,15 @@ public class RepositionOnLoad : MonoBehaviour
     //if we have diff positions for each level then we can handle it here
     private void RepositionXROnLoad(string levelName)
     {
-        if(!_dynamicMoveProvider.enabled)
-            _dynamicMoveProvider.enabled = true;
+       
         if (levelName.Equals("EndScene"))
         {
+            _participant.GetComponent<NavMeshAgent>().enabled = false;
             _participant.transform.position = new Vector3(0f, 0.1f, 0f);
             _participant.transform.rotation = Quaternion.identity;
+            _participant.GetComponent<NavMeshAgent>().enabled = true;
+            Debug.Log($"Set Participant Position to {_participant.transform.position}");
+
             _settingManager.SetActive(false);
             _settingControls.enabled = false;
             _instrPanel.SetActive(true);
@@ -77,8 +81,10 @@ public class RepositionOnLoad : MonoBehaviour
         }
         else if (levelName.Equals("PUWScene"))
         {
+            _participant.GetComponent<NavMeshAgent>().enabled = false;
             _participant.transform.position = new Vector3(1.19100022f, 0.00999999046f, 1.58800006f);
             _participant.transform.rotation = Quaternion.identity;
+            _participant.GetComponent<NavMeshAgent>().enabled=true; 
 
             _taskProgressPanel.position = new Vector3(-1.0446161f, 2.17185879f, 8.8579998f);
             _taskProgressPanel.rotation = Quaternion.identity;
@@ -93,8 +99,10 @@ public class RepositionOnLoad : MonoBehaviour
         }
         else if (levelName.Equals("GBScene"))
         {
+            _participant.GetComponent<NavMeshAgent>().enabled = false;
             _participant.transform.position = new Vector3(0f, 0.1f, 0f);
             _participant.transform.rotation = Quaternion.identity;
+            _participant.GetComponent<NavMeshAgent>().enabled = true;
 
             _taskProgressPanel.position = new Vector3(-5.30937386f, 2.5f, 6.61999989f);
             _taskProgressPanel.rotation = Quaternion.identity;
@@ -108,8 +116,10 @@ public class RepositionOnLoad : MonoBehaviour
         }
         else if (levelName.Equals("LSScene"))
         {
+            _participant.GetComponent<NavMeshAgent>().enabled = false;
             _participant.transform.position = new Vector3(0f, 0.1f, 0f);
-            _participant.transform.rotation = Quaternion.identity;
+            _participant.transform.rotation = Quaternion.identity; 
+            _participant.GetComponent<NavMeshAgent>().enabled = true;
 
             _taskProgressPanel.position = new Vector3(3.44938493f, 1.62993073f, -3.97199988f);
             _taskProgressPanel.rotation = Quaternion.identity;
@@ -124,8 +134,10 @@ public class RepositionOnLoad : MonoBehaviour
         }
         else if (levelName.Equals("TMScene"))
         {
+            _participant.GetComponent<NavMeshAgent>().enabled = false;
             _participant.transform.position = new Vector3(0f, 0.1f, 0f);
             _participant.transform.rotation = Quaternion.identity;
+            _participant.GetComponent<NavMeshAgent>().enabled = true;
 
             _taskProgressPanel.position = new Vector3(2.82274318f, 2.5f, 5.48126125f);
             _taskProgressPanel.rotation = Quaternion.identity;
@@ -137,5 +149,7 @@ public class RepositionOnLoad : MonoBehaviour
             _settingControls.enabled = false;
             _instrPanel.SetActive(true);
         }
+        if (!_dynamicMoveProvider.enabled)
+            _dynamicMoveProvider.enabled = true;
     }
 }

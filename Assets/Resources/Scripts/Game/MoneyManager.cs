@@ -16,6 +16,7 @@ public class MoneyManager : MonoBehaviour
     public UnityAction OnMoneyWon;
     public UnityAction OnLevelEnd;
 
+
     public static MoneyManager instance;
     private void Awake()
     {
@@ -51,7 +52,7 @@ public class MoneyManager : MonoBehaviour
         Debug.Log($"saving {_money} in current level {levelIndex}");
         GameStats.UpdateSafeAccount(levelIndex, _money);
         _money = 0;
-    } 
+    }
 
 }
 

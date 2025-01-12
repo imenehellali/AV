@@ -24,16 +24,28 @@ public class SafeAccountUIHandler : MonoBehaviour
     }
     public void AddAmount()
     {
-        if(canAdd)
+        if(canAdd && !canSub)
         {
             _endLevel?.updateBalance.Invoke(amount);
-            canAdd = false;
+            canAdd = true;
+            canSub = true;
+        }
+        else if(canAdd && canSub)
+        {
+            _endLevel?.updateBalance.Invoke(amount);
+            canAdd =false;
             canSub = true;
         }
     }
     public void SubAmount()
     {
-        if (canSub)
+        if (canSub && !canAdd)
+        {
+            _endLevel?.updateBalance.Invoke(-amount);
+            canAdd = true;
+            canSub = true;
+        }
+        else if(canSub && canAdd)
         {
             _endLevel?.updateBalance.Invoke(-amount);
             canAdd = true;

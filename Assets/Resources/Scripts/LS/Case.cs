@@ -160,7 +160,8 @@ public class Case : MonoBehaviour
     }
     public void UpdateProgress()
     {
-        percentageDone = (assignedAir + assignedAntidote + assignedWater + SocialFulfilled()) / (requiredAir + requiredAntidote + requiredWater + 1); //one for social
+        percentageDone = (float)(assignedAir + assignedAntidote + assignedWater + SocialFulfilled()) / (float)(requiredAir + requiredAntidote + requiredWater + 1); //one for social
+        
         CheckDone();
     }
     private void CheckDone()
@@ -169,13 +170,13 @@ public class Case : MonoBehaviour
             (requiredAir == assignedAir && requiredAntidote == assignedAntidote && requiredWater == assignedWater && requiredSocial == assignedSocial))
         {
             healed = true;
-            if (endTime <= 0.1f)
-                endTime = Time.deltaTime;
+            percentageDone = 1f;
+            endTime = Time.deltaTime;
         }
     }
     private int SocialFulfilled()
     {
-        return XOR(assignedSocial, requiredSocial) ? 0 : 1;
+        return (assignedSocial == requiredSocial)? 1:0;
     }
 
     public void AssignSocial()
@@ -210,32 +211,13 @@ public class Case : MonoBehaviour
     public void StopCase(string caseName)
     {
         startCase = false;
-        foreach(ResourceElementCase _resource in _resources)
+        Debug.Log($"percentage done for {caseName} case:   {percentageDone} which is Healed ? {healed}");
+        foreach (ResourceElementCase _resource in _resources)
         {
             _resource.StopResource(caseName);
         }
     }
-    //TBCCCCC
-    public void UpdateCaseForTesting(bool assignedSocial,
-        int assignedAntidote, int assignedWater, int assignedAir, 
-        bool startedAssigning, float percentageDone,
-        bool healed, bool dead, bool stoppedHelping, bool watchedVid, 
-        float startTime, float endTime)
-    {
-        this.assignedSocial = assignedSocial;
-        this.assignedAntidote = assignedAntidote;
-        this.assignedWater = assignedWater;
-        this.assignedAir = assignedAir;
-        this.startedAssigning = startedAssigning;
-        this.percentageDone = percentageDone;
-        this.healed = healed;
-        this.dead = dead;
-        this.stoppedHelping = stoppedHelping;
-        this.watchedVid = watchedVid; //at least ones
-        this.startCase = true;
-        this.startTime = startTime;
-        this.endTime = endTime;
-    }
+   
     private string FormatTime(float time)
     {
         int minutes = Mathf.FloorToInt(time / 60F);
@@ -263,8 +245,7 @@ public class Case : MonoBehaviour
                 else
                 {
                     dead = true;
-                    if (endTime <= 0.1f)
-                        endTime = Time.deltaTime;
+                    endTime = Time.deltaTime;
                 }
             }
         }

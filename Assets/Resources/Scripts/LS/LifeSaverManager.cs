@@ -274,6 +274,10 @@ public class LifeSaverManager : MonoBehaviour
         {
             MoneyManager.instance.UpdateMoney(amount);
         }
+        else if(!stopped && amount>0f)
+        {
+            MoneyManager.instance.UpdateMoney(amount*0.9f);
+        }
         MoneyManager.instance.StoreMoneyInSafeAccount(GameSettings.Instance.CurrLvlIdx - 1);
         LSData.Data.SaveData(_cases);
         GameSettings.Instance.LoadNextScene();

@@ -149,8 +149,8 @@ public class GameSettings : MonoBehaviour
             {
                 Debug.LogError($"Failed to load JSON: {ex.Message}");
                 BetweenSceneDuration = 15f;
-                LevelSequence = new string[] { "PUWScene", "GBScene", "LSScene",};
-                LevelDurations = new float[] { 100f, 100f, 100f,};
+                LevelSequence = new string[] { "GBScene",};
+                LevelDurations = new float[] { 100f,};
                 _PUWBGVolume = .5f;
                 _PUWGMVolume = .5f;
                 _PUWWaiterVolume = .5f;
@@ -165,8 +165,8 @@ public class GameSettings : MonoBehaviour
         {
             Debug.Log("JSON file not found. Initializing with default values.");
             BetweenSceneDuration = 10f;
-            LevelSequence = new string[] { "PUWScene", "LSScene", "GBScene",};
-            LevelDurations = new float[] { 100f, 100f, 100f};
+            LevelSequence = new string[] {"GBScene",};
+            LevelDurations = new float[] { 100f,};
             _PUWBGVolume = .5f;
             _PUWGMVolume = .5f;
             _PUWWaiterVolume = .5f;
