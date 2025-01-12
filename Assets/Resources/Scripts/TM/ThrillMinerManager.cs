@@ -389,12 +389,12 @@ public class ThrillMinerManager : MonoBehaviour
             newPath.incDecOverNodes /= (singlePath.Count - 1);
             _pathList.Add(newPath);
         }
-        TMStats.ChosenPath(_pathList);
+        TMData.Data.SaveData(_pathList);
         if (temporaryAmount > 0)
         {
             MoneyManager.instance.UpdateMoney(temporaryAmount);
-            MoneyManager.instance.StoreMoneyInSafeAccount(GameSettings.Instance.CurrLvlIdx-1);
         }
+        MoneyManager.instance.StoreMoneyInSafeAccount(GameSettings.Instance.CurrLvlIdx - 1);
         GameSettings.Instance.LoadNextScene();
     }
 

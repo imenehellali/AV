@@ -22,10 +22,10 @@ public class TMData : MonoBehaviour
 
 
     }
-    public void SaveData()
+    public void SaveData(List<ThrillMinerManager.ChosenPath> _pathList)
     {
-        List<ThrillMinerManager.ChosenPath> _pathList = ThrillMinerManager.Instance._pathList;
-        TMStats.ChosenPath(_pathList);
+        List<ThrillMinerManager.ChosenPath> pathList = _pathList;
+        TMStats.ChosenPath(pathList);
     }
     
 }

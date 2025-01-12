@@ -67,10 +67,18 @@ public class PopUpWerkManager : MonoBehaviour
             TaskProgress.Instance.updateTimer(_time);
             yield return null;
         }
-        if (levelTimer >= levelDuration)
+        if (levelTimer >= levelDuration-3f)
         {
+            GameSettings.Instance.XRBoundOFLoading.SetActive(true);
+            GameSettings.Instance._dynamicMove.enabled = false;
+
             _audioSource.Stop();
+
+            StopCoroutine(StartPUSRandShow());
+            StopCoroutine(ReduceMoneyOverTime());
+            StopCoroutine(CheckSlotMachinePlays());
             EndLevel();
+            StopCoroutine(StartLevelTimer());
         }
     }
     private void EndLevel()

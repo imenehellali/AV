@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
+using System.Collections.Generic;
+using System.Linq;
 public static class GameStats
 {
     //PUS
@@ -10,7 +9,7 @@ public static class GameStats
     private static float avgPurchaseDuration = 0f;
 
     //Money Manager
-    private static List<float> safeAccount = new List<float>();
+    private static Dictionary<int,float> safeAccount = new Dictionary<int, float>();
 
 
     // PUS Drinks Counts Functions
@@ -37,8 +36,11 @@ public static class GameStats
            
         if (idx >= 0 && idx < GameSettings.Instance.LevelSequence.Length && idx <= safeAccount.Count)
         {
-            safeAccount.Add(amount);
-            Debug.Log($"Save {amount} at level {idx}");
+            bool suc=safeAccount.TryAdd(idx, amount);
+            if (!suc)
+            {
+                safeAccount[idx] = amount;
+            }
         }
         else
         {
@@ -50,7 +52,7 @@ public static class GameStats
         for (int i = 0; i < GameSettings.Instance.LevelSequence.Length; i++)
             ParticipantSettings.Instance.WholeGamePair.Invoke(new KeyValuePair<string, float>($"SafeAccountSumLevel{GameSettings.Instance.LevelSequence[i]}", safeAccount[i]));
     }
-    public static List<float> GetSafeAccount() => safeAccount;
+    public static List<float> GetSafeAccount() => safeAccount.Values.ToList();
     public static void SaveGameAccount(float amount) => ParticipantSettings.Instance.WholeGamePair.Invoke(new KeyValuePair<string, float>("GameAccountFinalSum", amount));
 
     //Instruction Functions

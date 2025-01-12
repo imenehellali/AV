@@ -42,74 +42,94 @@ public class InstructionPanel : MonoBehaviour
     //All additional visits start from 2, 1 is the default count which is mendatory 
     private Dictionary<string, int> perLevelOpenCount = new Dictionary<string, int>();
     public List<int> GetPerLEvelOpenCount() => perLevelOpenCount.Values.ToList<int>();
-        private void OnEnable()
+    private void OnEnable()
     {
         Menu.action.started += OpenInstrPanel;
         sceneLoaded += StartInstructionPanel;
-        int count = GameSettings.Instance.LevelDurations.Length;
-        for (int i = 0; i < count; i++)
-        {
-            bool suc=perLevelOpenCount.TryAdd(GameSettings.Instance.LevelSequence[i], -1);
-            if (!suc)
-                perLevelOpenCount[GameSettings.Instance.LevelSequence[i]] = -1;
-            Debug.Log("tried to add or assigned existing per level open count -1");
-        }
+
     }
     private void OnDisable()
     {
         sceneLoaded -= StartInstructionPanel;
         Menu.action.started -= OpenInstrPanel;
     }
+    private void Start()
+    {
+        int count = GameSettings.Instance.LevelDurations.Length;
+        for (int i = 0; i < count; i++)
+        {
+            bool suc = perLevelOpenCount.TryAdd(GameSettings.Instance.LevelSequence[i], -1);
+            if (!suc)
+                perLevelOpenCount[GameSettings.Instance.LevelSequence[i]] = -1;
+            Debug.Log("tried to add or assigned existing per level open count -1");
+        }
+    }
     public void ResetInstructionPanel()
     {
         lvlIdx = 0;
         currLoadedScene = "";
         currLoadedLxlidx = -1;
+        int count = GameSettings.Instance.LevelDurations.Length;
+        for (int i = 0; i < count; i++)
+        {
+            bool suc = perLevelOpenCount.TryAdd(GameSettings.Instance.LevelSequence[i], -1);
+            if (!suc)
+                perLevelOpenCount[GameSettings.Instance.LevelSequence[i]] = -1;
+            Debug.Log($"added per level count for {perLevelOpenCount.Keys.ElementAt(i)} {perLevelOpenCount.Values.ElementAt(i)}");
+        }
     }
     private void StartInstructionPanel(string sceneName)
     {
         currLoadedScene = sceneName;
-        instructionPanel.SetActive(true);
-        currLoadedLxlidx++;
+        Debug.Log($" will start instruction for {currLoadedScene} euqls my input ? {sceneName.Equals("EndScene")}");
+        if (sceneName.Equals("EndScene"))
+        {
+            instructionPanel.SetActive(false);
+        }
+            
+        else 
+        {
+            instructionPanel.SetActive(true);
+            currLoadedLxlidx++;
 
-        DisplayGameInstruction();
-        if (SceneManager.GetSceneByName("StartScene").isLoaded)
-        {
-            _audioSourceInstrGame.PlayOneShot(gameVideo);
-            levelTranscript.text = "Sie befinden sich in der Startszene, bevor eine der eigentlichen Aufgaben beginnt! Dies ist ein Platzhalter. Die spezifischen Anweisungen zu jeder Aufgabe werden hier angezeigt! Die Anweisungen zu jeder Aufgabe werden zu Beginn jeder Aufgabe abgespielt! Sie können sie unten pausieren und wieder fortsetzen oder jederzeit von diesem Panel aus abspielen!";
-        }
+            DisplayGameInstruction();
+            if (SceneManager.GetSceneByName("StartScene").isLoaded)
+            {
+                _audioSourceInstrGame.PlayOneShot(gameVideo);
+                levelTranscript.text = "Sie befinden sich in der Startszene, bevor eine der eigentlichen Aufgaben beginnt! Dies ist ein Platzhalter. Die spezifischen Anweisungen zu jeder Aufgabe werden hier angezeigt! Die Anweisungen zu jeder Aufgabe werden zu Beginn jeder Aufgabe abgespielt! Sie können sie unten pausieren und wieder fortsetzen oder jederzeit von diesem Panel aus abspielen!";
+            }
 
-        else if (SceneManager.GetSceneByName("PUWScene").isLoaded)
-        {
-            lvlIdx = 0;
-            DisplayLevelInstruction(lvlIdx);
-            StartCoroutine(StartLevelAfterPlay());
+            else if (SceneManager.GetSceneByName("PUWScene").isLoaded)
+            {
+                lvlIdx = 0;
+                DisplayLevelInstruction(lvlIdx);
+                StartCoroutine(StartLevelAfterPlay());
+            }
+            else if (SceneManager.GetSceneByName("LSScene").isLoaded)
+            {
+                lvlIdx = 1;
+                DisplayLevelInstruction(lvlIdx);
+                StartCoroutine(StartLevelAfterPlay());
+            }
+            else if (SceneManager.GetSceneByName("GBScene").isLoaded)
+            {
+                lvlIdx = 2;
+                DisplayLevelInstruction(lvlIdx);
+                StartCoroutine(StartLevelAfterPlay());
+            }
+            else if (SceneManager.GetSceneByName("TMScene").isLoaded)
+            {
+                lvlIdx = 3;
+                DisplayLevelInstruction(lvlIdx);
+                StartCoroutine(StartLevelAfterPlay());
+            }
         }
-        else if (SceneManager.GetSceneByName("LSScene").isLoaded)
-        {
-            lvlIdx = 1;
-            DisplayLevelInstruction(lvlIdx);
-            StartCoroutine(StartLevelAfterPlay());
-        }
-        else if (SceneManager.GetSceneByName("GBScene").isLoaded)
-        {
-            lvlIdx = 2;
-            DisplayLevelInstruction(lvlIdx);
-            StartCoroutine(StartLevelAfterPlay());
-        }
-        else if (SceneManager.GetSceneByName("TMScene").isLoaded)
-        {
-            lvlIdx = 3;
-            DisplayLevelInstruction(lvlIdx);
-            StartCoroutine(StartLevelAfterPlay());
-        }
-
     }
     //I don't play it automatically when they open, if they wanna play instr they gotta click
     //Close on controller invoke
     private void OpenInstrPanel(InputAction.CallbackContext callbackContext)
     {
-        if (callbackContext.ReadValueAsButton() && !SceneManager.GetSceneByName("EndScene").isLoaded)
+        if (callbackContext.ReadValueAsButton() && !currLoadedScene.Equals("EndScene"))
         {
             if (instructionPanel.activeSelf)
             {
@@ -119,12 +139,12 @@ public class InstructionPanel : MonoBehaviour
                     _audioSourceInstrLvl.Stop();
                 }
                 //First close will start the tasks of course!
-                if (perLevelOpenCount[currLoadedScene] < 1)
+                if (!currLoadedScene.Equals("StartScene") && !currLoadedScene.Equals("EndScene"))
                 {
-                    StartLevel();
+                    if (perLevelOpenCount[currLoadedScene] < 1)
+                        StartLevel();
+                    perLevelOpenCount[currLoadedScene]++;
                 }
-                perLevelOpenCount[currLoadedScene]++;
-                
                 instructionPanel.SetActive(false);
             }
             else
@@ -141,11 +161,15 @@ public class InstructionPanel : MonoBehaviour
         }
 
         //First close will start the tasks of course!
-        if (perLevelOpenCount[currLoadedScene] < 1)
+        if (!currLoadedScene.Equals("StartScene") && !currLoadedScene.Equals("EndScene"))
         {
-            StartLevel();
+            if (perLevelOpenCount[currLoadedScene] < 1)
+            {
+                StartLevel();
+            }
+            perLevelOpenCount[currLoadedScene]++;
         }
-        perLevelOpenCount[currLoadedScene]++;
+
         instructionPanel.SetActive(false);
 
     }
@@ -153,19 +177,26 @@ public class InstructionPanel : MonoBehaviour
     //Organic closing
     private IEnumerator StartLevelAfterPlay()
     {
+        if (currLoadedScene.Equals("EndScene"))
+            yield return new WaitForSeconds(0f);
+        else
+        {
+            _audioSourceInstrLvl.PlayOneShot(levelVideos[lvlIdx]);
+            float length = levelVideos[lvlIdx].length;
 
-        _audioSourceInstrLvl.PlayOneShot(levelVideos[lvlIdx]);
-        float length = levelVideos[lvlIdx].length;
-
-        yield return new WaitForSeconds(length);
-        perLevelOpenCount[currLoadedScene]++;
-        instructionPanel.SetActive(false);
-        StartLevel();
-        instructionPanel.SetActive(false);
+            yield return new WaitForSeconds(length);
+            if (!currLoadedScene.Equals("StartScene") && !currLoadedScene.Equals("EndScene"))
+            {
+                perLevelOpenCount[currLoadedScene]++;
+                StartLevel();
+            }
+            instructionPanel.SetActive(false);
+        }
+       
     }
     private void StartLevel()
     {
-        switch(currLoadedScene)
+        switch (currLoadedScene)
         {
             case "PUWScene":
                 PopUpWerkManager.Instance.StartLevel();
@@ -210,9 +241,7 @@ public class InstructionPanel : MonoBehaviour
         }
         else if (sceneLoaded && !_audioSourceInstrGame.isPlaying)
         {
-            Debug.Log("start scene + game not playing");
-
-            _audioSourceInstrGame.PlayOneShot(gameVideo);
+            _audioSourceInstrGame.UnPause();
         }
         else if (!sceneLoaded && !_audioSourceInstrGame.isPlaying)
         {
@@ -224,8 +253,8 @@ public class InstructionPanel : MonoBehaviour
                 _audioSourceInstrGame.PlayOneShot(gameVideo);
             }
             else
-            _audioSourceInstrGame.UnPause();
-            if(!_audioSourceInstrGame.isPlaying)
+                _audioSourceInstrGame.UnPause();
+            if (!_audioSourceInstrGame.isPlaying)
                 _audioSourceInstrGame.PlayOneShot(gameVideo);
 
         }
@@ -240,7 +269,7 @@ public class InstructionPanel : MonoBehaviour
         bool sceneLoaded = SceneManager.GetSceneByName("StartScene").isLoaded;
         if (sceneLoaded)
         {
-
+            return;
         }
         else if (!sceneLoaded && !_audioSourceInstrLvl.isPlaying)
         {
@@ -252,8 +281,8 @@ public class InstructionPanel : MonoBehaviour
             }
             else
                 _audioSourceInstrLvl.UnPause();
-            
-            if(!_audioSourceInstrLvl.isPlaying)
+
+            if (!_audioSourceInstrLvl.isPlaying)
                 _audioSourceInstrLvl.PlayOneShot(levelVideos[lvlIdx]);
         }
         else if (!sceneLoaded && _audioSourceInstrLvl.isPlaying)

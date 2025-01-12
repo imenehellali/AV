@@ -48,6 +48,7 @@ public class MoneyManager : MonoBehaviour
         OnMoneyWon.Invoke();  // Notify listeners that the money has been updated
     }
     public void StoreMoneyInSafeAccount(int levelIndex){
+        Debug.Log($"saving {_money} in current level {levelIndex}");
         GameStats.UpdateSafeAccount(levelIndex, _money);
         _money = 0;
     } 

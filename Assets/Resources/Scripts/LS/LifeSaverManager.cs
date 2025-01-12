@@ -1,18 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Rendering;
-using static ResourceElement;
+using UnityEngine.SceneManagement;
 
 public class LifeSaverManager : MonoBehaviour
 {
+
+    public static LifeSaverManager Instance { get; private set; }
+
     private float levelDuration = 0f;
     private float levelTimer = 0f;
     private bool startUrgency = false;
-    private float timeToStartUrgeny = 0f;
+    private float timeToStartUrgeny =0f;
 
 
     private int _rewardAmount = 200;
@@ -25,7 +26,7 @@ public class LifeSaverManager : MonoBehaviour
 
     private Dictionary<string, Case> _cases = new Dictionary<string, Case>();
     public Dictionary<string, Case> GetCases() => _cases;
-    private List<ResourceElementParticipant> _Resources = new List<ResourceElementParticipant>();
+    public List<ResourceElementParticipant> _Resources = new List<ResourceElementParticipant>();
 
     [Header("Resource List")]
     [SerializeField]
@@ -51,71 +52,84 @@ public class LifeSaverManager : MonoBehaviour
     public bool AllowAirConsumption() => _Resources[0].amount >= 0 ? true : false;
     public bool AllowWaterConsumption() => _Resources[1].amount >= 0 ? true : false;
 
-    public UnityAction<int, ResourceElement.Type> updateResource;
-    public UnityAction<ResourceElement.Type> updateResourceUI;
+    public UnityAction<int, ResourceElementParticipant.Type> updateParticipantResource;
+    public UnityAction<ResourceElementParticipant.Type> updateResourceUI;
     private void OnEnable()
     {
-        updateResource += UpdateResources;
+        updateParticipantResource += UpdateResources;
         updateResourceUI += UpdateResourceUI;
     }
     private void OnDisable()
     {
-        updateResource -= UpdateResources;
+        updateParticipantResource -= UpdateResources;
         updateResourceUI -= UpdateResourceUI;
     }
-    private void UpdateResourceUI(ResourceElement.Type type)
+    private void UpdateResourceUI(ResourceElementParticipant.Type type)
     {
-        switch (type)
+        if (SceneManager.GetSceneByName("LSScene").isLoaded)
         {
-            case ResourceElement.Type.Water:
-                {
-                    _water.gameObject.GetComponentInParent<RectTransform>().gameObject.SetActive(false);
-                    break;
-                }
+            switch (type)
+            {
+                case ResourceElementParticipant.Type.Water:
+                    {
+                        _water.gameObject.GetComponentInParent<RectTransform>().gameObject.SetActive(false);
+                        break;
+                    }
 
-            case ResourceElement.Type.Air:
-                {
-                    _air.gameObject.GetComponentInParent<RectTransform>().gameObject.SetActive(false);
-                    break;
-                }
-            case ResourceElement.Type.Antidote:
-                {
-                    _antidote.gameObject.GetComponentInParent<RectTransform>().gameObject.SetActive(false);
-                    break;
-                }
+                case ResourceElementParticipant.Type.Air:
+                    {
+                        _air.gameObject.GetComponentInParent<RectTransform>().gameObject.SetActive(false);
+                        break;
+                    }
+                case ResourceElementParticipant.Type.Antidote:
+                    {
+                        _antidote.gameObject.GetComponentInParent<RectTransform>().gameObject.SetActive(false);
+                        break;
+                    }
+            }
         }
     }
-    private void UpdateResources(int amount, ResourceElement.Type type)
+    private void UpdateResources(int amount, ResourceElementParticipant.Type type)
     {
-        Debug.Log($"updating player resources {amount}  -  {type}");
-        switch (type)
+        if (SceneManager.GetSceneByName("LSScene").isLoaded)
         {
-            case ResourceElement.Type.Air:
-                {
-                    _air.gameObject.GetComponentInParent<RectTransform>().gameObject.SetActive(true);
-                    _air.text = amount.ToString();
-                    break;
-                }
-            case ResourceElement.Type.Water:
-                {
-                    _water.gameObject.GetComponentInParent<RectTransform>().gameObject.SetActive(true);
-                    _water.text = amount.ToString();
-                    break;
-                }
-            case ResourceElement.Type.Antidote:
-                {
-                    _antidote.text = amount.ToString();
-                    break;
-                }
+            Debug.Log($"updating player resources {amount}  -  {type}");
+            switch (type)
+            {
+                case ResourceElementParticipant.Type.Air:
+                    {
+                        _air.gameObject.GetComponentInParent<RectTransform>().gameObject.SetActive(true);
+                        _air.text = amount.ToString();
+                        break;
+                    }
+                case ResourceElementParticipant.Type.Water:
+                    {
+                        _water.gameObject.GetComponentInParent<RectTransform>().gameObject.SetActive(true);
+                        _water.text = amount.ToString();
+                        break;
+                    }
+                case ResourceElementParticipant.Type.Antidote:
+                    {
+                        _antidote.text = amount.ToString();
+                        break;
+                    }
+            }
+        }
+
+    }
+    public void ConsumeResource(ResourceElementCase.Type _type)
+    {
+        if (SceneManager.GetSceneByName("LSScene").isLoaded)
+        {
+            Debug.Log($"Invoking Consume resource LS for {_type}");
+            if (_type.Equals(ResourceElementCase.Type.Air))
+                _Resources[0].ConsumeResource();
+            else if (_type.Equals(ResourceElementCase.Type.Water))
+                _Resources[1].ConsumeResource();
+            else if (_type.Equals(ResourceElementCase.Type.Antidote))
+                _Resources[2].ConsumeResource();
         }
     }
-    public void ConsumeResource(ResourceElement.Type _type)
-    {
-        Debug.Log($"Invoking Consume resource LS for {_type}");
-        _Resources.Find(x => x.type.Equals(_type)).ConsumeResource();
-    }
-
-    public static LifeSaverManager Instance { get; private set; }
 
     private void Awake()
     {
@@ -130,17 +144,19 @@ public class LifeSaverManager : MonoBehaviour
         levelDuration = GameSettings.Instance.LevelDurations[GameSettings.Instance.CurrLvlIdx - 1];
         Debug.Log($"LS duration {levelDuration}");
         timeToStartUrgeny = levelDuration - 40f;
+        Debug.Log($"time to start urgenc  {timeToStartUrgeny}");
+    }
+    private void Start()
+    {
+        if (!enabled)
+            enabled = true;
         InitCases();
         InitResources();
         for (int i = 0; i < _envMaterials.Count; i++)
         {
             _envMaterials[i].gameObject.SetActive(false);
         }
-
-    }
-    private void Start()
-    {
-       
+        Debug.Log($"is LS enabled? {enabled}");
     }
     private void InitCases()
     {
@@ -158,9 +174,10 @@ public class LifeSaverManager : MonoBehaviour
     }
     private void InitResources()
     {
-        _Resources.Add(new ResourceElementParticipant(ResourceElement.Type.Air, 2));
-        _Resources.Add(new ResourceElementParticipant(ResourceElement.Type.Water, 2));
-        _Resources.Add(new ResourceElementParticipant(ResourceElement.Type.Antidote, 5));
+        _Resources[0].UpdateResource(ResourceElementParticipant.Type.Air, 2);
+        _Resources[1].UpdateResource(ResourceElementParticipant.Type.Water, 2);
+        _Resources[2].UpdateResource(ResourceElementParticipant.Type.Antidote, 5);
+
 
         Debug.Log("finished initiating resources");
     }
@@ -180,10 +197,11 @@ public class LifeSaverManager : MonoBehaviour
     private IEnumerator RegenerateResource()
     {
         float _dur = 30f;
-        while (true)
+
+        while (levelTimer < timeToStartUrgeny)
         {
             yield return new WaitForSeconds(_dur);
-          _Resources[0].RegenerateAmount();
+            _Resources[0].RegenerateAmount();
             _Resources[1].RegenerateAmount();
 
             Debug.Log($"Regenrated resources DONE {_Resources[1].amount}   -   {_Resources[0].amount}");
@@ -191,7 +209,7 @@ public class LifeSaverManager : MonoBehaviour
     }
     private IEnumerator StartLevelTimer()
     {
-        while (levelTimer < levelDuration)
+        while (levelTimer < levelDuration-3f)
         {
             levelTimer += Time.deltaTime;
             _time = levelDuration - levelTimer;
@@ -200,10 +218,12 @@ public class LifeSaverManager : MonoBehaviour
                 startUrgency = true;
             yield return null;
         }
-        if (levelTimer >= levelDuration)
+        if (levelTimer >= levelDuration-5f)
         {
+            GameSettings.Instance.XRBoundOFLoading.SetActive(true);
+            GameSettings.Instance._dynamicMove.enabled = false;
             EndLevel();
-
+            StopCoroutine(StartLevelTimer());
         }
     }
     //Functions to call from Game to behvae
@@ -229,13 +249,7 @@ public class LifeSaverManager : MonoBehaviour
     //
     private void EndLevel()
     {
-        StopAllCoroutines();
-
-        for (int i = 0; i < _envMaterials.Count; i++)
-        {
-            Destroy(_envMaterials[i].gameObject);
-        }
-        _envMaterials.Clear();
+        
 
         float amount = 0f;
         bool stopped = true;
@@ -244,7 +258,12 @@ public class LifeSaverManager : MonoBehaviour
             stopped &= item.StoppedHelping();
             amount += _rewardAmount * item.percentageDone;
         }
-
+        
+        for (int i = 0; i < _envMaterials.Count; i++)
+        {
+            _envMaterials[i].gameObject.SetActive(false);
+        }
+       
         //if psycho remove 80% of its game account money 
         if (stopped && amount == 0f)
         {
@@ -254,42 +273,66 @@ public class LifeSaverManager : MonoBehaviour
         else if (stopped && amount > 0f)
         {
             MoneyManager.instance.UpdateMoney(amount);
-            MoneyManager.instance.StoreMoneyInSafeAccount(GameSettings.Instance.CurrLvlIdx - 1);
         }
-        LSData.Data.SaveData();
+        MoneyManager.instance.StoreMoneyInSafeAccount(GameSettings.Instance.CurrLvlIdx - 1);
+        LSData.Data.SaveData(_cases);
         GameSettings.Instance.LoadNextScene();
     }
 
     private IEnumerator Flicker()
     {
         float _ti = _urgencyAudioClip.length;
+        float _timerOfUrgency =40f;
         while (!startUrgency)
         {
             yield return null;
         }
         if (startUrgency)
         {
+            startUrgency = false;
             _envMaterials.ForEach(_env =>
             {
                 _env.gameObject.SetActive(true);
                 _env.material = Instantiate(_refMaterial);
             });
 
-            StartOpenDoor();
-            while (timeToStartUrgeny > 0)
+            LSExitDoor _obj = FindObjectOfType<LSExitDoor>();
+            if (_obj != null)
+                _obj.PlayEnd();
+
+            while (_timerOfUrgency >= 2f)
             {
-                timeToStartUrgeny -= _ti;
+                Debug.Log($"time To Start Urgency;  {_timerOfUrgency}");
+                _timerOfUrgency -= _ti;
                 _audioSource.PlayOneShot(_urgencyAudioClip);
-                _envMaterials.ForEach(_env => _env.material.EnableKeyword("_EMISSION"));
+                _envMaterials[0].gameObject.SetActive(true);
+                _envMaterials[1].gameObject.SetActive(true);
+                _envMaterials[2].gameObject.SetActive(true);
+                _envMaterials[3].gameObject.SetActive(true);
                 yield return new WaitForSeconds(_ti);
-                _envMaterials.ForEach(_env => _env.material.DisableKeyword("_EMISSION"));
+                _envMaterials[0].gameObject.SetActive(false);
+                _envMaterials[1].gameObject.SetActive(false);
+                _envMaterials[2].gameObject.SetActive(false);
+                _envMaterials[3].gameObject.SetActive(false);
 
             }
+            if (_timerOfUrgency < 2)
+            {
+                foreach (KeyValuePair<string,Case> _case in _cases)
+                {
+                    _case.Value.StopCase(_case.Key);
+
+                }
+                foreach (ResourceElementParticipant _resource in _Resources)
+                {
+                    _resource.StopResource();
+
+                }
+                StopCoroutine(RegenerateResource());
+                StopCoroutine(Flicker());
+            }
+
         }
     }
 
-    private void StartOpenDoor()
-    {
-        FindObjectOfType<LSExitDoor>().PlayEnd();
-    }
 }

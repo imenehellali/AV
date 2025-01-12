@@ -3,93 +3,123 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class ResourceElementParticipant : ResourceElement
+public class ResourceElementParticipant : MonoBehaviour
 {
-    public ResourceElementParticipant(Type type, int amount) : base(type, amount)
+    public enum Type
     {
-        LifeSaverManager.Instance.updateResource.Invoke(amount, type);
+        Antidote,
+        Air,
+        Water,
+    };
+
+    public const float TO = 10f;
+    public Type type;
+    public int amount;
+
+    public bool assignable = true;
+    private bool canInvoke = true;
+    public ResourceElementParticipant(Type type, int amount)
+    {
+        canInvoke = true;
+        this.type = type;
+        this.amount = amount;
     }
 
-    public new void UpdateResource(Type type, int amount)
+    public void UpdateResource(Type type, int amount)
     {
-        base.UpdateResource(type, amount);
-        LifeSaverManager.Instance.updateResource.Invoke(amount, type);
+        canInvoke = true;
+        assignable = true;
+        this.amount = amount;
+        this.type = type;
+        LifeSaverManager.Instance.updateParticipantResource.Invoke(amount, type);
     }
-
-    public new void ConsumeResource()
+    public void StopResource()
     {
-        Debug.Log("entered Consume resource player");
-        if (type.Equals(Type.Antidote) && LifeSaverManager.Instance.AllowAntidoteConsumption())
+        canInvoke = false;
+    }
+    public void ConsumeResource()
+    {
+        if (canInvoke)
         {
-            if (assignable)
+
+
+            Debug.Log("entered Consume resource player");
+            if (type.Equals(Type.Antidote) && LifeSaverManager.Instance.AllowAntidoteConsumption())
             {
-                assignable = false;
-
-                if (amount > 0)
+                if (assignable)
                 {
-                    --amount;
-                    LifeSaverManager.Instance.updateResource.Invoke(amount, type);
-                    assignable = true;
+                    assignable = false;
 
-                }
-                else
-                {
-                    LifeSaverManager.Instance.updateResourceUI.Invoke(type);
+                    if (amount > 0)
+                    {
+                        --amount;
+                        LifeSaverManager.Instance.updateParticipantResource.Invoke(amount, type);
+                        assignable = true;
+
+                    }
+                    else
+                    {
+                        LifeSaverManager.Instance.updateResourceUI.Invoke(type);
+                    }
+
                 }
 
             }
-
-        }
-        else if (type.Equals(Type.Air) && LifeSaverManager.Instance.AllowAirConsumption())
-        {
-            if (assignable)
+            else if (type.Equals(Type.Air) && LifeSaverManager.Instance.AllowAirConsumption())
             {
-                assignable = false;
-
-                if (amount > 0)
+                if (assignable)
                 {
-                    --amount;
+                    assignable = false;
 
-                    LifeSaverManager.Instance.updateResource.Invoke(amount, type);
-                    assignable = true;
+                    if (amount > 0)
+                    {
+                        --amount;
+
+                        LifeSaverManager.Instance.updateParticipantResource.Invoke(amount, type);
+                        assignable = true;
 
 
+                    }
+                    else
+                    {
+                        LifeSaverManager.Instance.updateResourceUI.Invoke(type);
+                    }
                 }
-                else
-                {
-                    LifeSaverManager.Instance.updateResourceUI.Invoke(type);
-                }
+
             }
-
-        }
-        else if (type.Equals(Type.Water) && LifeSaverManager.Instance.AllowWaterConsumption())
-        {
-            if (assignable)
+            else if (type.Equals(Type.Water) && LifeSaverManager.Instance.AllowWaterConsumption())
             {
-                assignable = false;
-
-                if (amount > 0)
+                if (assignable)
                 {
-                    --amount;
-                    LifeSaverManager.Instance.updateResource.Invoke(amount, type);
-                    assignable = true;
+                    assignable = false;
 
+                    if (amount > 0)
+                    {
+                        --amount;
+                        LifeSaverManager.Instance.updateParticipantResource.Invoke(amount, type);
+                        assignable = true;
+
+                    }
+                    else
+                    {
+                        LifeSaverManager.Instance.updateResourceUI.Invoke(type);
+                    }
                 }
-                else
-                {
-                    LifeSaverManager.Instance.updateResourceUI.Invoke(type);
-                }
+
             }
-
         }
 
     }
 
     public void RegenerateAmount()
     {
-        amount += 2;
-        LifeSaverManager.Instance.updateResource.Invoke(amount, type);
-        Debug.Log($"with assinable from Resource participant   {assignable}");
+        if (canInvoke)
+        {
+            amount += 2;
+            LifeSaverManager.Instance.updateParticipantResource.Invoke(amount, type);
+            Debug.Log($"with assinable from Resource participant   {assignable}");
+        }
+
     }
 
 }

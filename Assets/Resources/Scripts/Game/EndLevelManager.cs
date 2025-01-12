@@ -38,6 +38,8 @@ public class EndLevelManager : MonoBehaviour
     private float _gameAmount;
     private float _newBalance;
     private List<Vector3> transforms = new List<Vector3>();
+    List<float> safeAcounts;
+    List<string> levels;
 
     public UnityAction<float> updateBalance;
 
@@ -78,43 +80,50 @@ public class EndLevelManager : MonoBehaviour
         transforms.Add(new Vector3(-544f, -160.099884f, 0));
         transforms.Add(new Vector3(-544f, -332.099884f, 0));
 
-        List<float> safeAcounts = GameStats.GetSafeAccount();
-        List<string> levels = GameSettings.Instance.LevelSequence.ToList<string>();
+        safeAcounts = GameStats.GetSafeAccount();
+        levels = GameSettings.Instance.LevelSequence.ToList<string>();
+        Debug.Log($"safe accounts from endLevel {safeAcounts.Count}");
+        Debug.Log($"levels from endLevel {levels.Count}");
         for (int i = 0; i < safeAcounts.Count; i++)
         {
             GameObject _obj = null;
 
             if (levels[i].Equals("PUWScene"))
             {
-                _obj = Instantiate(_safeAccountRefs[0], transforms[i],Quaternion.identity,_accountBalancePanel.transform);
+                _obj = Instantiate(_safeAccountRefs[0], _accountBalancePanel.transform);
+                Debug.Log("initialized PUWSScene");
             }
             else if (levels[i].Equals("LSScene"))
             {
-                _obj = Instantiate(_safeAccountRefs[1], transforms[i], Quaternion.identity, _accountBalancePanel.transform);
-
+                _obj = Instantiate(_safeAccountRefs[1], _accountBalancePanel.transform);
+                Debug.Log("initialized LSSScene");
             }
             else if (levels[i].Equals("GBScene"))
             {
-                _obj = Instantiate(_safeAccountRefs[2], transforms[i], Quaternion.identity, _accountBalancePanel.transform);
-
+                _obj = Instantiate(_safeAccountRefs[2], _accountBalancePanel.transform);
+                Debug.Log("initialized GBSScene");
             }
             else if (levels[i].Equals("TMScene"))
             {
-                _obj = Instantiate(_safeAccountRefs[3], transforms[i], Quaternion.identity, _accountBalancePanel.transform);
-
+                _obj = Instantiate(_safeAccountRefs[3], _accountBalancePanel.transform);
+                Debug.Log("initialized TMSScene");
             }
+            _obj.gameObject.GetComponent<RectTransform>().localPosition= transforms[i];
             _obj.GetComponent<SafeAccountUIHandler>().InitializeSafeAmount(safeAcounts[i]);
-        }
         
+        }
     }
+  
     private void OnGameStart(InputAction.CallbackContext context)
     {
         if (context.ReadValueAsButton() && canClick)
         {
-            SceneLoaders.Instance.LoadLevel("StartScene");
+            FindObjectOfType<InstructionPanel>().ResetInstructionPanel();
             MoneyManager.instance.ResetGameAccount();
             ParticipantSettings.Instance.ResetParticipantData();
             GameSettings.Instance.ResetInGameSettings();
+
+            SceneLoaders.Instance.LoadLevel("StartScene");
         }
     }
     private void OnGameQuit(InputAction.CallbackContext context)
@@ -147,7 +156,15 @@ public class EndLevelManager : MonoBehaviour
 
     private IEnumerator EnableEnd()
     {
-        yield return new WaitForSeconds(20f);
+        Debug.Log("~~~~~~ Waiting 1min30 for all XData to processs and save the calculations");
+        yield return new WaitForSeconds(90f);
+        StartCoroutine(SaveData());
+        StopCoroutine(EnableEnd());
+    }
+    private IEnumerator SaveData()
+    {
+        ParticipantSettings.Instance.SaveRawParticipantData();
+        yield return new WaitForSeconds(90f);
         if (didNotEnterLeaderBoard.activeSelf) didNotEnterLeaderBoard.SetActive(false);
         if (enteredLeaderBoard.activeSelf) enteredLeaderBoard.SetActive(false);
         canClick = true;

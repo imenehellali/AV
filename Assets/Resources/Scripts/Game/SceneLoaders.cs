@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 public class SceneLoaders : MonoBehaviour
 {
     public static SceneLoaders Instance { get; private set; }
+    [SerializeField]
+    private InstructionPanel _instrPanel;
     private void Awake()
     {
 
@@ -45,7 +47,7 @@ public class SceneLoaders : MonoBehaviour
             {
                 CalculateAndSaveGameStats();
             }
-            else if(!levelName.Equals("StartScene"))
+            else if (!levelName.Equals("StartScene"))
             {
                 AsyncOperation _asyncLoad = SceneManager.LoadSceneAsync("PUSScene", LoadSceneMode.Additive);
                 while (!_asyncLoad.isDone)
@@ -76,9 +78,10 @@ public class SceneLoaders : MonoBehaviour
     private void CalculateAndSaveGameStats()
     {
         //Instr Panel
-        List<int> instrCounts = FindFirstObjectByType<InstructionPanel>().GetPerLEvelOpenCount();
+        List<int> instrCounts = _instrPanel.GetPerLEvelOpenCount();
+        Debug.Log($"instruction counts is {instrCounts.Count}");
         GameStats.SaveCheckedInstrCount(instrCounts);
-       
+
         //PUS
         ParticipantSettings.Instance.WholeGamePair.Invoke(new KeyValuePair<string, float>(" avgPurchaseDuration", GameStats.GetAveragePurchaseDuration()));
         ParticipantSettings.Instance.WholeGamePair.Invoke(new KeyValuePair<string, float>("NonRewardDrinksBoughtCount", (float)GameStats.GetNonRewardDrinksBoughtCount()));
@@ -87,8 +90,6 @@ public class SceneLoaders : MonoBehaviour
         //Money Manager
         GameStats.SaveSafeAcount();
         GameStats.SaveGameAccount(MoneyManager.instance.GetMoney());
-
-        ParticipantSettings.Instance.SaveRawParticipantData();
-
+        GameSettings.Instance.OnSceneLoaded("EndScene");
     }
 }

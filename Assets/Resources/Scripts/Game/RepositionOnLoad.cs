@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 
 public class RepositionOnLoad : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class RepositionOnLoad : MonoBehaviour
     public GameObject _participant;
     [SerializeField]
     private RectTransform _taskProgressPanel;
+    [SerializeField]
+    private DynamicMoveProvider _dynamicMoveProvider;
     private void Awake()
     {
         if (Instance == null)
@@ -42,12 +45,15 @@ public class RepositionOnLoad : MonoBehaviour
     //if we have diff positions for each level then we can handle it here
     private void RepositionXROnLoad(string levelName)
     {
+        if(!_dynamicMoveProvider.enabled)
+            _dynamicMoveProvider.enabled = true;
         if (levelName.Equals("EndScene"))
         {
             _participant.transform.position = new Vector3(0f, 0.1f, 0f);
             _participant.transform.rotation = Quaternion.identity;
             _settingManager.SetActive(false);
             _settingControls.enabled = false;
+            _instrPanel.SetActive(true);
         }
         else if (levelName.Equals("StartScene"))
         {

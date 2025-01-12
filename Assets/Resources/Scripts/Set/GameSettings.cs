@@ -6,11 +6,15 @@ using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
 using System.Linq;
+using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Turning;
 
 public class GameSettings : MonoBehaviour
 {
 
     public bool goNextLevel = false;
+    public GameObject XRBoundOFLoading;
+    public DynamicMoveProvider _dynamicMove;
 
     private string _path;
     public static GameSettings Instance { get; private set; }
@@ -145,8 +149,8 @@ public class GameSettings : MonoBehaviour
             {
                 Debug.LogError($"Failed to load JSON: {ex.Message}");
                 BetweenSceneDuration = 15f;
-                LevelSequence = new string[] { "PUWScene", "LSScene", "GBScene", "TMScene", };
-                LevelDurations = new float[] { 300f, 300f, 300f, 300f, };
+                LevelSequence = new string[] { "PUWScene", "GBScene", "LSScene",};
+                LevelDurations = new float[] { 100f, 100f, 100f,};
                 _PUWBGVolume = .5f;
                 _PUWGMVolume = .5f;
                 _PUWWaiterVolume = .5f;
@@ -161,7 +165,7 @@ public class GameSettings : MonoBehaviour
         {
             Debug.Log("JSON file not found. Initializing with default values.");
             BetweenSceneDuration = 10f;
-            LevelSequence = new string[] { "PUWScene", "LSScene", "GBScene", };
+            LevelSequence = new string[] { "PUWScene", "LSScene", "GBScene",};
             LevelDurations = new float[] { 100f, 100f, 100f};
             _PUWBGVolume = .5f;
             _PUWGMVolume = .5f;
@@ -219,6 +223,9 @@ public class GameSettings : MonoBehaviour
 
     public void SceneLoaded(string sceneName)
     {
+        XRBoundOFLoading.SetActive(false);
+        _dynamicMove.enabled = true;
+
         InstructionPanel instructionPanel = FindObjectOfType<InstructionPanel>();
         if (instructionPanel != null)
         {

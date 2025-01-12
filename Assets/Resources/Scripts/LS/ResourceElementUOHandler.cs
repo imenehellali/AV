@@ -17,17 +17,20 @@ public class ResourceElementUOHandler : MonoBehaviour
 
     public UnityAction<bool> TimeOut;
     public UnityAction<int> AmountUpdate;
+    public UnityAction StopResource;
 
 
     private void OnEnable()
     {
         AmountUpdate += ResourceUI;
         TimeOut += ActivateButton;
+        StopResource += KillObj;
     }
     private void OnDisable()
     {
         AmountUpdate -= ResourceUI;
         TimeOut -= ActivateButton;
+        StopResource -= KillObj;
     }
     private void ActivateButton(bool activated)
     {
@@ -35,7 +38,13 @@ public class ResourceElementUOHandler : MonoBehaviour
 
         assignButton.SetActive(activated);
     }
-
+    private void KillObj()
+    {
+        if (assignButton.activeSelf)
+            assignButton.SetActive(false);
+        if(resourceObjUI.activeSelf)
+            resourceObjUI.SetActive(false);
+    }
     private void ResourceUI(int amount)
     {
         Debug.Log("Updating amount UI case");

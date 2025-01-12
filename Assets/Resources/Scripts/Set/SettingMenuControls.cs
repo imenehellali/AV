@@ -86,8 +86,6 @@ public class SettingMenuControls : MonoBehaviour
 
         _step1.SetActive(false);
 
-        _inGameInstrPanel.SetActive(true);
-        _inGameInstrPanel.GetComponent<InstructionPanel>().ResetInstructionPanel();
         _inGameInstrPanel.SetActive(false);
 
         _settingPanel.SetActive(false);
@@ -167,7 +165,7 @@ public class SettingMenuControls : MonoBehaviour
     private void OpenSettingMenu(InputAction.CallbackContext callbackContext)
     {
         Debug.Log("entered open setting menu");
-        if (callbackContext.ReadValueAsButton())
+        if (callbackContext.ReadValueAsButton() && !_inGameInstrPanel.activeSelf)
         {
             _testVariable.text = "triggered ME from setting menu controls";
 
@@ -179,13 +177,38 @@ public class SettingMenuControls : MonoBehaviour
             }
             else if (!_rMenuToClickPanel.activeSelf && !_step0.activeSelf)
             {
+                _step1.SetActive(false);
+                _inGameInstrPanel.SetActive(false);
+                _settingPanel.SetActive(false);
+                _settingStep0.SetActive(false);
+                _participantTryPanel.SetActive(false);
+
                 _selectionPanel.SetActive(true);
                 _step0.SetActive(true);
             }
             else if (_userTherapist && !_settingPanel.activeSelf)
+            {
+                _selectionPanel.SetActive(false);
+                _step0.SetActive(false);
+                _step1.SetActive(false);
+                _inGameInstrPanel.SetActive(false);
+                _settingStep0.SetActive(false);
+                _participantTryPanel.SetActive(false);
+
                 _settingPanel.SetActive(true);
+            }
+                
             else if (_userTherapist && _settingPanel.activeSelf)
+            {
+                _selectionPanel.SetActive(false);
+                _step0.SetActive(false);
+                _step1.SetActive(false);
+                _inGameInstrPanel.SetActive(false);
+                _settingStep0.SetActive(false);
+                _participantTryPanel.SetActive(false);
+
                 _settingPanel.SetActive(false);
+            }
         }
 
 
@@ -200,6 +223,7 @@ public class SettingMenuControls : MonoBehaviour
         _participantTryPanel.SetActive(true);
         _inGameInstrPanel.SetActive(true);
         _inGameInstrPanel.GetComponent<InstructionPanel>().enabled = true;
+        _inGameInstrPanel.GetComponent<InstructionPanel>().sceneLoaded.Invoke("StartScene");
 
     }
 

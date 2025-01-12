@@ -92,8 +92,10 @@ public class PopUpShopManager : MonoBehaviour
         {
             PopUpWerkManager.Instance.AddCoins(totalCoins);
         }
+        Debug.Log($"adding alcohol bought {rewardDrinks}");
+        Debug.Log($"adding Non alcohol bought {nonRewardDrinks}");
         GameSettings.Instance.AddNonRewardDrinksBoughtCount(nonRewardDrinks);
-        GameSettings.Instance.AddNonRewardDrinksBoughtCount(rewardDrinks);
+        GameSettings.Instance.AddRewardDrinksBoughtCount(rewardDrinks);
 
         SceneManager.UnloadSceneAsync("PUSScene");
     }

@@ -20,13 +20,15 @@ public class LSData : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        // _IDataService = new FileDataService(new JsonSerializer());
 
     }
-    public async void SaveData()
+    public async void SaveData(Dictionary<string,Case> Cases)
     {
-        visitedCases = LifeSaverManager.Instance.GetCases();
+       
+        Dictionary<string,Case> visitedCases = Cases;
+        Debug.Log($"got the cases dictionary {Cases.Count}");
         string strategy = (await LSStats.FollowedStrategy(visitedCases)).Value;
+        Debug.Log($"Strategy finished?  {strategy}");
         ParticipantSettings.Instance.LSDataPair.Invoke(new KeyValuePair<string, object>("Strategy",strategy));
     }
 }

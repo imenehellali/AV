@@ -160,9 +160,8 @@ public class ParticipantSettings : MonoBehaviour
                         }
                         if (LSdataDict.Any())
                         {
-
                             Column3 = LSdataDict.ElementAtOrDefault(idx).Key;
-                            Column4 = LSdataDict.ElementAtOrDefault(idx).Value.ToString();
+                            Column4 = $"{LSdataDict.ElementAtOrDefault(idx).Value}";
                         }
                         if (GBdataDict.Any())
                         {
@@ -173,7 +172,7 @@ public class ParticipantSettings : MonoBehaviour
                         if (TMdataDict.Any())
                         {
                             Column7 = TMdataDict.ElementAtOrDefault(idx).Key;
-                            Column8 = TMdataDict.ElementAtOrDefault(idx).Value.ToString();
+                            Column8 = $"{TMdataDict.ElementAtOrDefault(idx).Value}";
                         }
                         if (WholeGameDict.Any())
                         {
@@ -217,7 +216,7 @@ public class ParticipantSettings : MonoBehaviour
                         if (TMdataDict.Any())
                         {
                             Column7 = TMdataDict.ElementAtOrDefault(idx).Key;
-                            Column8 = TMdataDict.ElementAtOrDefault(idx).Value.ToString();
+                            Column8 = $"{TMdataDict.ElementAtOrDefault(idx).Value}";
                         }
                         if (WholeGameDict.Any())
                         {
@@ -250,7 +249,7 @@ public class ParticipantSettings : MonoBehaviour
                         {
 
                             Column3 = LSdataDict.ElementAtOrDefault(idx).Key;
-                            Column4 = LSdataDict.ElementAtOrDefault(idx).Value.ToString();
+                            Column4 = $"{LSdataDict.ElementAtOrDefault(idx).Value}";
                         }
                         if (GBdataDict.Any())
                         {
@@ -261,7 +260,7 @@ public class ParticipantSettings : MonoBehaviour
                         if (TMdataDict.Any())
                         {
                             Column7 = TMdataDict.ElementAtOrDefault(idx).Key;
-                            Column8 = TMdataDict.ElementAtOrDefault(idx).Value.ToString();
+                            Column8 = $"{TMdataDict.ElementAtOrDefault(idx).Value}";
                         }
                         if (WholeGameDict.Any())
                         {
@@ -292,7 +291,7 @@ public class ParticipantSettings : MonoBehaviour
                         {
 
                             Column3 = LSdataDict.ElementAtOrDefault(idx).Key;
-                            Column4 = LSdataDict.ElementAtOrDefault(idx).Value.ToString();
+                            Column4 = $"{LSdataDict.ElementAtOrDefault(idx).Value}";
                         }
                         if (GBdataDict.Any())
                         {
@@ -332,9 +331,8 @@ public class ParticipantSettings : MonoBehaviour
                         }
                         if (LSdataDict.Any())
                         {
-
                             Column3 = LSdataDict.ElementAtOrDefault(idx).Key;
-                            Column4 = LSdataDict.ElementAtOrDefault(idx).Value.ToString();
+                            Column4 = $"{LSdataDict.ElementAtOrDefault(idx).Value}";
                         }
                         if (GBdataDict.Any())
                         {
@@ -345,7 +343,7 @@ public class ParticipantSettings : MonoBehaviour
                         if (TMdataDict.Any())
                         {
                             Column7 = TMdataDict.ElementAtOrDefault(idx).Key;
-                            Column8 = TMdataDict.ElementAtOrDefault(idx).Value.ToString();
+                            Column8 = $"{TMdataDict.ElementAtOrDefault(idx).Value}";
                         }
                         if (WholeGameDict.Any())
                         {
@@ -371,6 +369,7 @@ public class ParticipantSettings : MonoBehaviour
     {
 
         string _path = Path.Combine(Application.persistentDataPath, $"{ParticipantID}.json");
+        Debug.Log($"will strt genering data to save for {ParticipantID}");
         ParticipantData data = GeneratePdata().Result;
         try
         {

@@ -68,7 +68,6 @@ public class GhostBusterManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -153,7 +152,7 @@ public class GhostBusterManager : MonoBehaviour
     //Shoot the Red Ghost + room red
     private IEnumerator StartQ1()
     {
-        StartCoroutine(SpawnGhost(_Q1Time, _ghostSpawnTO, 10f));
+       Coroutine _C= StartCoroutine(SpawnGhost(_Q1Time, _ghostSpawnTO, 10f));
         while (_Q1Time > 0)
         {
             _Q1Time -= Time.deltaTime;
@@ -227,7 +226,7 @@ public class GhostBusterManager : MonoBehaviour
     //shoot sober ghost - flickering light with random interval - money sound randomly
     private IEnumerator StartQ3()
     {
-        _ghostSpawnTO -= 2;
+        _ghostSpawnTO -= 1;
         StartCoroutine(RoomEffectQ3());
         StartCoroutine(SoundEffectQ3());
         StartCoroutine(SpawnGhost(_Q3Time, _ghostSpawnTO, 20f));
@@ -267,7 +266,7 @@ public class GhostBusterManager : MonoBehaviour
     //shoot green drunken ghost - flickering light with random interval - money sound randomly
     private IEnumerator StartQ4()
     {
-        _ghostSpawnTO -= 2;
+        _ghostSpawnTO -= 1;
         StartCoroutine(SoundEffectQ4());
         StartCoroutine(RoomEffectQ4());
         StartCoroutine(SpawnGhost(_Q4Time, _ghostSpawnTO, 30f));
@@ -278,8 +277,11 @@ public class GhostBusterManager : MonoBehaviour
             yield return null;
         }
         //Save all data here 
-        if (_Q4Time <= 0)
+        if (_Q4Time <= 2f)
         {
+            GameSettings.Instance.XRBoundOFLoading.SetActive(true);
+            GameSettings.Instance._dynamicMove.enabled = false;
+
             EndLevel();
             
         }

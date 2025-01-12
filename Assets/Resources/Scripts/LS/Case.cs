@@ -26,14 +26,19 @@ public class Case : MonoBehaviour
     private int assignedAir = 0;
     private float incTime = 10f;
 
+    [Header("Social Variables")]
+    [SerializeField] private Animator _socialAnimator;
+    [SerializeField] private GameObject _socialResourceElement;
+    [SerializeField] private GameObject _socialAssignable;
+
 
     private float timeOut = 0f; //initialized with init time that is decreased
 
+    [HideInInspector] public bool startedAssigning = false;
+    [HideInInspector] public float percentageDone = 0f;
+    [HideInInspector] public bool healed = false;
+    [HideInInspector] public bool dead = false;
 
-    public bool startedAssigning = false;
-    public float percentageDone = 0f;
-    public bool healed = false;
-    public bool dead = false;
     private bool stoppedHelping = false;
     public bool StoppedHelping() => stoppedHelping;
     //add variables video + sound ....
@@ -49,7 +54,7 @@ public class Case : MonoBehaviour
     [Header("Air, Water, Anti, !!Social")]
     [SerializeField]
     private List<ResourceElementCase> _resources = new List<ResourceElementCase>();
-    public UnityAction<ResourceElement.Type> UpdateCase;
+    public UnityAction<ResourceElementCase.Type> UpdateCase;
 
     [SerializeField]
     private TextMeshProUGUI _timerDisplay;
@@ -114,32 +119,36 @@ public class Case : MonoBehaviour
         }
         _vpPlayButton.SetActive(true);
     }
-    private void UpdateResources(ResourceElement.Type type)
+    private void UpdateResources(ResourceElementCase.Type type)
     {
-        Debug.Log("from case --> to update resource");
-         stoppedHelping = false;
-        Debug.Log("updating resource now");
-        if (!startedAssigning)
-            startedAssigning = true;
-        timeOut += incTime;
-        switch (type)
+        if (startCase)
         {
-            case ResourceElement.Type.Air:
-                {
-                    assignedAir++;
-                    break;
-                }
-            case ResourceElement.Type.Water:
-                {
-                    assignedWater++;
-                    break;
-                }
-            case ResourceElement.Type.Antidote:
-                {
-                    assignedAntidote++;
-                    break;
-                }
+            Debug.Log("from case --> to update resource");
+            stoppedHelping = false;
+            Debug.Log("updating resource now");
+            if (!startedAssigning)
+                startedAssigning = true;
+            timeOut += incTime;
+            switch (type)
+            {
+                case ResourceElementCase.Type.Air:
+                    {
+                        assignedAir++;
+                        break;
+                    }
+                case ResourceElementCase.Type.Water:
+                    {
+                        assignedWater++;
+                        break;
+                    }
+                case ResourceElementCase.Type.Antidote:
+                    {
+                        assignedAntidote++;
+                        break;
+                    }
+            }
         }
+        
     }
     private void OnEnable()
     {
@@ -169,14 +178,23 @@ public class Case : MonoBehaviour
         return XOR(assignedSocial, requiredSocial) ? 0 : 1;
     }
 
-    private void AssignSocial()
+    public void AssignSocial()
     {
-        if (!assignedSocial)
+        if (!assignedSocial && startCase)
         {
             assignedSocial = true;
-            //turn on mic //MIC behavior and recording !!!!! Clas upcoming
+            StartCoroutine(SocialAnimationPlay());
         }
         else return;
+    }
+    private IEnumerator SocialAnimationPlay()
+    {
+        _socialAnimator.Play("SocialAnimatior");
+        _socialAssignable.SetActive(false);
+        float _dur = _socialAnimator.runtimeAnimatorController.animationClips[0].length;
+        yield return new WaitForSeconds(_dur);
+        _socialAnimator.ResetTrigger("Assign");
+        _socialResourceElement.SetActive(false);    
     }
     //Called from Level Manager because it handels the remaining time within a level !
     public void StopHelping()
@@ -188,6 +206,14 @@ public class Case : MonoBehaviour
     {
         startCase = true;
         startTime = Time.deltaTime;
+    }
+    public void StopCase(string caseName)
+    {
+        startCase = false;
+        foreach(ResourceElementCase _resource in _resources)
+        {
+            _resource.StopResource(caseName);
+        }
     }
     //TBCCCCC
     public void UpdateCaseForTesting(bool assignedSocial,
