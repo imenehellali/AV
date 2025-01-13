@@ -269,10 +269,8 @@ public class EyeTrackingManager : MonoBehaviour
         _CPose.text = "";
         _CDPose.text = "";
 
-        dataValid = false;
+        dataValid = PXRTracking();
 
-        if (!dataValid)
-            dataValid = PXRTracking();
         if (!dataValid)
             dataValid = PICOEye();
         if (!dataValid)

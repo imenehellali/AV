@@ -132,29 +132,27 @@ public class GhostBusterManager : MonoBehaviour
 
     private void Q1Ghostbusting(GhostBustBehavior ghostBehavior)
     {
-        if(ghostBehavior.ghostRed && ghostBehavior.ghostDead)
+        audioSource.Stop();
+        if (ghostBehavior.ghostRed && ghostBehavior.ghostDead)
         {
             //gaze time is diff from reaction time
-            ghostBehavior.gameObject.GetComponent<GhostBustBehavior>()._in = "   Ouch Killed me";
-            GBStats.AddGazeTimeCorrectGhost(1, ghostBehavior.gameObject.GetComponent<GhostBustBehavior>().focusDurations.LastOrDefault());
-            GBStats.AddCorrectGhostBusted(1, ghostBehavior.gameObject.GetComponent<GhostBustBehavior>()._elapsedTime);
+            ghostBehavior._in = "   Ouch Killed me";
+            GBStats.AddGazeTimeCorrectGhost(1, ghostBehavior.focusDurations.LastOrDefault());
+            GBStats.AddCorrectGhostBusted(1, ghostBehavior._elapsedTime);
 
-            audioSource.Stop();
             audioSource.PlayOneShot(_correctActionClip);
             MoneyManager.instance.UpdateMoney(_correctActionCost);
-            Destroy(ghostBehavior.gameObject);
         }
         else 
         {
-            ghostBehavior.gameObject.GetComponent<GhostBustBehavior>()._in = "   killed me wrong";
-            GBStats.AddGazeTimeWrongGhost(1, ghostBehavior.gameObject.GetComponent<GhostBustBehavior>().focusDurations.LastOrDefault());
-            GBStats.AddWrongGhostBusted(1, ghostBehavior.gameObject.GetComponent<GhostBustBehavior>()._elapsedTime);
+            ghostBehavior._in = "   killed me wrong";
+            GBStats.AddGazeTimeWrongGhost(1, ghostBehavior.focusDurations.LastOrDefault());
+            GBStats.AddWrongGhostBusted(1, ghostBehavior._elapsedTime);
 
-            audioSource.Stop();
             audioSource.PlayOneShot(_wrongActionClip);
             MoneyManager.instance.UpdateMoney(_wrongActionCost);
-            Destroy(ghostBehavior.gameObject);
         }
+        Destroy(ghostBehavior.gameObject);
     }
     //Shoot the Red Ghost + room red
     private IEnumerator StartQ1()
@@ -176,29 +174,26 @@ public class GhostBusterManager : MonoBehaviour
 
     private void Q2Ghostbusting(GhostBustBehavior ghostBehavior)
     {
+        audioSource.Stop();
         if (!ghostBehavior.ghostRed && ghostBehavior.ghostDead)
         {
-            ghostBehavior.gameObject.GetComponent<GhostBustBehavior>()._in = "   Ouch Killed me";
-            GBStats.AddGazeTimeCorrectGhost(2, ghostBehavior.gameObject.GetComponent<GhostBustBehavior>().focusDurations.LastOrDefault());
-            GBStats.AddCorrectGhostBusted(2, ghostBehavior.gameObject.GetComponent<GhostBustBehavior>()._elapsedTime);
+            ghostBehavior._in = "   Ouch Killed me";
+            GBStats.AddGazeTimeCorrectGhost(2, ghostBehavior.focusDurations.LastOrDefault());
+            GBStats.AddCorrectGhostBusted(2, ghostBehavior._elapsedTime);
 
-            audioSource.Stop();
             audioSource.PlayOneShot(_correctActionClip);
             MoneyManager.instance.UpdateMoney(_correctActionCost);
-            
-            Destroy(ghostBehavior.gameObject);
         }
         else 
         {
-            ghostBehavior.gameObject.GetComponent<GhostBustBehavior>()._in = "   killed me wrong";
-            GBStats.AddGazeTimeWrongGhost(2, ghostBehavior.gameObject.GetComponent<GhostBustBehavior>().focusDurations.LastOrDefault());
-            GBStats.AddWrongGhostBusted(2, ghostBehavior.gameObject.GetComponent<GhostBustBehavior>()._elapsedTime);
+            ghostBehavior._in = "   killed me wrong";
+            GBStats.AddGazeTimeWrongGhost(2, ghostBehavior.focusDurations.LastOrDefault());
+            GBStats.AddWrongGhostBusted(2, ghostBehavior._elapsedTime);
 
-            audioSource.Stop();
             audioSource.PlayOneShot(_wrongActionClip);
             MoneyManager.instance.UpdateMoney(_wrongActionCost);
-            Destroy(ghostBehavior.gameObject);
         }
+        Destroy(ghostBehavior.gameObject);
     }
     //Shoot the blue ghost + room lit blue
     private IEnumerator StartQ2()
@@ -220,28 +215,26 @@ public class GhostBusterManager : MonoBehaviour
 
     private void Q3Ghostbusting(GhostBustBehavior ghostBehavior)
     {
+        audioSource.Stop();
         if (!ghostBehavior.ghostDrunken && ghostBehavior.ghostDead)
         {
-            ghostBehavior.gameObject.GetComponent<GhostBustBehavior>()._in = "   Ouch Killed me";
-            GBStats.AddGazeTimeCorrectGhost(3, ghostBehavior.gameObject.GetComponent<GhostBustBehavior>().focusDurations.LastOrDefault());
-            GBStats.AddCorrectGhostBusted(3, ghostBehavior.gameObject.GetComponent<GhostBustBehavior>()._elapsedTime);
-
-            audioSource.Stop();
+            ghostBehavior._in = "   Ouch Killed me";
+            GBStats.AddGazeTimeCorrectGhost(3, ghostBehavior.focusDurations.LastOrDefault());
+            GBStats.AddCorrectGhostBusted(3, ghostBehavior._elapsedTime);
+           
             audioSource.PlayOneShot(_correctActionClip);
             MoneyManager.instance.UpdateMoney(_correctActionCost);
-            Destroy(ghostBehavior.gameObject);
         }
         else 
         {
-            ghostBehavior.gameObject.GetComponent<GhostBustBehavior>()._in = "   killed me wrong";
-            GBStats.AddGazeTimeWrongGhost(3, ghostBehavior.gameObject.GetComponent<GhostBustBehavior>().focusDurations.LastOrDefault());
-            GBStats.AddWrongGhostBusted(3, ghostBehavior.gameObject.GetComponent<GhostBustBehavior>()._elapsedTime);
+            ghostBehavior._in = "   killed me wrong";
+            GBStats.AddGazeTimeWrongGhost(3, ghostBehavior.focusDurations.LastOrDefault());
+            GBStats.AddWrongGhostBusted(3, ghostBehavior._elapsedTime);
 
-            audioSource.Stop();
             audioSource.PlayOneShot(_wrongActionClip);
             MoneyManager.instance.UpdateMoney(_wrongActionCost);
-            Destroy(ghostBehavior.gameObject);
         }
+        Destroy(ghostBehavior.gameObject);
     }
     //shoot sober ghost - flickering light with random interval - money sound randomly
     private IEnumerator StartQ3()
@@ -266,28 +259,30 @@ public class GhostBusterManager : MonoBehaviour
 
     private void Q4Ghostbusting(GhostBustBehavior ghostBehavior)
     {
+        audioSource.Stop();
+
         if (ghostBehavior.ghostDrunken && !ghostBehavior.ghostRed && ghostBehavior.ghostDead)
         {
-            ghostBehavior.gameObject.GetComponent<GhostBustBehavior>()._in = "   Ouch Killed me";
-            GBStats.AddGazeTimeCorrectGhost(4, ghostBehavior.gameObject.GetComponent<GhostBustBehavior>().focusDurations.LastOrDefault());
-            GBStats.AddCorrectGhostBusted(4, ghostBehavior.gameObject.GetComponent<GhostBustBehavior>()._elapsedTime);
+            ghostBehavior._in = "   Ouch Killed me";
+            GBStats.AddGazeTimeCorrectGhost(4, ghostBehavior.focusDurations.LastOrDefault());
+            GBStats.AddCorrectGhostBusted(4, ghostBehavior._elapsedTime);
 
-            audioSource.Stop();
+           
             audioSource.PlayOneShot(_correctActionClip);
             MoneyManager.instance.UpdateMoney(_correctActionCost);
-            Destroy(ghostBehavior.gameObject);
+            
         }
         else
         {
-            ghostBehavior.gameObject.GetComponent<GhostBustBehavior>()._in = "   killed me wrong";
-            GBStats.AddGazeTimeWrongGhost(4, ghostBehavior.gameObject.GetComponent<GhostBustBehavior>().focusDurations.LastOrDefault());
-            GBStats.AddWrongGhostBusted(4, ghostBehavior.gameObject.GetComponent<GhostBustBehavior>()._elapsedTime);
+            ghostBehavior._in = "   killed me wrong";
+            GBStats.AddGazeTimeWrongGhost(4, ghostBehavior.focusDurations.LastOrDefault());
+            GBStats.AddWrongGhostBusted(4, ghostBehavior._elapsedTime);
 
-            audioSource.Stop();
             audioSource.PlayOneShot(_wrongActionClip);
             MoneyManager.instance.UpdateMoney(_wrongActionCost);
-            Destroy(ghostBehavior.gameObject);
+           
         }
+        Destroy(ghostBehavior.gameObject);
     }
     //shoot green drunken ghost - flickering light with random interval - money sound randomly
     private IEnumerator StartQ4()
