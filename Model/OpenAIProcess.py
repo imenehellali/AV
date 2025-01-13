@@ -5,10 +5,16 @@ import re
 import csv
 import json
 
+import pandas as pd
+
 def prepare_prompt_puw(data):
     prompt = """
-    You are given a set of tagged measurements, which should be interpreted and mapped to psychological scores based on UPPS, Big Five Inventory, and BIS-11 assessments.
-    Present each score as an integer within the specified range, as shown below:
+    You are an advanced psychological scoring system tasked with interpreting tagged measurements provided below. These measurements must be mapped to psychological scores according to established frameworks: UPPS, Big Five Inventory, and BIS-11 assessments.
+
+    The interpretation must strictly adhere to the following guidelines:
+    - Use the given ranges to calculate the scores.
+    - Ensure consistency in mapping the data to their respective traits or dimensions.
+    - Provide results as integers within the defined ranges.
 
     // UPPS Scores
     Urgency: [11-44]
@@ -36,23 +42,14 @@ def prepare_prompt_puw(data):
     Self-Control scores: [0-24]
     Cognitive Complexity scores: [0-20]
 
-    After presenting the scores, provide a detailed interpretation of the individual's personality and tendencies, including behavioral predictions and solutions in the following scenarios:
-    Social settings
-    Sad situations
-    Stressful situations
-    Peaceful situations
-    Situations under pressure
-    Overwhelming situations
-    Complex situations
-    Reward-triggering environments
-    Risk-prone environments
-
-    Additionally, offer coping strategies and practical recommendations to help the individual manage challenges in these areas. Do not repeat any parts of the response.
-
     Given the following tagged measurements:
     """
     for key, value in data.items():
         prompt += f"{key}: {value}\n"
+    
+    prompt += """
+    Based on these measurements, provide only the psychological scores for each category with its name in the format of name: integerValue
+    """
     return prompt
 
 def prepare_prompt_ls(data):
@@ -95,43 +92,163 @@ def prepare_prompt_ls(data):
     Self-Control scores: [0-24]
     Cognitive Complexity scores: [0-20]
 
-    After presenting the scores, provide a detailed interpretation of the individual's personality and tendencies, including behavioral predictions and solutions in the following scenarios:
-    Social settings
-    Sad situations
-    Stressful situations
-    Peaceful situations
-    Situations under pressure
-    Overwhelming situations
-    Complex situations
-    Reward-triggering environments
-    Risk-prone environments
-
-    Additionally, offer coping strategies and practical recommendations to help the individual manage challenges in these areas. Do not repeat any parts of the response.
-
     Given the following tagged measurements:
     """
     prompt += f"\nInput Data: {data}\n"
+
+    prompt += """
+    Based on these measurements, provide only the psychological scores for each category with its name in the format of name: integerValue
+    """
     return prompt
 
 def prepare_prompt_gb(data):
     prompt = """
-    
+    You are an advanced psychological scoring system tasked with interpreting tagged measurements provided below. These measurements must be mapped to psychological scores according to established frameworks: UPPS, Big Five Inventory, and BIS-11 assessments.
+
+    The interpretation must strictly adhere to the following guidelines:
+    - Use the given ranges to calculate the scores.
+    - Ensure consistency in mapping the data to their respective traits or dimensions.
+    - Provide results as integers within the defined ranges.
+
+    // UPPS Scores
+    Urgency: [11-44]
+    Lack of premeditation: [10-40]
+    Lack of perseverance: [10-40]
+    Sensation seeking: [12-48]
+
+    // Big Five Traits
+    Extraversion: [8-40]
+    Introversion: [40-Extraversion]
+    Agreeableness: [9-45]
+    Antagonism: [45-Agreeableness]
+    Conscientiousness: [9-45]
+    Lack of direction: [45-Conscientiousness]
+    Neuroticism: [8-40]
+    Emotional stability: [40-Neuroticism]
+    Openness: [10-50]
+    Closedness to experience: [50-Openness]
+
+    // BIS-11 Scores
+    Attention score: [0-20]
+    Cognitive Instability score: [0-12]
+    Motor Scores: [0-28]
+    Perseverance scores: [0-16]
+    Self-Control scores: [0-24]
+    Cognitive Complexity scores: [0-20]
+
+    Given the following tagged measurements:
     """
-    prompt += f"\nInput Data: {data}\n"
+    for key, value in data.items():
+        prompt += f"{key}: {value}\n"
+    prompt += """
+    Based on these measurements, provide only the psychological scores for each category with its name in the format of name: integerValue
+    """
     return prompt
 
 def prepare_prompt_tm(data):
     prompt = """
-    
+    You are an advanced psychological scoring system tasked with interpreting tagged measurements provided below. These measurements must be mapped to psychological scores according to established frameworks: UPPS, Big Five Inventory, and BIS-11 assessments.
+
+    The interpretation must strictly adhere to the following guidelines:
+    - Use the given ranges to calculate the scores.
+    - Ensure consistency in mapping the data to their respective traits or dimensions.
+    - Provide results as integers within the defined ranges.
+
+    // UPPS Scores
+    Urgency: [11-44]
+    Lack of premeditation: [10-40]
+    Lack of perseverance: [10-40]
+    Sensation seeking: [12-48]
+
+    // Big Five Traits
+    Extraversion: [8-40]
+    Introversion: [40-Extraversion]
+    Agreeableness: [9-45]
+    Antagonism: [45-Agreeableness]
+    Conscientiousness: [9-45]
+    Lack of direction: [45-Conscientiousness]
+    Neuroticism: [8-40]
+    Emotional stability: [40-Neuroticism]
+    Openness: [10-50]
+    Closedness to experience: [50-Openness]
+
+    // BIS-11 Scores
+    Attention score: [0-20]
+    Cognitive Instability score: [0-12]
+    Motor Scores: [0-28]
+    Perseverance scores: [0-16]
+    Self-Control scores: [0-24]
+    Cognitive Complexity scores: [0-20]
+
+    Given the following tagged measurements:
     """
-    prompt += f"\nInput Data: {data}\n"
+    for key, value in data.items():
+        prompt += f"{key}: {value}\n"
+    prompt += """
+    Based on these measurements, provide only the psychological scores for each category with its name in the format of name: integerValue
+    """
     return prompt
 
-def prepare_prompt_whole_game(data):
+def prepare_prompt_whole_game(data, previous_interpretations):
     prompt = """
-        combining PUW, LS, GG, TM, PUS and total progress
+    You are an advanced psychological scoring system tasked with interpreting tagged measurements and unifying them with previously generated psychological scores and interpretations. 
+    Your goal is to refine the previous assessments by synthesizing new data with historical data to produce more accurate, nuanced, and logical results.
+
+    The interpretation must strictly adhere to the following guidelines:
+    - Use the given ranges to calculate the scores.
+    - When unifying scores, prioritize patterns or correlations from both new and previous data rather than relying on majority values.
+    - Refine and adjust the previously mapped scores if new evidence justifies it.
+    - Provide results **only in the format: ScoreName : ScoreValue**, as integers within the defined ranges.
+    - Highlight how the refined scores align with behavioral patterns or tendencies observed.
+
+    // UPPS Scores (Measure impulsive behaviors across dimensions)
+    Urgency: [11-44]
+    Lack of premeditation: [10-40]
+    Lack of perseverance: [10-40]
+    Sensation seeking: [12-48]
+
+    // Big Five Traits (Describe personality across five dimensions)
+    Extraversion: [8-40]
+    Introversion: [40-Extraversion]
+    Agreeableness: [9-45]
+    Antagonism: [45-Agreeableness]
+    Conscientiousness: [9-45]
+    Lack of direction: [45-Conscientiousness]
+    Neuroticism: [8-40]
+    Emotional stability: [40-Neuroticism]
+    Openness: [10-50]
+    Closedness to experience: [50-Openness]
+
+    // BIS-11 Scores (Assess impulsiveness through behavioral and cognitive factors)
+    Attention score: [0-20]
+    Cognitive Instability score: [0-12]
+    Motor Scores: [0-28]
+    Perseverance scores: [0-16]
+    Self-Control scores: [0-24]
+    Cognitive Complexity scores: [0-20]
+
+    After presenting the scores, provide a detailed interpretation of the individual's personality and tendencies, focusing on:
+    - Behavioral patterns derived from unified scores.
+    - Implications of adjusted scores on individual tendencies.
+    - Real-world contexts, including social settings, stressful situations, and risk-prone environments.
+
+    Given the following tagged measurements:
     """
-    prompt += f"\nInput Data: {data}\n"
+    for key, value in data.items():
+        prompt += f"{key}: {value}\n"
+
+    prompt += "\nGiven previous Interpretations:\n"
+    for level_name, interpretation in previous_interpretations.items():
+        prompt += f"{level_name} Interpretation:\n{interpretation}\n\n"
+
+    prompt += """
+    Based on the above measurements and interpretations:
+    1. Integrate new measurements with previous scores to refine the psychological scores for each category, ensuring adjustments make logical sense.
+    2. Provide psychological scores for each category strictly in the format:
+       ScoreName : ScoreValue
+    3. Explain the refined scores and their implications on behavioral tendencies and personality traits.
+    4. Offer specific strategies and actionable recommendations for self-regulation and decision-making based on the refined scores.
+    """
     return prompt
 
 def extract_text_from_pdfs():
@@ -172,6 +289,7 @@ def generate_interpretation_per_level(prompt):
         )
 
         interpretation = response['choices'][0]['message']['content']
+        print(interpretation)
         return interpretation
 
     except Exception as e:
@@ -189,26 +307,26 @@ def extract_per_level_interpretation(level_name, interpretation):
 
         # Regular expressions to extract scores
         patterns = {
-            "Urgency": r"Urgency: \[(\d+)\]",
-            "Lack of premeditation": r"Lack of premeditation: \[(\d+)\]",
-            "Lack of perseverance": r"Lack of perseverance: \[(\d+)\]",
-            "Sensation seeking": r"Sensation seeking: \[(\d+)\]",
-            "Extraversion": r"Extraversion: \[(\d+)\]",
-            "Introversion": r"Introversion: \[(\d+)\]",
-            "Agreeableness": r"Agreeableness: \[(\d+)\]",
-            "Antagonism": r"Antagonism: \[(\d+)\]",
-            "Conscientiousness": r"Conscientiousness: \[(\d+)\]",
-            "Lack of direction": r"Lack of direction: \[(\d+)\]",
-            "Neuroticism": r"Neuroticism: \[(\d+)\]",
-            "Emotional stability": r"Emotional stability: \[(\d+)\]",
-            "Openness": r"Openness: \[(\d+)\]",
-            "Closedness to experience": r"Closedness to experience: \[(\d+)\]",
-            "Attention score": r"Attention score: \[(\d+)\]",
-            "Cognitive Instability score": r"Cognitive Instability score: \[(\d+)\]",
-            "Motor Scores": r"Motor Scores: \[(\d+)\]",
-            "Perseverance scores": r"Perseverance scores: \[(\d+)\]",
-            "Self-Control scores": r"Self-Control scores: \[(\d+)\]",
-            "Cognitive Complexity scores": r"Cognitive Complexity scores: \[(\d+)\]"
+            "Urgency": r"Urgency: (\d+)",
+            "Lack of premeditation": r"Lack of premeditation: (\d+)",
+            "Lack of perseverance": r"Lack of perseverance: (\d+)",
+            "Sensation seeking": r"Sensation seeking: (\d+)",
+            "Extraversion": r"Extraversion: (\d+)",
+            "Introversion": r"Introversion: (\d+)",
+            "Agreeableness": r"Agreeableness: (\d+)",
+            "Antagonism": r"Antagonism: (\d+)",
+            "Conscientiousness": r"Conscientiousness: (\d+)",
+            "Lack of direction": r"Lack of direction: (\d+)",
+            "Neuroticism": r"Neuroticism: (\d+)",
+            "Emotional stability": r"Emotional stability: (\d+)",
+            "Openness": r"Openness: (\d+)",
+            "Closedness to experience": r"Closedness to experience: (\d+)",
+            "Attention score": r"Attention score: (\d+)",
+            "Cognitive Instability score": r"Cognitive Instability score: (\d+)",
+            "Motor Scores": r"Motor Scores: (\d+)",
+            "Perseverance scores": r"Perseverance scores: (\d+)",
+            "Self-Control scores": r"Self-Control scores: (\d+)",
+            "Cognitive Complexity scores": r"Cognitive Complexity scores: (\d+)"
         }
 
         # Extract scores based on patterns
@@ -222,8 +340,8 @@ def extract_per_level_interpretation(level_name, interpretation):
         return column
 
     except Exception as e:
-        print(f"Error saving interpretation: {e}")
-        return None
+        print(f"Error extracting interpretation for {level_name}: {e}")
+        return [level_name] + ["N/A"] * 20  # Return "N/A" for all scores if an error occurs
 
 def interpret_participant_data(file_path):
     """
@@ -254,36 +372,76 @@ def interpret_participant_data(file_path):
         "Self-Control scores",
         "Cognitive Complexity scores"
     ]]
+    previous_interpretations = {}
 
-    with open(file_path, 'r') as f:
-        reader = csv.reader(f)
-        for row in reader:
-            levels_data = {
-                "PUW": {row[0]: row[1]} if row[0] else None,
-                "LS": {row[2]: row[3]} if row[2] else None,
-                "GB": {row[4]: row[5]} if row[4] else None,
-                "TM": {row[6]: row[7]} if row[6] else None,
-                "WholeGame": {row[8]: row[9]} if row[8] else None
-            }
+    # Load the JSON file
+    try:
+        with open(file_path, 'r', encoding='utf-8') as json_file:
+            raw_data = json.load(json_file)
 
-            for level_name, data in levels_data.items():
-                if data is None:
-                    combined_array.append([level_name] + ["0"] * 20)
-                else:
-                    if level_name == "PUW":
-                        prompt = prepare_prompt_puw(data)
-                    elif level_name == "LS":
-                        prompt = prepare_prompt_ls(data)
-                    elif level_name == "GB":
-                        prompt = prepare_prompt_gb(data)
-                    elif level_name == "TM":
-                        prompt = prepare_prompt_tm(data)
-                    elif level_name == "WholeGame":
-                        prompt = prepare_prompt_whole_game(data)
+        if "Rows" not in raw_data:
+            raise ValueError("The JSON file does not contain the required 'Rows' key.")
+        
+        # Convert JSON structure into a DataFrame
+        data = pd.DataFrame(raw_data["Rows"])
+    except Exception as e:
+        print(f"Error reading JSON file '{file_path}': {e}")
+        return combined_array  # Return header only in case of error
 
-                    interpretation = generate_interpretation_per_level(prompt)
-                    column = extract_per_level_interpretation(level_name, interpretation)
-                    combined_array.append(column)
+    # Ensure column names exist
+    required_columns = ["Column1", "Column2", "Column3", "Column4", "Column5", "Column6", "Column7", "Column8", "Column9", "Column10"]
+    for column in required_columns:
+        if column not in data.columns:
+            data[column] = None  # Add missing columns as empty
+
+    levels = {
+        "PUW": ["Column1", "Column2"],
+        "LS": ["Column3", "Column4"],
+        "GB": ["Column5", "Column6"],
+        "TM": ["Column7", "Column8"],
+        "WholeGame": []  # Special handling for WholeGame
+    }
+
+    # Iterate through levels and process their respective columns
+    for level_name, columns in levels.items():
+        measurements = {}
+
+        # Extract measurements for the current level
+        for _, row in data.iterrows():
+            if len(columns) >= 2 and row[columns[0]]:
+                measurements[row[columns[0]]] = row[columns[1]]
+
+        if not measurements and level_name != "WholeGame":
+            print(f"No valid measurements for level {level_name}. Skipping.")
+            combined_array.append([level_name] + ["N/A"] * 20)
+            continue
+
+        try:
+            # Handle WholeGame separately
+            if level_name == "WholeGame":
+                wg_prompt = prepare_prompt_whole_game(measurements, previous_interpretations)
+                wg_interpretation = generate_interpretation_per_level(wg_prompt)
+                wg_column = extract_per_level_interpretation("WholeGame", wg_interpretation)
+                combined_array.append(wg_column)
+            else:
+                # Call the appropriate prompt preparation function
+                if level_name == "PUW":
+                    prompt = prepare_prompt_puw(measurements)
+                elif level_name == "LS":
+                    prompt = prepare_prompt_ls(measurements)
+                elif level_name == "GB":
+                    prompt = prepare_prompt_gb(measurements)
+                elif level_name == "TM":
+                    prompt = prepare_prompt_tm(measurements)
+
+                interpretation = generate_interpretation_per_level(prompt)
+                previous_interpretations[level_name] = interpretation
+                column = extract_per_level_interpretation(level_name, interpretation)
+                combined_array.append(column)
+        except Exception as e:
+            print(f"Error processing level '{level_name}': {e}")
+            combined_array.append([level_name] + ["N/A"] * 20)
+
 
     return combined_array
 
