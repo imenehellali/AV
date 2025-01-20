@@ -23,16 +23,28 @@ def prepare_prompt_puw(data):
     Sensation seeking: [12-48]
 
     // Big Five Traits
-    Extraversion: [8-40]
-    Introversion: [40-Extraversion]
-    Agreeableness: [9-45]
-    Antagonism: [45-Agreeableness]
-    Conscientiousness: [9-45]
-    Lack of direction: [45-Conscientiousness]
-    Neuroticism: [8-40]
-    Emotional stability: [40-Neuroticism]
-    Openness: [10-50]
-    Closedness to experience: [50-Openness]
+    Extraversion: [12-60]
+    Agreeableness: [12-60]
+    Conscientiousness: [12-60]
+    Neuroticism: [12-60]
+    Openness: [12-60]
+
+    // Big Five Facets
+    Sociability: [4-20]
+    Assertiveness: [4-20]
+    Activity: [4-20]
+    Compassion: [4-20]
+    Politeness: [4-20]
+    Interpersonal Trust: [4-20]
+    Orderliness: [4-20]
+    Diligence: [4-20]
+    Reliability: [4-20]
+    Anxiety: [4-20]
+    Depression: [4-20]
+    Emotional Instability: [4-20]
+    Aesthetic Sensitivity: [4-20]
+    Intellectual Curiosity: [4-20]
+    Creative Imagination: [4-20]
 
     // BIS-11 Scores
     Attention score: [0-20]
@@ -66,23 +78,35 @@ def prepare_prompt_ls(data):
     You are given in addition a set of tagged measurements, which should be interpreted together with the important focus point and mapped to psychological scores based on UPPS, Big Five Inventory, and BIS-11 assessments.
     Present each score as an integer within the specified range, as shown below:
 
-    // UPPS Scores
+     // UPPS Scores
     Urgency: [11-44]
     Lack of premeditation: [10-40]
     Lack of perseverance: [10-40]
     Sensation seeking: [12-48]
 
     // Big Five Traits
-    Extraversion: [8-40]
-    Introversion: [40-Extraversion]
-    Agreeableness: [9-45]
-    Antagonism: [45-Agreeableness]
-    Conscientiousness: [9-45]
-    Lack of direction: [45-Conscientiousness]
-    Neuroticism: [8-40]
-    Emotional stability: [40-Neuroticism]
-    Openness: [10-50]
-    Closedness to experience: [50-Openness]
+    Extraversion: [12-60]
+    Agreeableness: [12-60]
+    Conscientiousness: [12-60]
+    Neuroticism: [12-60]
+    Openness: [12-60]
+
+    // Big Five Facets
+    Sociability: [4-20]
+    Assertiveness: [4-20]
+    Activity: [4-20]
+    Compassion: [4-20]
+    Politeness: [4-20]
+    Interpersonal Trust: [4-20]
+    Orderliness: [4-20]
+    Diligence: [4-20]
+    Reliability: [4-20]
+    Anxiety: [4-20]
+    Depression: [4-20]
+    Emotional Instability: [4-20]
+    Aesthetic Sensitivity: [4-20]
+    Intellectual Curiosity: [4-20]
+    Creative Imagination: [4-20]
 
     // BIS-11 Scores
     Attention score: [0-20]
@@ -110,23 +134,35 @@ def prepare_prompt_gb(data):
     - Ensure consistency in mapping the data to their respective traits or dimensions.
     - Provide results as integers within the defined ranges.
 
-    // UPPS Scores
+     // UPPS Scores
     Urgency: [11-44]
     Lack of premeditation: [10-40]
     Lack of perseverance: [10-40]
     Sensation seeking: [12-48]
 
     // Big Five Traits
-    Extraversion: [8-40]
-    Introversion: [40-Extraversion]
-    Agreeableness: [9-45]
-    Antagonism: [45-Agreeableness]
-    Conscientiousness: [9-45]
-    Lack of direction: [45-Conscientiousness]
-    Neuroticism: [8-40]
-    Emotional stability: [40-Neuroticism]
-    Openness: [10-50]
-    Closedness to experience: [50-Openness]
+    Extraversion: [12-60]
+    Agreeableness: [12-60]
+    Conscientiousness: [12-60]
+    Neuroticism: [12-60]
+    Openness: [12-60]
+
+    // Big Five Facets
+    Sociability: [4-20]
+    Assertiveness: [4-20]
+    Activity: [4-20]
+    Compassion: [4-20]
+    Politeness: [4-20]
+    Interpersonal Trust: [4-20]
+    Orderliness: [4-20]
+    Diligence: [4-20]
+    Reliability: [4-20]
+    Anxiety: [4-20]
+    Depression: [4-20]
+    Emotional Instability: [4-20]
+    Aesthetic Sensitivity: [4-20]
+    Intellectual Curiosity: [4-20]
+    Creative Imagination: [4-20]
 
     // BIS-11 Scores
     Attention score: [0-20]
@@ -161,16 +197,28 @@ def prepare_prompt_tm(data):
     Sensation seeking: [12-48]
 
     // Big Five Traits
-    Extraversion: [8-40]
-    Introversion: [40-Extraversion]
-    Agreeableness: [9-45]
-    Antagonism: [45-Agreeableness]
-    Conscientiousness: [9-45]
-    Lack of direction: [45-Conscientiousness]
-    Neuroticism: [8-40]
-    Emotional stability: [40-Neuroticism]
-    Openness: [10-50]
-    Closedness to experience: [50-Openness]
+    Extraversion: [12-60]
+    Agreeableness: [12-60]
+    Conscientiousness: [12-60]
+    Neuroticism: [12-60]
+    Openness: [12-60]
+
+    // Big Five Facets
+    Sociability: [4-20]
+    Assertiveness: [4-20]
+    Activity: [4-20]
+    Compassion: [4-20]
+    Politeness: [4-20]
+    Interpersonal Trust: [4-20]
+    Orderliness: [4-20]
+    Diligence: [4-20]
+    Reliability: [4-20]
+    Anxiety: [4-20]
+    Depression: [4-20]
+    Emotional Instability: [4-20]
+    Aesthetic Sensitivity: [4-20]
+    Intellectual Curiosity: [4-20]
+    Creative Imagination: [4-20]
 
     // BIS-11 Scores
     Attention score: [0-20]
@@ -189,6 +237,7 @@ def prepare_prompt_tm(data):
     """
     return prompt
 
+
 def prepare_prompt_whole_game(data, previous_interpretations):
     prompt = """
     You are an advanced psychological scoring system tasked with interpreting tagged measurements and unifying them with previously generated psychological scores and interpretations. 
@@ -201,25 +250,37 @@ def prepare_prompt_whole_game(data, previous_interpretations):
     - Provide results **only in the format: ScoreName : ScoreValue**, as integers within the defined ranges.
     - Highlight how the refined scores align with behavioral patterns or tendencies observed.
 
-    // UPPS Scores (Measure impulsive behaviors across dimensions)
+     // UPPS Scores
     Urgency: [11-44]
     Lack of premeditation: [10-40]
     Lack of perseverance: [10-40]
     Sensation seeking: [12-48]
 
-    // Big Five Traits (Describe personality across five dimensions)
-    Extraversion: [8-40]
-    Introversion: [40-Extraversion]
-    Agreeableness: [9-45]
-    Antagonism: [45-Agreeableness]
-    Conscientiousness: [9-45]
-    Lack of direction: [45-Conscientiousness]
-    Neuroticism: [8-40]
-    Emotional stability: [40-Neuroticism]
-    Openness: [10-50]
-    Closedness to experience: [50-Openness]
+    // Big Five Traits
+    Extraversion: [12-60]
+    Agreeableness: [12-60]
+    Conscientiousness: [12-60]
+    Neuroticism: [12-60]
+    Openness: [12-60]
 
-    // BIS-11 Scores (Assess impulsiveness through behavioral and cognitive factors)
+    // Big Five Facets
+    Sociability: [4-20]
+    Assertiveness: [4-20]
+    Activity: [4-20]
+    Compassion: [4-20]
+    Politeness: [4-20]
+    Interpersonal Trust: [4-20]
+    Orderliness: [4-20]
+    Diligence: [4-20]
+    Reliability: [4-20]
+    Anxiety: [4-20]
+    Depression: [4-20]
+    Emotional Instability: [4-20]
+    Aesthetic Sensitivity: [4-20]
+    Intellectual Curiosity: [4-20]
+    Creative Imagination: [4-20]
+
+    // BIS-11 Scores
     Attention score: [0-20]
     Cognitive Instability score: [0-12]
     Motor Scores: [0-28]
@@ -305,22 +366,33 @@ def extract_per_level_interpretation(level_name, interpretation):
         # Initialize the column with the level name
         column = [level_name]
 
-        # Regular expressions to extract scores
+        # Regular expressions to extract scores for all 31 items
         patterns = {
+            "Scores": r"Scores: (\d+)",
             "Urgency": r"Urgency: (\d+)",
             "Lack of premeditation": r"Lack of premeditation: (\d+)",
             "Lack of perseverance": r"Lack of perseverance: (\d+)",
             "Sensation seeking": r"Sensation seeking: (\d+)",
             "Extraversion": r"Extraversion: (\d+)",
-            "Introversion": r"Introversion: (\d+)",
             "Agreeableness": r"Agreeableness: (\d+)",
-            "Antagonism": r"Antagonism: (\d+)",
             "Conscientiousness": r"Conscientiousness: (\d+)",
-            "Lack of direction": r"Lack of direction: (\d+)",
             "Neuroticism": r"Neuroticism: (\d+)",
-            "Emotional stability": r"Emotional stability: (\d+)",
             "Openness": r"Openness: (\d+)",
-            "Closedness to experience": r"Closedness to experience: (\d+)",
+            "Sociability": r"Sociability: (\d+)",
+            "Assertiveness": r"Assertiveness: (\d+)",
+            "Activity": r"Activity: (\d+)",
+            "Compassion": r"Compassion: (\d+)",
+            "Politeness": r"Politeness: (\d+)",
+            "Interpersonal Trust": r"Interpersonal Trust: (\d+)",
+            "Orderliness": r"Orderliness: (\d+)",
+            "Diligence": r"Diligence: (\d+)",
+            "Reliability": r"Reliability: (\d+)",
+            "Anxiety": r"Anxiety: (\d+)",
+            "Depression": r"Depression: (\d+)",
+            "Emotional Instability": r"Emotional Instability: (\d+)",
+            "Aesthetic Sensitivity": r"Aesthetic Sensitivity: (\d+)",
+            "Intellectual Curiosity": r"Intellectual Curiosity: (\d+)",
+            "Creative Imagination": r"Creative Imagination: (\d+)",
             "Attention score": r"Attention score: (\d+)",
             "Cognitive Instability score": r"Cognitive Instability score: (\d+)",
             "Motor Scores": r"Motor Scores: (\d+)",
@@ -341,7 +413,7 @@ def extract_per_level_interpretation(level_name, interpretation):
 
     except Exception as e:
         print(f"Error extracting interpretation for {level_name}: {e}")
-        return [level_name] + ["N/A"] * 20  # Return "N/A" for all scores if an error occurs
+        return [level_name] + ["N/A"] * 31  # Return "N/A" for all scores if an error occurs
 
 def interpret_participant_data(file_path):
     """
@@ -356,15 +428,25 @@ def interpret_participant_data(file_path):
         "Lack of perseverance",
         "Sensation seeking",
         "Extraversion",
-        "Introversion",
         "Agreeableness",
-        "Antagonism",
         "Conscientiousness",
-        "Lack of direction",
         "Neuroticism",
-        "Emotional stability",
         "Openness",
-        "Closedness to experience",
+        "Sociability",
+        "Assertiveness",
+        "Activity",
+        "Compassion",
+        "Politeness",
+        "Interpersonal Trust",
+        "Orderliness",
+        "Diligence",
+        "Reliability",
+        "Anxiety",
+        "Depression",
+        "Emotional Instability",
+        "Aesthetic Sensitivity",
+        "Intellectual Curiosity",
+        "Creative Imagination",
         "Attention score",
         "Cognitive Instability score",
         "Motor Scores",
@@ -413,7 +495,7 @@ def interpret_participant_data(file_path):
 
         if not measurements and level_name != "WholeGame":
             print(f"No valid measurements for level {level_name}. Skipping.")
-            combined_array.append([level_name] + ["N/A"] * 20)
+            combined_array.append([level_name] + ["N/A"] * 30)
             continue
 
         try:
@@ -440,7 +522,7 @@ def interpret_participant_data(file_path):
                 combined_array.append(column)
         except Exception as e:
             print(f"Error processing level '{level_name}': {e}")
-            combined_array.append([level_name] + ["N/A"] * 20)
+            combined_array.append([level_name] + ["N/A"] * 30)
 
 
     return combined_array

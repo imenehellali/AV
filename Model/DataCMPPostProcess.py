@@ -16,20 +16,37 @@ def ensure_folders_exist():
 
 # Value ranges for each score
 define_ranges = {
+    # UPPS Scores
     "Urgency": (11, 44),
     "Lack of premeditation": (10, 40),
     "Lack of perseverance": (10, 40),
     "Sensation seeking": (12, 48),
-    "Extraversion": (8, 40),
-    "Introversion": (lambda x: 40 - x, "Extraversion"),
-    "Agreeableness": (9, 45),
-    "Antagonism": (lambda x: 45 - x, "Agreeableness"),
-    "Conscientiousness": (9, 45),
-    "Lack of direction": (lambda x: 45 - x, "Conscientiousness"),
-    "Neuroticism": (8, 40),
-    "Emotional stability": (lambda x: 40 - x, "Neuroticism"),
-    "Openness": (10, 50),
-    "Closedness to experience": (lambda x: 50 - x, "Openness"),
+
+    # Big Five Traits
+    "Extraversion": (12, 60),
+    "Agreeableness": (12, 60),
+    "Conscientiousness": (12, 60),
+    "Neuroticism": (12, 60),
+    "Openness": (12, 60),
+
+    # Big Five Facets
+    "Sociability": (4, 20),
+    "Assertiveness": (4, 20),
+    "Activity": (4, 20),
+    "Compassion": (4, 20),
+    "Politeness": (4, 20),
+    "Interpersonal Trust": (4, 20),
+    "Orderliness": (4, 20),
+    "Diligence": (4, 20),
+    "Reliability": (4, 20),
+    "Anxiety": (4, 20),
+    "Depression": (4, 20),
+    "Emotional Instability": (4, 20),
+    "Aesthetic Sensitivity": (4, 20),
+    "Intellectual Curiosity": (4, 20),
+    "Creative Imagination": (4, 20),
+
+    # BIS-11 Scores
     "Attention score": (0, 20),
     "Cognitive Instability score": (0, 12),
     "Motor Scores": (0, 28),
@@ -37,6 +54,7 @@ define_ranges = {
     "Self-Control scores": (0, 24),
     "Cognitive Complexity scores": (0, 20)
 }
+
 
 def validate_value(value, score_name, real_values=None):
     if callable(define_ranges[score_name][0]):
@@ -51,16 +69,36 @@ def validate_value(value, score_name, real_values=None):
 
 def calculate_differences(predicted_data, real_data):
     differences = []
-    for i, row in enumerate(predicted_data):
+
+    # Extract real rows from the "dataArray" key
+    real_rows = real_data.get("dataArray", [])
+    if not real_rows:
+        print("Error: 'dataArray' key missing or empty in real data.")
+        return differences
+
+    # Transform real data into a dictionary for easier access
+    real_data_dict = {item["scoreName"]: item["scoreValue"] for item in real_rows}
+
+    # Iterate through rows of predicted data
+    for i, predicted_row in enumerate(predicted_data):
         row_differences = {}
-        for score_name, predicted_value in row.items():
-            real_value = real_data[i][score_name]
-            if not validate_value(predicted_value, score_name, real_values=row):
-                print(f"Validation failed for row {i + 1}, column {score_name}: Predicted={predicted_value}, Real={real_value}")
-            difference = abs(predicted_value - real_value)
-            row_differences[score_name] = difference
+
+        # Calculate differences for each score in the predicted row
+        for score_name, predicted_value in predicted_row.items():
+            if score_name in real_data_dict:
+                real_value = real_data_dict[score_name]
+                if not validate_value(predicted_value, score_name, real_values=real_data_dict):
+                    print(f"Validation failed for row {i + 1}, column {score_name}: Predicted={predicted_value}, Real={real_value}")
+                difference = abs(predicted_value - real_value)
+                row_differences[score_name] = difference
+            else:
+                print(f"Score {score_name} not found in real data.")
+
         differences.append(row_differences)
+
     return differences
+
+
 
 # data analytics operations
 # 1. Perform T-squared tests to check multivariate discrepancies.                                               --> DONE
@@ -108,10 +146,51 @@ def calculate_sample_size(current_differences, alpha=0.05, power=0.8):
     analysis = TTestPower()
     sample_size = analysis.solve_power(effect_size=effect_size, alpha=alpha, power=power, alternative='two-sided')
 
-    return round(sample_size)
+    return sample_size
 #
 #
 #
+def load_predicted_json(file_path):
+    """
+    Reads and normalizes the ParticipantPredictedResults JSON file.
+    Extracts a dictionary of score names and values.
+    """
+    try:
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+
+        if isinstance(data, list) and len(data) > 1:
+            header = data[0]  # First row contains score names
+            values = data[-1]  # Last row contains the corresponding values
+            return {header[i]: int(values[i]) if values[i] != "N/A" else None for i in range(1, len(header))}
+        else:
+            print(f"Unexpected format in predicted file: {file_path}")
+            return None
+
+    except Exception as e:
+        print(f"Error reading predicted JSON file '{file_path}': {e}")
+        return None
+
+
+def load_real_json(file_path):
+    """
+    Reads and normalizes the ParticipantRealResults JSON file.
+    Extracts a dictionary of score names and values.
+    """
+    try:
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+
+        if isinstance(data, dict) and "dataArray" in data:
+            return {item["scoreName"]: item["scoreValue"] for item in data["dataArray"]}
+        else:
+            print(f"Unexpected format in real file: {file_path}")
+            return None
+
+    except Exception as e:
+        print(f"Error reading real JSON file '{file_path}': {e}")
+        return None
+
 def process_files():
     comparison_results = []
     all_differences = []
@@ -120,27 +199,46 @@ def process_files():
         predicted_path = os.path.join(predicted_folder, filename)
         real_path = os.path.join(real_folder, filename)
 
+        # Check if the corresponding real file exists
         if not os.path.exists(real_path):
             print(f"Real file missing for: {filename}")
             continue
 
-        with open(predicted_path, 'r') as f:
-            predicted_data = json.load(f)
+        # Load predicted and real data
+        predicted_data = load_predicted_json(predicted_path)
+        real_data = load_real_json(real_path)
 
-        with open(real_path, 'r') as f:
-            real_data = json.load(f)
+        # Ensure data is valid
+        if predicted_data is None or real_data is None:
+            print(f"Skipping comparison due to invalid data in: {filename}")
+            continue
 
+        # Compare and calculate differences
         differences = calculate_differences(predicted_data, real_data)
-        avg_diff = np.mean([d for row in differences for d in row.values()])
-        max_diff = np.max([d for row in differences for d in row.values()])
+        if differences:
+            all_values = [d for row in differences for d in row.values()]
+            avg_diff = np.mean(all_values) if all_values else 0
+            max_diff = np.max(all_values) if all_values else 0
+        else:
+            avg_diff = 0
+            max_diff = 0
         comparison_results.append({"Filename": filename, "Average Difference": avg_diff, "Maximum Difference": max_diff})
         all_differences.extend([d for row in differences for d in row.values()])
 
+    # Perform statistical analysis
     t_squared_values = perform_t_squared_test(all_differences)
     p_values = compute_p_values(all_differences)
     sample_size = calculate_sample_size(all_differences)
+    if isinstance(sample_size, np.ndarray):
+        if sample_size.size == 1:  # Single value array
+            sample_size = sample_size.item()
+        else:
+            sample_size = sample_size.mean()  # Or other appropriate operation
+    # Round the scalar sample size
+    sample_size = round(sample_size)
     print(f"Required sample size for significance: {sample_size}")
 
+    # Attach t-squared values and p-values to results
     for idx, t_val in enumerate(t_squared_values):
         if idx < len(comparison_results):
             comparison_results[idx]["T-squared Value"] = t_val
@@ -150,6 +248,7 @@ def process_files():
             comparison_results[idx]["P-value"] = p_val
 
     return comparison_results
+
 
 def export_results_to_csv(results):
     output_file = os.path.join(os.getcwd(), "ComparisonResults.csv")
