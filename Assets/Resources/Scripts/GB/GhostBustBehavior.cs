@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -15,7 +16,6 @@ public class GhostBustBehavior : MonoBehaviour
     [Header("Ghost Properties")]
     public bool ghostDrunken;
     public bool ghostRed;
-    public bool ghostDead;
 
     //Movement Variables
     private float radius = 3f;
@@ -23,16 +23,21 @@ public class GhostBustBehavior : MonoBehaviour
 
     //Variables for the GBStats
     public List<float> focusDurations = new List<float>();
-    public float _elapsedTime = 0f;
+    private float _elapsedTime = 0f;
 
 
     private float circleDuration = 0f;
     private Vector3 initialPosition = Vector3.zero;
     private Quaternion initialRotation = Quaternion.identity;
+
+    private void OnEnable()
+    {
+        Activate.action.started += ShootGhost;
+    }
     private void Start()
     {
         GazeObject = GetComponent<ETObject>();
-        Activate.action.started += ShootGhost;
+        
         _material.enabled = false;
         circleDuration = 360f / rotationSpeed;
         initialPosition = gameObject.transform.position;
@@ -41,7 +46,7 @@ public class GhostBustBehavior : MonoBehaviour
 
     private void Update()
     {
-        if (_elapsedTime < circleDuration && !ghostDead)
+        if (_elapsedTime < circleDuration)
         {
             _elapsedTime += Time.deltaTime;
             gameObject.transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
@@ -53,13 +58,13 @@ public class GhostBustBehavior : MonoBehaviour
             gameObject.transform.position = new Vector3(gameObject.transform.position.x, Mathf.Clamp(gameObject.transform.position.y, 1f, 3f), gameObject.transform.position.z);
 
         }
-        else if (_elapsedTime >= circleDuration && !ghostDead)
+        else if (_elapsedTime >= circleDuration)
         {
             Destroy(this.gameObject);
         }
 
     }
-    private void OnDestroy()
+    private void OnDisable()
     {
         Activate.action.started -= ShootGhost;
     }
@@ -70,9 +75,9 @@ public class GhostBustBehavior : MonoBehaviour
         {
             if (GazeObject.IsGazeLocked())
             {
-                ghostDead = true;
-                GhostBusterManager.Instance.killedGhost.Invoke(this);
+                GhostBusterManager.Instance.killedGhost.Invoke(ghostDrunken,ghostRed, focusDurations.LastOrDefault(),_elapsedTime);
             }
+            Destroy(gameObject);
         }
 
     }

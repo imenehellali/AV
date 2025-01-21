@@ -89,9 +89,6 @@ public class RepositionOnLoad : MonoBehaviour
             _taskProgressPanel.position = new Vector3(-1.0446161f, 2.17185879f, 8.8579998f);
             _taskProgressPanel.rotation = Quaternion.identity;
 
-            _participant.GetComponent<JumpManager>().enabled = false;
-            _participant.GetComponent<ClimbManager>().enabled = false;
-
             _settingManager.SetActive(false);
             _settingControls.enabled = false;
             _instrPanel.SetActive(true);
@@ -107,8 +104,6 @@ public class RepositionOnLoad : MonoBehaviour
             _taskProgressPanel.position = new Vector3(-5.30937386f, 2.5f, 6.61999989f);
             _taskProgressPanel.rotation = Quaternion.identity;
 
-            _participant.GetComponent<JumpManager>().enabled = false;
-            _participant.GetComponent<ClimbManager>().enabled = false;
 
             _settingManager.SetActive(false);
             _settingControls.enabled = false;
@@ -125,30 +120,11 @@ public class RepositionOnLoad : MonoBehaviour
             _taskProgressPanel.rotation = Quaternion.identity;
             _taskProgressPanel.Rotate(0f, 180f, 0f);
 
-            _participant.GetComponent<JumpManager>().enabled = false;
-            _participant.GetComponent<ClimbManager>().enabled = false;
-
             _settingManager.SetActive(false);
             _settingControls.enabled = false;
             _instrPanel.SetActive(true);
         }
-        else if (levelName.Equals("TMScene"))
-        {
-            _participant.GetComponent<NavMeshAgent>().enabled = false;
-            _participant.transform.position = new Vector3(0f, 0.1f, 0f);
-            _participant.transform.rotation = Quaternion.identity;
-            _participant.GetComponent<NavMeshAgent>().enabled = true;
-
-            _taskProgressPanel.position = new Vector3(2.82274318f, 2.5f, 5.48126125f);
-            _taskProgressPanel.rotation = Quaternion.identity;
-
-            _participant.GetComponent<JumpManager>().enabled = true;
-            _participant.GetComponent<ClimbManager>().enabled = true;
-
-            _settingManager.SetActive(false);
-            _settingControls.enabled = false;
-            _instrPanel.SetActive(true);
-        }
+        
         if (!_dynamicMoveProvider.enabled)
             _dynamicMoveProvider.enabled = true;
     }

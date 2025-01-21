@@ -12,6 +12,8 @@ using System.Runtime.CompilerServices;
 public class EyeTrackingManager : MonoBehaviour
 {
 
+    public LineRenderer lineRendererLeft;
+    public LineRenderer lineRendererRight;
     public LineRenderer lineRendererPico;
 
     public Transform Origin;
@@ -70,6 +72,8 @@ public class EyeTrackingManager : MonoBehaviour
         _OriginOffset = _cameraOffset.GetLocalPose();
 
         lineRendererPico.enabled = false;
+        lineRendererLeft.enabled = false;
+        lineRendererRight.enabled = false;
 
         eyeTrackingstarted = PXR_MotionTracking.StartEyeTracking(ref startInfo) == 0;
 
@@ -142,17 +146,20 @@ public class EyeTrackingManager : MonoBehaviour
         Quaternion _LeyeRot = Quaternion.identity;
         Quaternion _ReyeRot = Quaternion.identity;
 
-        bool _gotEye = InputDevices.GetDeviceAtXRNode(XRNode.LeftEye).TryGetFeatureValue(CommonUsages.leftEyePosition, out _LeyePos);
-        _gotEye &= InputDevices.GetDeviceAtXRNode(XRNode.RightEye).TryGetFeatureValue(CommonUsages.rightEyePosition, out _ReyePos);
-        _gotEye &= InputDevices.GetDeviceAtXRNode(XRNode.LeftEye).TryGetFeatureValue(CommonUsages.leftEyeRotation, out _LeyeRot);
-        _gotEye &= InputDevices.GetDeviceAtXRNode(XRNode.RightEye).TryGetFeatureValue(CommonUsages.rightEyeRotation, out _ReyeRot);
+        bool _gotLEyeP = InputDevices.GetDeviceAtXRNode(XRNode.LeftEye).TryGetFeatureValue(CommonUsages.leftEyePosition, out _LeyePos);
+        bool _gotREyeP = InputDevices.GetDeviceAtXRNode(XRNode.RightEye).TryGetFeatureValue(CommonUsages.rightEyePosition, out _ReyePos);
+        bool _gotLEyeR = InputDevices.GetDeviceAtXRNode(XRNode.LeftEye).TryGetFeatureValue(CommonUsages.leftEyeRotation, out _LeyeRot);
+        bool _gotREyeR = InputDevices.GetDeviceAtXRNode(XRNode.RightEye).TryGetFeatureValue(CommonUsages.rightEyeRotation, out _ReyeRot);
 
-        dataReceived = _gotEye;
-        if (_gotEye)
+        dataReceived = _gotLEyeP || _gotREyeP || _gotLEyeR || _gotREyeR;
+        if (dataReceived)
         {
 
-            combineEyeGazeOrigin = (_LeyePos + _ReyePos) / 2.0f;
-            combineEyeGazeVector = ((_LeyeRot * Vector3.forward) + (_ReyeRot * Vector3.forward)).normalized;
+            Vector3 _origLeft = Origin.position + new Vector3(0f, 1.7f, 0f) + _LeyePos;
+            Vector3 _origRight = Origin.position + new Vector3(0f, 1.7f, 0f) + _ReyePos;
+
+            Vector3 _vectorLeft = (_LeyeRot * Vector3.forward).normalized;
+            Vector3 _vectorRight = (_ReyeRot * Vector3.forward).normalized;
 
             _LPose.text = $"Left Eye position {_LeyePos}";
             _RPose.text = $"Right Eye position{_ReyePos}";
@@ -161,9 +168,9 @@ public class EyeTrackingManager : MonoBehaviour
             _CPose.text = $"Combined Eye position {combineEyeGazeOrigin}";
             _CDPose.text = $"Combined Eye Direction {combineEyeGazeVector}";
 
-            dataReceived &= HandleGazeTarget(lineRendererPico, combineEyeGazeOrigin, combineEyeGazeVector);
+            dataReceived = HandleGazeTarget(lineRendererLeft, _origLeft, _vectorLeft);
+            dataReceived |= HandleGazeTarget(lineRendererRight, _origLeft, _vectorLeft);
 
-            dataReceived &= combineEyeGazeOrigin != Vector3.zero && combineEyeGazeVector != Vector3.zero;
         }
         return dataReceived;
     }
@@ -269,7 +276,7 @@ public class EyeTrackingManager : MonoBehaviour
         _CPose.text = "";
         _CDPose.text = "";
 
-        dataValid = PXRTracking();
+        /*dataValid = PXRTracking();
 
         if (!dataValid)
             dataValid = PICOEye();
@@ -277,8 +284,9 @@ public class EyeTrackingManager : MonoBehaviour
             dataValid = XRFixationPoint();
         if (!dataValid)
             dataValid = XRCenterEye();
-        if (!dataValid)
-            dataValid = XRPerEye();
+        if (!dataValid)*/
+
+        dataValid = XRPerEye();
         if (!dataValid)
             dataValid = XRCameraCenterHead();
         if (!dataValid)
@@ -292,13 +300,13 @@ public class EyeTrackingManager : MonoBehaviour
         bool selectedObjIsTarget = false;
         lineRenderer.enabled = true;
         lineRenderer.SetPosition(0, origin);
-        lineRenderer.SetPosition(1, origin+vector * 100f);
+        lineRenderer.SetPosition(1, origin + vector * 100f);
         Ray ray = new Ray(origin, vector);
         if (Physics.SphereCast(origin, 2f, vector, out hitinfo))
         {
             if (selectedObj != null && selectedObj != hitinfo.transform)
             {
-                if (selectedObj.GetComponent<ETObject>() != null)
+                if (selectedObj.GetComponent<ETObject>() != null && selectedObj.GetComponent<ETObject>().IsGazeLocked())
                     selectedObj.GetComponent<ETObject>().UnFocused();
                 selectedObj = null;
 
@@ -306,7 +314,7 @@ public class EyeTrackingManager : MonoBehaviour
             else if (selectedObj == null)
             {
                 selectedObj = hitinfo.transform;
-                if (selectedObj.GetComponent<ETObject>() != null)
+                if (selectedObj.GetComponent<ETObject>() != null && !selectedObj.GetComponent<ETObject>().IsGazeLocked())
                 {
                     selectedObj.GetComponent<ETObject>().IsFocused();
                     selectedObjIsTarget = true;
@@ -317,7 +325,7 @@ public class EyeTrackingManager : MonoBehaviour
         {
             if (selectedObj != null)
             {
-                if (selectedObj.GetComponent<ETObject>() != null)
+                if (selectedObj.GetComponent<ETObject>() != null && selectedObj.GetComponent<ETObject>().IsGazeLocked())
                     selectedObj.GetComponent<ETObject>().UnFocused();
                 selectedObj = null;
             }

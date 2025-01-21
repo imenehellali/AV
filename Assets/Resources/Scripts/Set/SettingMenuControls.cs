@@ -155,7 +155,7 @@ public class SettingMenuControls : MonoBehaviour
         Debug.Log("entered launch game menu");
 
         _testVariable.text = "triggered ME from setting menu controls Launching";
-        if (callbackContext.ReadValueAsButton())
+        if (SceneManager.GetSceneByName("StartScene").isLoaded && callbackContext.ReadValueAsButton())
         {
             GameSettings.Instance.LoadNextScene();
             this.enabled = false;

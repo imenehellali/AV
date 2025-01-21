@@ -117,12 +117,7 @@ public class InstructionPanel : MonoBehaviour
                 DisplayLevelInstruction(lvlIdx);
                 StartCoroutine(StartLevelAfterPlay());
             }
-            else if (SceneManager.GetSceneByName("TMScene").isLoaded)
-            {
-                lvlIdx = 3;
-                DisplayLevelInstruction(lvlIdx);
-                StartCoroutine(StartLevelAfterPlay());
-            }
+            
         }
     }
     //I don't play it automatically when they open, if they wanna play instr they gotta click
@@ -206,9 +201,6 @@ public class InstructionPanel : MonoBehaviour
                 break;
             case "GBScene":
                 GhostBusterManager.Instance.StartTask();
-                break;
-            case "TMScene":
-                ThrillMinerManager.Instance.StartLevel();
                 break;
             default:
                 break;
