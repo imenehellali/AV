@@ -50,7 +50,7 @@ public class PopUpShopManager : MonoBehaviour
 
     private void Update()
     {
-        gameObject.transform.position = new Vector3(_participantPos.transform.position.x, 1.3f, _participantPos.transform.position.z + 0.5f);
+        gameObject.transform.position = new Vector3(_participantPos.transform.position.x, 1.7f, _participantPos.transform.position.z + 0.5f);
         requiredTimeToBuy += Time.deltaTime;
         UpdateTimerDisplay(_pusTime - requiredTimeToBuy);
     }

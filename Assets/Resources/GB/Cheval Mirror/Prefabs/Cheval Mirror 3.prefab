@@ -11,9 +11,8 @@ GameObject:
   - component: {fileID: 4356308134809766446}
   - component: {fileID: 854396125089891723}
   - component: {fileID: 3188438543532093761}
-  - component: {fileID: 4322908461391572418}
-  - component: {fileID: 4322908461391572417}
-  - component: {fileID: 4322908461391572416}
+  - component: {fileID: 4649808606001940692}
+  - component: {fileID: 3340766746245166376}
   m_Layer: 0
   m_Name: Cheval Mirror 3
   m_TagString: Untagged
@@ -88,7 +87,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &4322908461391572418
+--- !u!65 &4649808606001940692
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -107,50 +106,24 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.6711773, y: 0.29611433, z: 0.03540647}
-  m_Center: {x: 0, y: 0.14805716, z: 0.005063981}
---- !u!65 &4322908461391572417
-BoxCollider:
+  m_Size: {x: 0.7, y: 2, z: 0.6}
+  m_Center: {x: 0, y: 1, z: 0}
+--- !u!208 &3340766746245166376
+NavMeshObstacle:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3981014422482800788}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.06432629, y: 1.1035581, z: 0.061263785}
-  m_Center: {x: -0.30342555, y: 0.55177903, z: -0.000000007450581}
---- !u!65 &4322908461391572416
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3981014422482800788}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.063251674, y: 1.1035581, z: 0.06126383}
-  m_Center: {x: 0.3039628, y: 0.55177903, z: -0.000000014901161}
+  m_Shape: 1
+  m_Extents: {x: 0.35, y: 1, z: 0.3}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: 0, y: 1, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &5453117950753760717
 GameObject:
   m_ObjectHideFlags: 0
@@ -162,7 +135,6 @@ GameObject:
   - component: {fileID: 4398721228112019717}
   - component: {fileID: 2367932369074885536}
   - component: {fileID: 3663702305826687598}
-  - component: {fileID: 4322908461391572419}
   m_Layer: 0
   m_Name: Mirror
   m_TagString: Untagged
@@ -235,27 +207,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &4322908461391572419
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5453117950753760717}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.52179384, y: 1.5003378, z: 0.024727792}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5736555402257893235
 GameObject:
   m_ObjectHideFlags: 0

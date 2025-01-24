@@ -129,11 +129,34 @@ public class EyeTrackingManager : MonoBehaviour
                 _eyeData.eyeDatas[2].pose.orientation.z,
                 _eyeData.eyeDatas[2].pose.orientation.w)) * Vector3.forward).normalized;
 
-            _LOpeness.text = $"Pico Eye Position {_eyePos}";
-            _ROpeness.text = $"Pico Eye Direction Forward {_eyeDir}";
+            Vector3 _LeyePos = Origin.position + new Vector3(0f, 1.7f, 0f) + new Vector3(_eyeData.eyeDatas[0].pose.position.x,
+                 _eyeData.eyeDatas[0].pose.position.y,
+                  _eyeData.eyeDatas[0].pose.position.z);
+            Vector3 _ReyePos = Origin.position + new Vector3(0f, 1.7f, 0f) + new Vector3(_eyeData.eyeDatas[1].pose.position.x,
+                 _eyeData.eyeDatas[1].pose.position.y,
+                  _eyeData.eyeDatas[1].pose.position.z);
 
-            dataReceived &= HandleGazeTarget(lineRendererPico, _eyePos, _eyeDir);
-            dataReceived &= _eyePos != Vector3.zero && _eyeDir != Vector3.zero;
+            Vector3 _LeyeDir = ((new Quaternion(_eyeData.eyeDatas[0].pose.orientation.x,
+               _eyeData.eyeDatas[0].pose.orientation.y,
+               _eyeData.eyeDatas[0].pose.orientation.z,
+               _eyeData.eyeDatas[0].pose.orientation.w)) * Vector3.forward).normalized;
+
+            Vector3 _ReyeDir = ((new Quaternion(_eyeData.eyeDatas[1].pose.orientation.x,
+               _eyeData.eyeDatas[1].pose.orientation.y,
+               _eyeData.eyeDatas[1].pose.orientation.z,
+               _eyeData.eyeDatas[1].pose.orientation.w)) * Vector3.forward).normalized;
+
+            _LOpeness.text = $"Pico Center Eye Position {_eyePos}";
+            _ROpeness.text = $"Pico Cetner Eye Direction Forward {_eyeDir}";
+
+            _LPose.text = $"Pico Left Eye position {_LeyePos}";
+            _RPose.text = $"Pico Right Eye position{_ReyePos}";
+
+            _CPose.text = $"Pico Left Eye orientation {_LeyeDir}";
+            _CDPose.text = $"Pico Right Eye orientation {_ReyeDir}";
+
+            dataReceived = HandleGazeTarget(lineRendererLeft, _LeyePos, _LeyeDir);
+            dataReceived |= HandleGazeTarget(lineRendererRight, _ReyePos, _ReyeDir);
         }
         return dataReceived;
     }
@@ -151,6 +174,9 @@ public class EyeTrackingManager : MonoBehaviour
         bool _gotLEyeR = InputDevices.GetDeviceAtXRNode(XRNode.LeftEye).TryGetFeatureValue(CommonUsages.leftEyeRotation, out _LeyeRot);
         bool _gotREyeR = InputDevices.GetDeviceAtXRNode(XRNode.RightEye).TryGetFeatureValue(CommonUsages.rightEyeRotation, out _ReyeRot);
 
+        _CPose.text = $"Got XR Left Eye position {_gotLEyeP}";
+        _CDPose.text = $"Got XR Right Eye position {_gotREyeP}";
+
         dataReceived = _gotLEyeP || _gotREyeP || _gotLEyeR || _gotREyeR;
         if (dataReceived)
         {
@@ -165,8 +191,6 @@ public class EyeTrackingManager : MonoBehaviour
             _RPose.text = $"Right Eye position{_ReyePos}";
             _LOpeness.text = $"Left Eye Rotation: {_LeyeRot.eulerAngles}";
             _ROpeness.text = $"Right Eye Rotation: {_ReyeRot.eulerAngles}";
-            _CPose.text = $"Combined Eye position {combineEyeGazeOrigin}";
-            _CDPose.text = $"Combined Eye Direction {combineEyeGazeVector}";
 
             dataReceived = HandleGazeTarget(lineRendererLeft, _origLeft, _vectorLeft);
             dataReceived |= HandleGazeTarget(lineRendererRight, _origLeft, _vectorLeft);
@@ -286,11 +310,18 @@ public class EyeTrackingManager : MonoBehaviour
             dataValid = XRCenterEye();
         if (!dataValid)*/
 
-        dataValid = XRPerEye();
+        //dataValid = PICOEye();
+
+        //if(!dataValid)
+        //dataValid = 
+        //dataValid = 
+        XRPerEye();
+        /*
         if (!dataValid)
             dataValid = XRCameraCenterHead();
         if (!dataValid)
             dataValid = CameraCenterCutom();
+        */
 
     }
 
@@ -306,7 +337,7 @@ public class EyeTrackingManager : MonoBehaviour
         {
             if (selectedObj != null && selectedObj != hitinfo.transform)
             {
-                if (selectedObj.GetComponent<ETObject>() != null && selectedObj.GetComponent<ETObject>().IsGazeLocked())
+                if (selectedObj.tag.Equals("Target") || (selectedObj.GetComponent<ETObject>() != null && selectedObj.GetComponent<ETObject>().IsGazeLocked()))
                     selectedObj.GetComponent<ETObject>().UnFocused();
                 selectedObj = null;
 
@@ -314,7 +345,7 @@ public class EyeTrackingManager : MonoBehaviour
             else if (selectedObj == null)
             {
                 selectedObj = hitinfo.transform;
-                if (selectedObj.GetComponent<ETObject>() != null && !selectedObj.GetComponent<ETObject>().IsGazeLocked())
+                if (selectedObj.tag.Equals("Target") || (selectedObj.GetComponent<ETObject>() != null && !selectedObj.GetComponent<ETObject>().IsGazeLocked()))
                 {
                     selectedObj.GetComponent<ETObject>().IsFocused();
                     selectedObjIsTarget = true;
@@ -325,7 +356,7 @@ public class EyeTrackingManager : MonoBehaviour
         {
             if (selectedObj != null)
             {
-                if (selectedObj.GetComponent<ETObject>() != null && selectedObj.GetComponent<ETObject>().IsGazeLocked())
+                if (selectedObj.tag.Equals("Target") || (selectedObj.GetComponent<ETObject>() != null && selectedObj.GetComponent<ETObject>().IsGazeLocked()))
                     selectedObj.GetComponent<ETObject>().UnFocused();
                 selectedObj = null;
             }

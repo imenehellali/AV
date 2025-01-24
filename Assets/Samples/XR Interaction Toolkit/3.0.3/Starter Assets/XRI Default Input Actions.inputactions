@@ -51,6 +51,24 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "Left Eye Gaze Position",
+                    "type": "Value",
+                    "id": "1192f29a-8898-466e-8c70-3fc07fb1246e",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Right Eye Gaze Position",
+                    "type": "Value",
+                    "id": "882be834-a1e7-481b-97f7-ef8a12efc3aa",
+                    "expectedControlType": "Vector3",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Eye Gaze Rotation",
                     "type": "Value",
                     "id": "8ac32629-4403-4068-aae5-2cd243e230c2",
@@ -60,10 +78,28 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "Right Eye Gaze Rotation",
+                    "type": "Value",
+                    "id": "7166b53c-1b22-44fa-88b8-4242ee6c41c7",
+                    "expectedControlType": "Quaternion",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Left Eye Gaze Rotation",
+                    "type": "Value",
+                    "id": "b16831b8-4f8c-4fd1-b72c-cd9e2b19a755",
+                    "expectedControlType": "Quaternion",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "Eye Gaze Is Tracked",
                     "type": "Button",
                     "id": "ea26ba43-844b-4585-817a-2f124b571813",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -190,6 +226,94 @@
                     "isPartOfComposite": true
                 },
                 {
+                    "name": "Quaternion Fallback",
+                    "id": "1462a185-2ca9-4113-9603-3b64234100bc",
+                    "path": "QuaternionFallback",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Right Eye Gaze Rotation",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "first",
+                    "id": "d9450a40-907e-4a58-9242-eb9a67d1f263",
+                    "path": "<PXR_HMD>/rightEyeRotation",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Right Eye Gaze Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "second",
+                    "id": "36a1ef5b-6020-4de8-8c69-cf717af588a9",
+                    "path": "<XRHMD>/rightEyeRotation",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Right Eye Gaze Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "third",
+                    "id": "43626e47-f9a1-40d9-9385-5bc747b18920",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Right Eye Gaze Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Quaternion Fallback",
+                    "id": "dcac6442-ef1a-45e9-b69b-9219663f02f2",
+                    "path": "QuaternionFallback",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Left Eye Gaze Rotation",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "first",
+                    "id": "9b8d22a6-105f-4414-ad8f-cc5ade283d60",
+                    "path": "<PXR_HMD>/leftEyeRotation",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Left Eye Gaze Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "second",
+                    "id": "a9319f9d-3991-4e9d-92f8-d76b53294719",
+                    "path": "<XRHMD>/leftEyeRotation",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Left Eye Gaze Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "third",
+                    "id": "6554748e-e720-438f-9054-d91d616e7785",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Left Eye Gaze Rotation",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "Vector 3 Fallback",
                     "id": "0cf0b092-6006-474b-9cf5-dc4039450f39",
                     "path": "Vector3Fallback",
@@ -230,6 +354,94 @@
                     "processors": "",
                     "groups": "",
                     "action": "Eye Gaze Position",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Vector 3 Fallback",
+                    "id": "ddf18200-a612-4495-b5b0-ad42af691a52",
+                    "path": "Vector3Fallback",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Left Eye Gaze Position",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "first",
+                    "id": "53908a2c-757e-4564-ae46-a498a8e8c0d9",
+                    "path": "<PXR_HMD>/leftEyePosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Left Eye Gaze Position",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "second",
+                    "id": "213980bf-8f64-47a5-b233-e1ac03b4073d",
+                    "path": "<XRHMD>/leftEyePosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Left Eye Gaze Position",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "third",
+                    "id": "5d532fb8-e470-41f9-a29b-fef045d9c216",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Left Eye Gaze Position",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Vector 3 Fallback",
+                    "id": "f9d30363-f79f-4aa6-9f6d-d28332e996d3",
+                    "path": "Vector3Fallback",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Right Eye Gaze Position",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "first",
+                    "id": "4b728c23-ce6e-4b71-a860-6b94771747aa",
+                    "path": "<PXR_HMD>/rightEyePosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Right Eye Gaze Position",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "second",
+                    "id": "7215f764-9fff-4019-a6b4-a13e33aedf6a",
+                    "path": "<XRHMD>/rightEyePosition",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Right Eye Gaze Position",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "third",
+                    "id": "7379a0ce-d2ce-45a1-ab41-61c414e36f31",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Right Eye Gaze Position",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
