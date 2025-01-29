@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 4159705911819316294}
   - component: {fileID: 176213577887823360}
   - component: {fileID: 5541970208227210655}
+  - component: {fileID: 3246904930347096464}
   m_Layer: 5
   m_Name: Margaritha
-  m_TagString: Untagged
+  m_TagString: Target
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -89,6 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5367dd9b17f732943bb37c1dc6434ec6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isFocused: 0
   Activate: {fileID: 83097790271614945, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   _type: 0
 --- !u!114 &5541970208227210655
@@ -104,3 +106,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _image: {fileID: 4159705911819316294}
+--- !u!114 &3246904930347096464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3739184094393177901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7951c64acb0fa62458bf30a60089fe2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 0
+  m_CheckFor2DOcclusion: 0
+  m_CheckFor3DOcclusion: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RaycastTriggerInteraction: 1

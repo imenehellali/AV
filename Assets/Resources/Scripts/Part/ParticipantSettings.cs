@@ -11,7 +11,7 @@ using UnityEngine.Events;
 public class ParticipantSettings : MonoBehaviour
 {
     private string ParticipantID;
-
+    public string PUID => ParticipantID;
     //Data from all the differetn levels to fetch
     private Dictionary<string, float> PUWdataDict = new Dictionary<string, float>();
     private Dictionary<string, object> LSdataDict = new Dictionary<string, object>();

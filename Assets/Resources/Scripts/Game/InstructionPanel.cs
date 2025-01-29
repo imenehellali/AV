@@ -23,6 +23,7 @@ public class InstructionPanel : MonoBehaviour
     [SerializeField] private InputActionReference Menu;
     [SerializeField] private TextMeshProUGUI gameTranscript;
     [SerializeField] private TextMeshProUGUI levelTranscript;
+    [SerializeField] private TextMeshProUGUI PUID;
 
     [Header("General Game")]
     [TextArea]
@@ -69,6 +70,7 @@ public class InstructionPanel : MonoBehaviour
         lvlIdx = 0;
         currLoadedScene = "";
         currLoadedLxlidx = -1;
+        PUID.text = "xxxxx";
         int count = GameSettings.Instance.LevelDurations.Length;
         for (int i = 0; i < count; i++)
         {
@@ -80,6 +82,7 @@ public class InstructionPanel : MonoBehaviour
     }
     private void StartInstructionPanel(string sceneName)
     {
+        PUID.text = $"{ParticipantSettings.Instance.PUID}";
         currLoadedScene = sceneName;
         Debug.Log($" will start instruction for {currLoadedScene} euqls my input ? {sceneName.Equals("EndScene")}");
         if (sceneName.Equals("EndScene"))
@@ -126,6 +129,7 @@ public class InstructionPanel : MonoBehaviour
     {
         if (callbackContext.ReadValueAsButton() && !currLoadedScene.Equals("EndScene"))
         {
+            PUID.text = $"{ParticipantSettings.Instance.PUID}";
             if (instructionPanel.activeSelf)
             {
                 if (_audioSourceInstrGame.isPlaying || _audioSourceInstrLvl.isPlaying)

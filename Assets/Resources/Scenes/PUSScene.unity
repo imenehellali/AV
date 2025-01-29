@@ -366,7 +366,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1739073322408778335, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_BlockingMask.m_Bits
-      value: 0
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 1793941703217561685, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_Name
@@ -560,7 +560,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1739073322408778335, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_BlockingMask.m_Bits
-      value: 0
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 1793941703217561685, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_Name
@@ -581,6 +581,18 @@ PrefabInstance:
     - target: {fileID: 3130744866819349984, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
       value: UpdateTotalSum
+      objectReference: {fileID: 0}
+    - target: {fileID: 3254929585875266123, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
+      propertyPath: m_BlockingMask.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 3921705095236642032, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
+      propertyPath: m_BlockingMask.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 4039746300171901871, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
+      propertyPath: m_BlockingMask.m_Bits
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 6349935811021474525, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -787,7 +799,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1739073322408778335, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_BlockingMask.m_Bits
-      value: 0
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 1793941703217561685, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_Name
@@ -987,6 +999,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1739073322408778335, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
+      propertyPath: m_BlockingMask.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 1793941703217561685, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_Name
       value: Panel (9)
@@ -1142,7 +1158,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1739073322408778335, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_BlockingMask.m_Bits
-      value: 0
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 1793941703217561685, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_Name
@@ -1391,9 +1407,9 @@ GameObject:
   - component: {fileID: 648508339}
   - component: {fileID: 648508338}
   - component: {fileID: 648508337}
-  - component: {fileID: 648508336}
   - component: {fileID: 648508335}
   - component: {fileID: 648508340}
+  - component: {fileID: 648508341}
   m_Layer: 5
   m_Name: Shop
   m_TagString: Untagged
@@ -1429,23 +1445,6 @@ MonoBehaviour:
   buyButton: {fileID: 45257681}
   shopCanvas: {fileID: 648508338}
   _closeButton: {fileID: 1949374181}
---- !u!114 &648508336
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 648508334}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 0
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
 --- !u!114 &648508337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1490,7 +1489,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!224 &648508339
 RectTransform:
@@ -1529,8 +1528,25 @@ MonoBehaviour:
   m_CheckFor3DOcclusion: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 0
-  m_RaycastTriggerInteraction: 2
+    m_Bits: 4294967295
+  m_RaycastTriggerInteraction: 1
+--- !u!114 &648508341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 648508334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 0
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1001 &957996466
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1621,7 +1637,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1739073322408778335, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_BlockingMask.m_Bits
-      value: 0
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 1793941703217561685, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_Name
@@ -1815,7 +1831,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1739073322408778335, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_BlockingMask.m_Bits
-      value: 0
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 1793941703217561685, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_Name
@@ -2020,7 +2036,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1739073322408778335, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_BlockingMask.m_Bits
-      value: 0
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 1793941703217561685, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_Name
@@ -2291,7 +2307,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1739073322408778335, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_BlockingMask.m_Bits
-      value: 0
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 1793941703217561685, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_Name
@@ -2560,7 +2576,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1739073322408778335, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_BlockingMask.m_Bits
-      value: 0
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 1793941703217561685, guid: b94c725f31d69994a8d284a194e5295a, type: 3}
       propertyPath: m_Name
@@ -2865,8 +2881,8 @@ MonoBehaviour:
   m_CheckFor3DOcclusion: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 0
-  m_RaycastTriggerInteraction: 2
+    m_Bits: 4294967295
+  m_RaycastTriggerInteraction: 1
 --- !u!225 &1386452477
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -2877,7 +2893,7 @@ CanvasGroup:
   m_Enabled: 1
   m_Alpha: 1
   m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
 --- !u!114 &1386452478
 MonoBehaviour:

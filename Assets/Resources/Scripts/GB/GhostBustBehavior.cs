@@ -16,15 +16,15 @@ public class GhostBustBehavior : MonoBehaviour
     [Header("Ghost Properties")]
     public bool ghostDrunken;
     public bool ghostRed;
-
+    private bool ghostDead = false;
     //Movement Variables
     private float radius = 3f;
     private float rotationSpeed = 30f;
 
     //Variables for the GBStats
     public List<float> focusDurations = new List<float>();
-    private float _elapsedTime = 0f;
-
+    public float _elapsedTime = 0f;
+    public UnityAction<bool> ghosDead;
 
     private float circleDuration = 0f;
     private Vector3 initialPosition = Vector3.zero;
@@ -58,7 +58,7 @@ public class GhostBustBehavior : MonoBehaviour
             gameObject.transform.position = new Vector3(gameObject.transform.position.x, Mathf.Clamp(gameObject.transform.position.y, 1f, 3f), gameObject.transform.position.z);
 
         }
-        else if (_elapsedTime >= circleDuration)
+        if (ghostDead|| _elapsedTime >= circleDuration)
         {
             Destroy(this.gameObject);
         }
@@ -75,9 +75,8 @@ public class GhostBustBehavior : MonoBehaviour
         {
             if (GazeObject.IsGazeLocked())
             {
-                GhostBusterManager.Instance.killedGhost.Invoke(ghostDrunken,ghostRed, focusDurations.LastOrDefault(),_elapsedTime);
+                GhostBusterManager.Instance.killedGhost.Invoke(this);
             }
-            Destroy(gameObject);
         }
 
     }

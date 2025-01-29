@@ -15,10 +15,8 @@ public abstract class ETObject : MonoBehaviour
             // Consider it as if it was still focused
             timerRunning = false;
         }
-        else
-        {
-            isFocused = true;
-        }
+        isFocused = true;
+
     }
 
     public virtual void UnFocused()

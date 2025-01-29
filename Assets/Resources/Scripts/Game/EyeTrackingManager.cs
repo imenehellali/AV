@@ -184,13 +184,13 @@ public class EyeTrackingManager : MonoBehaviour
             Vector3 _origLeft = Origin.position + new Vector3(0f, 1.7f, 0f) + _LeyePos;
             Vector3 _origRight = Origin.position + new Vector3(0f, 1.7f, 0f) + _ReyePos;
 
-            Vector3 _vectorLeft = (_LeyeRot * Vector3.forward).normalized;
-            Vector3 _vectorRight = (_ReyeRot * Vector3.forward).normalized;
+            Vector3 _vectorLeft = (_LeyeRot *_cameraOffset.forward).normalized;
+            Vector3 _vectorRight = (_ReyeRot * _origRight).normalized;
 
-            _LPose.text = $"Left Eye position {_LeyePos}";
-            _RPose.text = $"Right Eye position{_ReyePos}";
-            _LOpeness.text = $"Left Eye Rotation: {_LeyeRot.eulerAngles}";
-            _ROpeness.text = $"Right Eye Rotation: {_ReyeRot.eulerAngles}";
+            _LPose.text = $"XR Left Eye position {_LeyePos}";
+            _RPose.text = $"XR Right Eye position{_ReyePos}";
+            _LOpeness.text = $"XR LEyeRot * cameraRot: {_LeyeRot.eulerAngles}";
+            _ROpeness.text = $"XR REyeRot * REyePos: {_ReyeRot.eulerAngles}";
 
             dataReceived = HandleGazeTarget(lineRendererLeft, _origLeft, _vectorLeft);
             dataReceived |= HandleGazeTarget(lineRendererRight, _origLeft, _vectorLeft);
@@ -310,12 +310,9 @@ public class EyeTrackingManager : MonoBehaviour
             dataValid = XRCenterEye();
         if (!dataValid)*/
 
-        //dataValid = PICOEye();
-
-        //if(!dataValid)
-        //dataValid = 
-        //dataValid = 
-        XRPerEye();
+        /*dataValid = PICOEye();
+        if (!dataValid)*/
+            dataValid = XRPerEye();
         /*
         if (!dataValid)
             dataValid = XRCameraCenterHead();

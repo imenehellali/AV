@@ -54,7 +54,7 @@ public class GhostBusterManager : MonoBehaviour
 
     //Ghost Variable
     private Vector3 _ghostSpawnWPos = Vector3.zero;
-    public UnityAction<bool,bool,float,float> killedGhost; //bool,bool,bool,float,float
+    public UnityAction<GhostBustBehavior> killedGhost; //bool,bool,bool,float,float
 
     [Header("Ghosts Items")]
     [SerializeField]
@@ -130,13 +130,17 @@ public class GhostBusterManager : MonoBehaviour
     }
 
 
-    private void Q1Ghostbusting(bool ghostDrunken, bool ghostRed, float lastOrDefault, float _elapsedTime)
+    private void Q1Ghostbusting(GhostBustBehavior ghost)
     {
         audioSource.Stop();
+        bool ghostDrunken = ghost.ghostDrunken;
+        bool ghostRed=ghost.ghostRed;
+        float lastOrDefault = ghost.focusDurations.LastOrDefault();
+        float _elapsedTime = ghost._elapsedTime;
         if (ghostRed)
         {
             //gaze time is diff from reaction time
-            
+            ghost.ghosDead.Invoke(true);
             GBStats.AddGazeTimeCorrectGhost(1,lastOrDefault);
             GBStats.AddCorrectGhostBusted(1, _elapsedTime);
 
@@ -172,12 +176,16 @@ public class GhostBusterManager : MonoBehaviour
 
     }
 
-    private void Q2Ghostbusting(bool ghostDrunken, bool ghostRed, float lastOrDefault, float _elapsedTime)
+    private void Q2Ghostbusting(GhostBustBehavior ghost)
     {
         audioSource.Stop();
+        bool ghostDrunken = ghost.ghostDrunken;
+        bool ghostRed = ghost.ghostRed;
+        float lastOrDefault = ghost.focusDurations.LastOrDefault();
+        float _elapsedTime = ghost._elapsedTime;
         if (!ghostRed)
         {
-            
+            ghost.ghosDead.Invoke(true);
             GBStats.AddGazeTimeCorrectGhost(2, lastOrDefault);
             GBStats.AddCorrectGhostBusted(2, _elapsedTime);
 
@@ -213,11 +221,16 @@ public class GhostBusterManager : MonoBehaviour
         }
     }
 
-    private void Q3Ghostbusting(bool ghostDrunken, bool ghostRed, float lastOrDefault, float _elapsedTime)
+    private void Q3Ghostbusting(GhostBustBehavior ghost)
     {
         audioSource.Stop();
+        bool ghostDrunken = ghost.ghostDrunken;
+        bool ghostRed = ghost.ghostRed;
+        float lastOrDefault = ghost.focusDurations.LastOrDefault();
+        float _elapsedTime = ghost._elapsedTime;
         if (!ghostDrunken)
         {
+            ghost.ghosDead.Invoke(true);
             GBStats.AddGazeTimeCorrectGhost(3, lastOrDefault);
             GBStats.AddCorrectGhostBusted(3, _elapsedTime);
            
@@ -254,12 +267,16 @@ public class GhostBusterManager : MonoBehaviour
         }
     }
 
-    private void Q4Ghostbusting(bool ghostDrunken, bool ghostRed, float lastOrDefault, float _elapsedTime)
+    private void Q4Ghostbusting(GhostBustBehavior ghost)
     {
         audioSource.Stop();
-
+        bool ghostDrunken = ghost.ghostDrunken;
+        bool ghostRed = ghost.ghostRed;
+        float lastOrDefault = ghost.focusDurations.LastOrDefault();
+        float _elapsedTime = ghost._elapsedTime;
         if (ghostDrunken && !ghostRed)
         {
+            ghost.ghosDead.Invoke(true);
             GBStats.AddGazeTimeCorrectGhost(4, lastOrDefault);
             GBStats.AddCorrectGhostBusted(4, _elapsedTime);
 
@@ -283,7 +300,7 @@ public class GhostBusterManager : MonoBehaviour
     //shoot green drunken ghost - flickering light with random interval - money sound randomly
     private IEnumerator StartQ4()
     {
-        _ghostSpawnTO -= 1;
+        _ghostSpawnTO -= 2;
         StartCoroutine(SoundEffectQ4());
         StartCoroutine(RoomEffectQ4());
         StartCoroutine(SpawnGhost(_Q4Time, _ghostSpawnTO, 30f,4));
