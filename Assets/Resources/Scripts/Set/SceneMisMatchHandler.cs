@@ -19,9 +19,5 @@ public class SceneMisMatchHandler : MonoBehaviour
         {
             FindObjectOfType<SettingMenuControls>()._rMenuToClickPanel = this.gameObject;
         }
-        else if (_objType == ObjType._participantTryPanel)
-        {
-            FindObjectOfType<SettingMenuControls>()._participantTryPanel = this.gameObject;
-        }
     }
 }

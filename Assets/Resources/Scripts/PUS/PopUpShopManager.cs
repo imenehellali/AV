@@ -3,56 +3,63 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PopUpShopManager : MonoBehaviour
 {
-    [SerializeField] private List<PurchasableItemUI> purchasableItems;  // The UI elements tied to the items
+    [SerializeField] private List<PurchasableItemUI> purchasableItems;  
     [SerializeField] private TextMeshProUGUI _totalSum;
-    [SerializeField] private TextMeshProUGUI _displayTime;  // Display for the remaining time
-
-    [SerializeField] private Button buyButton;
-    [SerializeField] private Canvas shopCanvas;
-    [SerializeField] private Button _closeButton;  // New close button
-
+    [SerializeField] private TextMeshProUGUI _displayTime;  
+    [SerializeField] private GameObject shopCanvas;
+   
     private int rewardDrinks = 0;
     private int nonRewardDrinks = 0;
 
     private float totalSum = 0f;
     private float requiredTimeToBuy = 0f;
     private float _pusTime = 0f;
+    private bool isPUSScene = false;
     private bool isPUWScene = false;
-    private GameObject _participantPos;
 
+    public UnityAction<bool> PUSSceneLoaded;
+    public UnityAction<bool> PUWSceneLoaded;
+
+    private void OnEnable()
+    {
+        PUSSceneLoaded += SetPUSScene;
+        PUWSceneLoaded += SetPUWScene;
+    }
+    private void OnDisable()
+    {
+        PUSSceneLoaded -= SetPUSScene;
+        PUWSceneLoaded -= SetPUWScene;
+    }
+    private void SetPUSScene(bool val)
+    {
+        isPUSScene = val;
+        requiredTimeToBuy=_pusTime;
+        ResetShop();
+        shopCanvas.SetActive(val);  
+    }
+    private void SetPUWScene(bool val)
+    {
+        isPUWScene = val;
+        ResetShop();
+    }
     private void Start()
     {
-        shopCanvas.enabled = true;
-        isPUWScene = SceneManager.GetSceneByName("PUWScene").isLoaded;
-        ResetShop();
-        foreach (var item in purchasableItems)
-        {
-            if (item.gameObject.tag == "Coin")
-            {
-                if (isPUWScene)
-                {
-                    item.gameObject.SetActive(true);
-                }
-                else
-                {
-                    item.gameObject.SetActive(false);
-                }
-            }
-        }
-        _participantPos = RepositionOnLoad.Instance._participant;
         _pusTime = GameSettings.Instance.BetweenSceneDuration;
     }
-
     private void Update()
     {
-        gameObject.transform.position = new Vector3(_participantPos.transform.position.x, 1.7f, _participantPos.transform.position.z + 0.5f);
-        requiredTimeToBuy += Time.deltaTime;
-        UpdateTimerDisplay(_pusTime - requiredTimeToBuy);
+        
+        if (isPUSScene)
+        {
+            requiredTimeToBuy -= Time.deltaTime;
+            UpdateTimerDisplay(requiredTimeToBuy);
+        }
     }
     public void UpdateTotalSum()
     {
@@ -98,6 +105,12 @@ public class PopUpShopManager : MonoBehaviour
         GameSettings.Instance.AddRewardDrinksBoughtCount(rewardDrinks);
 
         SceneManager.UnloadSceneAsync("PUSScene");
+        SetPUSScene(false);
+    }
+    public void ClosePopUpShop()
+    {
+        SceneManager.UnloadSceneAsync("PUSScene");
+       SetPUSScene(false);
     }
 
     private void ResetShop()
@@ -107,7 +120,8 @@ public class PopUpShopManager : MonoBehaviour
             item.itemData.quantity = 0;
             item.UpdateUI();
         }
-
+        Debug.Log($"from pop up shop manager  PUWScene? {isPUWScene} ");
+        purchasableItems[0].gameObject.SetActive(isPUWScene);
         UpdateTotalSum();
     }
     private void UpdateTimerDisplay(float timer)

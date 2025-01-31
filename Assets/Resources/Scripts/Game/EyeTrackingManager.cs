@@ -2,13 +2,8 @@
 using Unity.XR.PXR;
 using UnityEngine.XR;
 using TMPro;
-using UnityEngine.InputSystem.XR;
 using Unity.XR.CoreUtils;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEngine.Experimental.GlobalIllumination;
-using System.Runtime.CompilerServices;
-
 public class EyeTrackingManager : MonoBehaviour
 {
 
@@ -70,7 +65,6 @@ public class EyeTrackingManager : MonoBehaviour
             _inputDevice = devices[0];
 
         _OriginOffset = _cameraOffset.GetLocalPose();
-
         lineRendererPico.enabled = false;
         lineRendererLeft.enabled = false;
         lineRendererRight.enabled = false;
@@ -181,16 +175,16 @@ public class EyeTrackingManager : MonoBehaviour
         if (dataReceived)
         {
 
-            Vector3 _origLeft = Origin.position + new Vector3(0f, 1.7f, 0f) + _LeyePos;
-            Vector3 _origRight = Origin.position + new Vector3(0f, 1.7f, 0f) + _ReyePos;
+            Vector3 _origLeft = _cameraOffset.position +_LeyePos;
+            Vector3 _origRight = _cameraOffset.position + _ReyePos;
 
             Vector3 _vectorLeft = (_LeyeRot *_cameraOffset.forward).normalized;
-            Vector3 _vectorRight = (_ReyeRot * _origRight).normalized;
+            Vector3 _vectorRight = (_ReyeRot * _cameraOffset.forward).normalized;
 
-            _LPose.text = $"XR Left Eye position {_LeyePos}";
-            _RPose.text = $"XR Right Eye position{_ReyePos}";
-            _LOpeness.text = $"XR LEyeRot * cameraRot: {_LeyeRot.eulerAngles}";
-            _ROpeness.text = $"XR REyeRot * REyePos: {_ReyeRot.eulerAngles}";
+            _LPose.text = $"XRLE pos + cam: {_origLeft}";
+            _RPose.text = $"XRRE pos + cam: {_origRight}";
+            _LOpeness.text = $"XRLE * cameraFor: {_vectorLeft}";
+            _ROpeness.text = $"XRRE * CameraFor: {_vectorRight}";
 
             dataReceived = HandleGazeTarget(lineRendererLeft, _origLeft, _vectorLeft);
             dataReceived |= HandleGazeTarget(lineRendererRight, _origLeft, _vectorLeft);
@@ -207,18 +201,14 @@ public class EyeTrackingManager : MonoBehaviour
         if (InputDevices.GetDeviceAtXRNode(XRNode.Head).TryGetFeatureValue(CommonUsages.devicePosition, out headPosition) &&
            InputDevices.GetDeviceAtXRNode(XRNode.Head).TryGetFeatureValue(CommonUsages.deviceRotation, out headRotation))
         {
-            dataReceived = true;
-            combineEyeGazeOrigin = headPosition + _OriginOffset.position + new Vector3(0f, 1.7f, 0f);
-            combineEyeGazeVector = (headRotation * Vector3.forward).normalized;
+            combineEyeGazeOrigin = headPosition + _cameraOffset.position;// + new Vector3(0f,0.6f,0f);
+            combineEyeGazeVector = (headRotation * _cameraOffset.forward).normalized;
 
-            dataReceived &= combineEyeGazeOrigin != Vector3.zero && combineEyeGazeVector != Vector3.zero;
+           
+            _CDPose.text = $"Head cam pos with offset: {combineEyeGazeOrigin}";
+            _CPose.text = $"Head cam Dir with camford: {combineEyeGazeVector}";
 
-            _LPose.text = $"Head camera positon from Head Data {headPosition}";
-            _RPose.text = $"Head camera rotation from Head Data {headRotation}";
-            _LOpeness.text = $"Head camera position with offset: {combineEyeGazeOrigin}";
-            _ROpeness.text = $"Head camera Diretion: {combineEyeGazeVector}";
-
-            dataReceived &= HandleGazeTarget(lineRendererPico, combineEyeGazeOrigin, combineEyeGazeVector);
+            dataReceived = HandleGazeTarget(lineRendererPico, combineEyeGazeOrigin, combineEyeGazeVector);
         }
         return dataReceived;
     }
@@ -313,10 +303,9 @@ public class EyeTrackingManager : MonoBehaviour
         /*dataValid = PICOEye();
         if (!dataValid)*/
             dataValid = XRPerEye();
-        /*
         if (!dataValid)
             dataValid = XRCameraCenterHead();
-        if (!dataValid)
+       /* if (!dataValid)
             dataValid = CameraCenterCutom();
         */
 
@@ -325,12 +314,12 @@ public class EyeTrackingManager : MonoBehaviour
 
     private bool HandleGazeTarget(LineRenderer lineRenderer, Vector3 origin, Vector3 vector)
     {
-        bool selectedObjIsTarget = false;
-        lineRenderer.enabled = true;
+       bool selectedObjIsTarget = false;
+        /*lineRenderer.enabled = true;
         lineRenderer.SetPosition(0, origin);
-        lineRenderer.SetPosition(1, origin + vector * 100f);
+        lineRenderer.SetPosition(1, origin + vector * 50f);*/
         Ray ray = new Ray(origin, vector);
-        if (Physics.SphereCast(origin, 2f, vector, out hitinfo))
+        if (Physics.SphereCast(origin,2f,vector,out hitinfo))
         {
             if (selectedObj != null && selectedObj != hitinfo.transform)
             {

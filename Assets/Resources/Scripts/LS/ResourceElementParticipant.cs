@@ -55,6 +55,7 @@ public class ResourceElementParticipant : MonoBehaviour
                         --amount;
                         LifeSaverManager.Instance.updateParticipantResource.Invoke(amount, type);
                         assignable = true;
+                        Debug.Log($"from consume resource resourcePart {amount}");
 
                     }
                     else

@@ -74,7 +74,6 @@ public class PopUpWerkManager : MonoBehaviour
 
             _audioSource.Stop();
 
-            StopCoroutine(StartPUSRandShow());
             StopCoroutine(ReduceMoneyOverTime());
             StopCoroutine(CheckSlotMachinePlays());
             EndLevel();
@@ -99,30 +98,19 @@ public class PopUpWerkManager : MonoBehaviour
         }
         GameSettings.Instance.LoadNextScene();
     }
-    private IEnumerator ShowPUS()
-    {
-        yield return new WaitForSeconds(15f);
-        if (SceneManager.GetSceneByName("PUSScene").isLoaded)
-            SceneManager.UnloadSceneAsync("PUSScene");
-    }
-    private IEnumerator StartPUSRandShow()
-    {
-        while (levelTimer < levelDuration)
-        {
-            SceneManager.LoadSceneAsync("PUSScene", LoadSceneMode.Additive);
-            StartCoroutine(ShowPUS());
-            yield return new WaitForSeconds(45f);
-        }
-    }
+   
     public void StartLevel()
     {
-        MoneyManager.instance.ResetMoney();
-        StartCoroutine(StartLevelTimer());
-        StartCoroutine(StartPUSRandShow());
-        StartCoroutine(ReduceMoneyOverTime());
-        StartCoroutine(CheckSlotMachinePlays());
-        PUWStats.AddOVerallTaskTime(levelDuration);
-        PlayEnvironmentSound();
+        if (SceneManager.GetSceneByName("PUWScene").isLoaded)
+        {
+            MoneyManager.instance.ResetMoney();
+            StartCoroutine(StartLevelTimer());
+            StartCoroutine(FindObjectOfType<SceneLoaders>().StartPUWPUSRandShow(levelTimer, levelDuration));
+            StartCoroutine(ReduceMoneyOverTime());
+            StartCoroutine(CheckSlotMachinePlays());
+            PUWStats.AddOVerallTaskTime(levelDuration);
+            PlayEnvironmentSound();
+        }
     }
     private void PlayEnvironmentSound()
     {

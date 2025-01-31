@@ -13,7 +13,7 @@ public class LifeSaverManager : MonoBehaviour
     private float levelDuration = 0f;
     private float levelTimer = 0f;
     private bool startUrgency = false;
-    private float timeToStartUrgeny =0f;
+    private float timeToStartUrgeny = 0f;
 
 
     private int _rewardAmount = 200;
@@ -48,9 +48,9 @@ public class LifeSaverManager : MonoBehaviour
     private AudioClip _urgencyAudioClip;
 
 
-    public bool AllowAntidoteConsumption() => _Resources[2].amount >= 0 ? true : false;
-    public bool AllowAirConsumption() => _Resources[0].amount >= 0 ? true : false;
-    public bool AllowWaterConsumption() => _Resources[1].amount >= 0 ? true : false;
+    public bool AllowAntidoteConsumption() { if (_Resources[2].amount > 0) return true; else return false; }
+    public bool AllowAirConsumption() { if (_Resources[0].amount > 0) return true; else return false; }
+    public bool AllowWaterConsumption() { if (_Resources[1].amount > 0) return true; else return false; }
 
     public UnityAction<int, ResourceElementParticipant.Type> updateParticipantResource;
     public UnityAction<ResourceElementParticipant.Type> updateResourceUI;
@@ -100,20 +100,25 @@ public class LifeSaverManager : MonoBehaviour
                     {
                         _air.gameObject.GetComponentInParent<RectTransform>().gameObject.SetActive(true);
                         _air.text = amount.ToString();
+                        _Resources[0].amount = amount;
                         break;
                     }
                 case ResourceElementParticipant.Type.Water:
                     {
                         _water.gameObject.GetComponentInParent<RectTransform>().gameObject.SetActive(true);
                         _water.text = amount.ToString();
+                        _Resources[1].amount = amount;
                         break;
                     }
                 case ResourceElementParticipant.Type.Antidote:
                     {
                         _antidote.text = amount.ToString();
+                        _Resources[2].amount = amount;
                         break;
                     }
             }
+            Debug.Log($"from Update resource LSManager {_Resources[2].amount}");
+
         }
 
     }
@@ -122,13 +127,14 @@ public class LifeSaverManager : MonoBehaviour
         if (SceneManager.GetSceneByName("LSScene").isLoaded)
         {
             Debug.Log($"Invoking Consume resource LS for {_type}");
-            if (_type.Equals(ResourceElementCase.Type.Air))
+            if (_type.Equals(ResourceElementCase.Type.Air) && _Resources[0].amount > 0)
                 _Resources[0].ConsumeResource();
-            else if (_type.Equals(ResourceElementCase.Type.Water))
+            else if (_type.Equals(ResourceElementCase.Type.Water) && _Resources[1].amount > 0)
                 _Resources[1].ConsumeResource();
-            else if (_type.Equals(ResourceElementCase.Type.Antidote))
+            else if (_type.Equals(ResourceElementCase.Type.Antidote) && _Resources[2].amount > 0)
                 _Resources[2].ConsumeResource();
         }
+        Debug.Log($"from Consume resource LSManager {_Resources[2].amount}");
     }
 
     private void Awake()
@@ -209,7 +215,7 @@ public class LifeSaverManager : MonoBehaviour
     }
     private IEnumerator StartLevelTimer()
     {
-        while (levelTimer < levelDuration-3f)
+        while (levelTimer < levelDuration - 3f)
         {
             levelTimer += Time.deltaTime;
             _time = levelDuration - levelTimer;
@@ -218,7 +224,7 @@ public class LifeSaverManager : MonoBehaviour
                 startUrgency = true;
             yield return null;
         }
-        if (levelTimer >= levelDuration-5f)
+        if (levelTimer >= levelDuration - 5f)
         {
             GameSettings.Instance.XRBoundOFLoading.SetActive(true);
             GameSettings.Instance._dynamicMove.enabled = false;
@@ -249,7 +255,7 @@ public class LifeSaverManager : MonoBehaviour
     //
     private void EndLevel()
     {
-        
+
 
         float amount = 0f;
         bool stopped = true;
@@ -258,12 +264,12 @@ public class LifeSaverManager : MonoBehaviour
             stopped &= item.StoppedHelping();
             amount += _rewardAmount * item.percentageDone;
         }
-        
+
         for (int i = 0; i < _envMaterials.Count; i++)
         {
             _envMaterials[i].gameObject.SetActive(false);
         }
-       
+
         //if psycho remove 80% of its game account money 
         if (stopped && amount == 0f)
         {
@@ -274,9 +280,9 @@ public class LifeSaverManager : MonoBehaviour
         {
             MoneyManager.instance.UpdateMoney(amount);
         }
-        else if(!stopped && amount>0f)
+        else if (!stopped && amount > 0f)
         {
-            MoneyManager.instance.UpdateMoney(amount*0.9f);
+            MoneyManager.instance.UpdateMoney(amount * 0.9f);
         }
         MoneyManager.instance.StoreMoneyInSafeAccount(GameSettings.Instance.CurrLvlIdx - 1);
         LSData.Data.SaveData(_cases);
@@ -286,7 +292,7 @@ public class LifeSaverManager : MonoBehaviour
     private IEnumerator Flicker()
     {
         float _ti = _urgencyAudioClip.length;
-        float _timerOfUrgency =40f;
+        float _timerOfUrgency = 40f;
         while (!startUrgency)
         {
             yield return null;
@@ -322,7 +328,7 @@ public class LifeSaverManager : MonoBehaviour
             }
             if (_timerOfUrgency < 2)
             {
-                foreach (KeyValuePair<string,Case> _case in _cases)
+                foreach (KeyValuePair<string, Case> _case in _cases)
                 {
                     _case.Value.StopCase(_case.Key);
 

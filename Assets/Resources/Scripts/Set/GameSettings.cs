@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 using System.Threading.Tasks;
-using System.Linq;
 using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
-using UnityEngine.XR.Interaction.Toolkit.Locomotion.Turning;
 
 public class GameSettings : MonoBehaviour
 {
@@ -150,7 +147,7 @@ public class GameSettings : MonoBehaviour
                 Debug.LogError($"Failed to load JSON: {ex.Message}");
                 BetweenSceneDuration = 20f;
                 LevelSequence = new string[] {"PUWScene","GBScene","LSScene",};
-                LevelDurations = new float[] { 100f,100f,100f,};
+                LevelDurations = new float[] { 300f,300f,300f,};
                 _PUWBGVolume = .5f;
                 _PUWGMVolume = .5f;
                 _PUWWaiterVolume = .5f;
@@ -166,7 +163,7 @@ public class GameSettings : MonoBehaviour
             Debug.Log("JSON file not found. Initializing with default values.");
             BetweenSceneDuration = 20f;
             LevelSequence = new string[] {"PUWScene","GBScene","LSScene",};
-            LevelDurations = new float[] { 100f,100f,100f,};
+            LevelDurations = new float[] { 300f,300f,300f,};
             _PUWBGVolume = .5f;
             _PUWGMVolume = .5f;
             _PUWWaiterVolume = .5f;
@@ -212,6 +209,7 @@ public class GameSettings : MonoBehaviour
     {
         if (CurrLvlIdx < LevelSequence.Length)
         {
+            XRBoundOFLoading.SetActive(true);
             SceneLoaders.Instance.LoadLevel(LevelSequence[CurrLvlIdx]);
             ++CurrLvlIdx;
         }

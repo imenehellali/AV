@@ -131,7 +131,7 @@ public class EndLevelManager : MonoBehaviour
     {
         if (context.ReadValueAsButton() && canClick)
         {
-
+            Application.Quit();
         }
     }
     private void UpdateBalance(float amount)

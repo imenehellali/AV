@@ -9,6 +9,8 @@ public class SceneLoaders : MonoBehaviour
     public static SceneLoaders Instance { get; private set; }
     [SerializeField]
     private InstructionPanel _instrPanel;
+    [SerializeField]
+    private PopUpShopManager _popUpShopManager;
     private void Awake()
     {
 
@@ -25,7 +27,6 @@ public class SceneLoaders : MonoBehaviour
     private void Start()
     {
         SceneManager.LoadScene("StartScene");
-
     }
 
     public void LoadLevel(string levelName)
@@ -42,6 +43,8 @@ public class SceneLoaders : MonoBehaviour
         }
         if (asyncLoad.isDone)
         {
+            if(!SceneManager.GetSceneByName("PUWScene").isLoaded)
+                _popUpShopManager.PUWSceneLoaded.Invoke(false);
             RepositionOnLoad.Instance.repositionOnLoad(levelName);
             if (levelName.Equals("EndScene"))
             {
@@ -56,9 +59,13 @@ public class SceneLoaders : MonoBehaviour
                 }
                 if (_asyncLoad.isDone)
                 {
+                    _popUpShopManager.PUSSceneLoaded.Invoke(true);
+                    Debug.Log("invoked true on PUS loaded");
                     yield return new WaitForSeconds(GameSettings.Instance.BetweenSceneDuration);
                     if (SceneManager.GetSceneByName("PUSScene").isLoaded)
                     {
+                        _popUpShopManager.PUSSceneLoaded.Invoke(false);
+                        Debug.Log("invoked false on PUS loded");
                         AsyncOperation unloadOp = SceneManager.UnloadSceneAsync("PUSScene");
                         while (!unloadOp.isDone)
                         {
@@ -74,6 +81,31 @@ public class SceneLoaders : MonoBehaviour
         }
 
     }
+
+
+    private IEnumerator ShowPUS()
+    {
+        yield return new WaitForSeconds(10f);
+        if (SceneManager.GetSceneByName("PUSScene").isLoaded)
+            SceneManager.UnloadSceneAsync("PUSScene");
+        _popUpShopManager.PUSSceneLoaded.Invoke(false);
+    }
+    public IEnumerator StartPUWPUSRandShow(float levelTimer, float levelDuration)
+    {
+        _popUpShopManager.PUWSceneLoaded.Invoke(true);
+        Debug.Log("invoked true on PUW loaded to pus");
+        while (levelTimer < levelDuration && SceneManager.GetSceneByName("PUWScene").isLoaded)
+        {
+            SceneManager.LoadSceneAsync("PUSScene", LoadSceneMode.Additive);
+            _popUpShopManager.PUSSceneLoaded.Invoke(true);
+            StartCoroutine(ShowPUS());
+            yield return new WaitForSeconds(25f);
+            levelTimer += 55f;
+        }
+        _popUpShopManager.PUWSceneLoaded.Invoke(false);
+        Debug.Log("invoked false on PUW loaded to pus");
+    }
+
 
     private void CalculateAndSaveGameStats()
     {

@@ -12,8 +12,6 @@ public class PurchasableItemUI : MonoBehaviour
     public TextMeshProUGUI itemNameUI;
     public TextMeshProUGUI itemQuantityUI;
     public TextMeshProUGUI itemPriceUI;
-    public Button increaseButton;
-    public Button decreaseButton;
 
     private void Start()
     {

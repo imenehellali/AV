@@ -33,7 +33,7 @@ public class InstrNRElemBehavior :ETObject
         Debug.Log("entered shooting elemet");
       if(callbackContext.ReadValueAsButton() && isFocused)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
     }
 

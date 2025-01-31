@@ -24,7 +24,6 @@ public class SettingMenuControls : MonoBehaviour
 
     [Header("Wall Panels")]
     public GameObject _rMenuToClickPanel;
-    public GameObject _participantTryPanel;
 
     [Header("Both Users")]
     [SerializeField]
@@ -74,7 +73,6 @@ public class SettingMenuControls : MonoBehaviour
         _CGidx = AllParticiipantDataManager.Instance.getCGidx();
         _ADidx = AllParticiipantDataManager.Instance.getADidx();
 
-        if (_participantTryPanel != null && _participantTryPanel.activeSelf) _participantTryPanel.SetActive(false);
         if (_rMenuToClickPanel != null && !_rMenuToClickPanel.activeSelf) _rMenuToClickPanel.SetActive(true);
 
     }
@@ -94,8 +92,6 @@ public class SettingMenuControls : MonoBehaviour
         _CGidx = AllParticiipantDataManager.Instance.getCGidx();
         _ADidx = AllParticiipantDataManager.Instance.getADidx();
 
-        _participantTryPanel.SetActive(false);
-        
 
     }
 
@@ -181,7 +177,6 @@ public class SettingMenuControls : MonoBehaviour
                 _inGameInstrPanel.SetActive(false);
                 _settingPanel.SetActive(false);
                 _settingStep0.SetActive(false);
-                _participantTryPanel.SetActive(false);
 
                 _selectionPanel.SetActive(true);
                 _step0.SetActive(true);
@@ -193,7 +188,6 @@ public class SettingMenuControls : MonoBehaviour
                 _step1.SetActive(false);
                 _inGameInstrPanel.SetActive(false);
                 _settingStep0.SetActive(false);
-                _participantTryPanel.SetActive(false);
 
                 _settingPanel.SetActive(true);
             }
@@ -205,7 +199,6 @@ public class SettingMenuControls : MonoBehaviour
                 _step1.SetActive(false);
                 _inGameInstrPanel.SetActive(false);
                 _settingStep0.SetActive(false);
-                _participantTryPanel.SetActive(false);
 
                 _settingPanel.SetActive(false);
             }
@@ -220,7 +213,6 @@ public class SettingMenuControls : MonoBehaviour
         string _participantID = ParticipantIDAssignment(cg);
         ParticipantSettings.Instance.PID.Invoke(_participantID);
         _step1?.SetActive(false);
-        _participantTryPanel.SetActive(true);
         _inGameInstrPanel.SetActive(true);
         _inGameInstrPanel.GetComponent<InstructionPanel>().enabled = true;
         _inGameInstrPanel.GetComponent<InstructionPanel>().sceneLoaded.Invoke("StartScene");
@@ -250,7 +242,6 @@ public class SettingMenuControls : MonoBehaviour
     public void GoBackAfterSetting()
     {
         _userTherapist = false;
-        _participantTryPanel.SetActive(false);
         _inGameInstrPanel.SetActive(false);
         _settingPanel.SetActive(false);
         _step1.SetActive(false);
