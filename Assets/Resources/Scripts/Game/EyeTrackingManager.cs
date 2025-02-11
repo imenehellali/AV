@@ -359,9 +359,9 @@ public class EyeTrackingManager : MonoBehaviour
     private bool HandleGazeTarget(LineRenderer lineRenderer, Vector3 origin, Vector3 vector)
     {
        bool selectedObjIsTarget = false;
-        lineRenderer.enabled = true;
+       /* lineRenderer.enabled = true;
         lineRenderer.SetPosition(0, origin);
-        lineRenderer.SetPosition(1, origin + vector * 50f);
+        lineRenderer.SetPosition(1, origin + vector * 50f);*/
         Ray ray = new Ray(origin, vector);
         if (Physics.SphereCast(origin,2f,vector,out hitinfo))
         {

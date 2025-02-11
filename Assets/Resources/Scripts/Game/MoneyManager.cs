@@ -50,6 +50,8 @@ public class MoneyManager : MonoBehaviour
     }
     public void StoreMoneyInSafeAccount(int levelIndex){
         Debug.Log($"saving {_money} in current level {levelIndex}");
+        if(_money<0)
+            _money = 0;
         GameStats.UpdateSafeAccount(levelIndex, _money);
         _money = 0;
     }
