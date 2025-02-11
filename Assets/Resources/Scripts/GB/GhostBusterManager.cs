@@ -157,7 +157,7 @@ public class GhostBusterManager : MonoBehaviour
     //Shoot the Red Ghost + room red
     private IEnumerator StartQ1()
     {
-        Coroutine _C = StartCoroutine(SpawnGhost(_Q1Time, _ghostSpawnTO, 10f, 1));
+        StartCoroutine(SpawnGhost(_Q1Time, _ghostSpawnTO, 10f, 1));
         while (_Q1Time > 0)
         {
             _Q1Time -= Time.deltaTime;

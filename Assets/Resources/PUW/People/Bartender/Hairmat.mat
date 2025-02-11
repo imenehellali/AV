@@ -12,8 +12,7 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _ALPHAPREMULTIPLY_ON
-  - _NORMALMAP
+  - _ALPHATEST_ON
   - _SPECULAR_SETUP
   - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords: []
@@ -31,7 +30,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 74f0069c196b2f3408d97bf58e2d7abf, type: 3}
+        m_Texture: {fileID: 2800000, guid: 217b054c3d8c9574bb40c5a06bbe5642, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -55,7 +54,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 74f0069c196b2f3408d97bf58e2d7abf, type: 3}
+        m_Texture: {fileID: 2800000, guid: 217b054c3d8c9574bb40c5a06bbe5642, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -88,10 +87,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaClip: 0
+    - _AlphaClip: 1
     - _AlphaToMask: 0
     - _Blend: 0
-    - _BlendModePreserveSpecular: 1
+    - _BlendModePreserveSpecular: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
@@ -114,7 +113,7 @@ Material:
     - _Smoothness: 0.056
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SrcBlend: 1
+    - _SrcBlend: 5
     - _SrcBlendAlpha: 1
     - _Surface: 1
     - _UVSec: 0

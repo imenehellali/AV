@@ -154,6 +154,44 @@ public class EyeTrackingManager : MonoBehaviour
         }
         return dataReceived;
     }
+    /* private bool XRPerEye()
+     {
+         bool dataReceived = false;
+         Vector3 _LeyePos = Vector3.zero;
+         Vector3 _ReyePos = Vector3.zero;
+
+         Quaternion _LeyeRot = Quaternion.identity;
+         Quaternion _ReyeRot = Quaternion.identity;
+
+         bool _gotLEyeP = InputDevices.GetDeviceAtXRNode(XRNode.LeftEye).TryGetFeatureValue(CommonUsages.leftEyePosition, out _LeyePos);
+         bool _gotREyeP = InputDevices.GetDeviceAtXRNode(XRNode.RightEye).TryGetFeatureValue(CommonUsages.rightEyePosition, out _ReyePos);
+         bool _gotLEyeR = InputDevices.GetDeviceAtXRNode(XRNode.LeftEye).TryGetFeatureValue(CommonUsages.leftEyeRotation, out _LeyeRot);
+         bool _gotREyeR = InputDevices.GetDeviceAtXRNode(XRNode.RightEye).TryGetFeatureValue(CommonUsages.rightEyeRotation, out _ReyeRot);
+
+         _CPose.text = $"Body pos {Origin.position} Body Forward {Origin.forward}";
+         _CDPose.text = $"Camera pos {_cameraOffset.position} Camera Forw {_cameraOffset.forward}";
+
+         dataReceived = _gotLEyeP || _gotREyeP || _gotLEyeR || _gotREyeR;
+         if (dataReceived)
+         {
+
+             Vector3 _origLeft = _cameraOffset.position +_LeyePos;
+             Vector3 _origRight = _cameraOffset.position + _ReyePos;
+
+             Vector3 _vectorLeft = (_LeyeRot *_cameraOffset.forward).normalized;
+             Vector3 _vectorRight = (_ReyeRot * _cameraOffset.forward).normalized;
+
+             _LPose.text = $"XRLE pos + cam: {_origLeft}";
+             _RPose.text = $"XRRE pos + cam: {_origRight}";
+             _LOpeness.text = $"XRLE * cameraFor: {_vectorLeft}";
+             _ROpeness.text = $"XRRE * CameraFor: {_vectorRight}";
+
+             dataReceived = HandleGazeTarget(lineRendererLeft, _origLeft, _vectorLeft);
+             dataReceived |= HandleGazeTarget(lineRendererRight, _origLeft, _vectorLeft);
+
+         }
+         return dataReceived;
+     }*/
     private bool XRPerEye()
     {
         bool dataReceived = false;
@@ -168,30 +206,36 @@ public class EyeTrackingManager : MonoBehaviour
         bool _gotLEyeR = InputDevices.GetDeviceAtXRNode(XRNode.LeftEye).TryGetFeatureValue(CommonUsages.leftEyeRotation, out _LeyeRot);
         bool _gotREyeR = InputDevices.GetDeviceAtXRNode(XRNode.RightEye).TryGetFeatureValue(CommonUsages.rightEyeRotation, out _ReyeRot);
 
-        _CPose.text = $"Got XR Left Eye position {_gotLEyeP}";
-        _CDPose.text = $"Got XR Right Eye position {_gotREyeP}";
+        _CPose.text = $"Body pos {transform.position} Body Forward {transform.forward}";
+        _CDPose.text = $"Camera pos {_cameraOffset.position} Camera Forw {_cameraOffset.forward}";
 
         dataReceived = _gotLEyeP || _gotREyeP || _gotLEyeR || _gotREyeR;
         if (dataReceived)
         {
+            // Compute world positions using the XROrigin (script is attached to it)
+            Vector3 _origLeft = transform.TransformPoint(_LeyePos);
+            Vector3 _origRight = transform.TransformPoint(_ReyePos);
 
-            Vector3 _origLeft = _cameraOffset.position +_LeyePos;
-            Vector3 _origRight = _cameraOffset.position + _ReyePos;
+            // Apply both body (XROrigin) and head (cameraOffset) rotations
+            Quaternion finalLeyeRot = transform.rotation * _cameraOffset.rotation * _LeyeRot;
+            Quaternion finalReyeRot = transform.rotation * _cameraOffset.rotation * _ReyeRot;
 
-            Vector3 _vectorLeft = (_LeyeRot *_cameraOffset.forward).normalized;
-            Vector3 _vectorRight = (_ReyeRot * _cameraOffset.forward).normalized;
+            // Compute final gaze direction
+            Vector3 _vectorLeft = finalLeyeRot * Vector3.forward;
+            Vector3 _vectorRight = finalReyeRot * Vector3.forward;
 
             _LPose.text = $"XRLE pos + cam: {_origLeft}";
             _RPose.text = $"XRRE pos + cam: {_origRight}";
-            _LOpeness.text = $"XRLE * cameraFor: {_vectorLeft}";
-            _ROpeness.text = $"XRRE * CameraFor: {_vectorRight}";
+            _LOpeness.text = $"XRLE * finalRot: {_vectorLeft}";
+            _ROpeness.text = $"XRRE * finalRot: {_vectorRight}";
 
+            // Ensure gaze target handling
             dataReceived = HandleGazeTarget(lineRendererLeft, _origLeft, _vectorLeft);
-            dataReceived |= HandleGazeTarget(lineRendererRight, _origLeft, _vectorLeft);
-
+            dataReceived |= HandleGazeTarget(lineRendererRight, _origRight, _vectorRight);
         }
         return dataReceived;
     }
+
     private bool XRCameraCenterHead()
     {
         bool dataReceived = false;
@@ -315,9 +359,9 @@ public class EyeTrackingManager : MonoBehaviour
     private bool HandleGazeTarget(LineRenderer lineRenderer, Vector3 origin, Vector3 vector)
     {
        bool selectedObjIsTarget = false;
-        /*lineRenderer.enabled = true;
+        lineRenderer.enabled = true;
         lineRenderer.SetPosition(0, origin);
-        lineRenderer.SetPosition(1, origin + vector * 50f);*/
+        lineRenderer.SetPosition(1, origin + vector * 50f);
         Ray ray = new Ray(origin, vector);
         if (Physics.SphereCast(origin,2f,vector,out hitinfo))
         {
