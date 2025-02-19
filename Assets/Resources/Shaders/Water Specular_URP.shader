@@ -1,6 +1,8 @@
 ﻿Shader "Lava Flowing Shader/Water Specular_URP" {
 
 Properties {
+    _BaseMap("Base Texture", 2D) = "white" {}
+    _MainTex("Main Texture", 2D) = "white" {}
     _AlbedoTex1("Albedo Texture 1", 2D) = "white" {}
     _AlbedoColor("Albedo Color", Color) = (0.15, 0.161, 0.16, 1)
     _NormalMap("Normal Map", 2D) = "bump" {}
@@ -31,6 +33,12 @@ SubShader {
 
         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+
+        TEXTURE2D(_BaseMap);
+        SAMPLER(sampler_BaseMap);
+        
+        TEXTURE2D(_MainTex);
+        SAMPLER(sampler_MainTex);
 
         TEXTURE2D(_AlbedoTex1);
         SAMPLER(sampler_AlbedoTex1);
@@ -79,7 +87,8 @@ SubShader {
             UNITY_SETUP_INSTANCE_ID(i);
             UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
 
-            half4 albedo = SAMPLE_TEXTURE2D(_AlbedoTex1, sampler_AlbedoTex1, i.uv);
+            half4 baseColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv);
+            half4 albedo = SAMPLE_TEXTURE2D(_AlbedoTex1, sampler_AlbedoTex1, i.uv) * baseColor;
             half3 normal = UnpackNormal(SAMPLE_TEXTURE2D(_NormalMap, sampler_NormalMap, i.uv)) * _NormalStrength;
 
             // Adjust normal to prevent direct color reflection
@@ -99,7 +108,7 @@ SubShader {
 
             half4 reflection = half4(reflectionColor, 1.0) * _ReflectionStrength;
 
-            // Combine albedo and reflection
+            // Combine base, albedo, and reflection
             half4 finalColor = lerp(albedo, reflection, _ReflectionStrength);
 
             return saturate(finalColor);

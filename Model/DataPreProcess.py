@@ -3,36 +3,48 @@ import json
 import math
 from typing import Dict, Any
 
-def normalize_puw_input_data(input_data: Dict[str, float], max_coins: float, max_plays_per_minute: float, max_fixation_time: float, max_accumulated_money: float, mean_rate: float, std_dev_rate: float) -> Dict[str, float]:
+def normalize_puw_input_data(
+    input_data: Dict[str, float],
+    max_coins_quantity: float, max_coins_bought: float,
+    max_non_reward_drinks: float, max_reward_drinks: float,
+    max_diamond_plays: float, max_bill_plays: float,
+    max_cake_plays: float, max_mystery_plays: float,
+    mean_rate: float, std_dev_rate: float,
+    max_fixation_time: float
+) -> Dict[str, float]:
+    
     normalized_data = {}
 
     for key, value in input_data.items():
-        if key in [
-            "CoinsQuantity", "CoinsBoughtCount", "NonRewardDrinksBoughtCount",
-            "RewardDrinksBoughtCount", "GetDiamondSlotPlayCount", "BillSlotPlayCount",
-            "CakeSlotPlayCount", "MysterySlotPlayCount"
-        ]:
-            normalized_data[key] = value / max_coins
+        if key == "CoinsQuantity":
+            normalized_data[key] = value / max_coins_quantity if max_coins_quantity else 0
+        elif key == "CoinsBoughtCount":
+            normalized_data[key] = value / max_coins_bought if max_coins_bought else 0
+        elif key == "NonRewardDrinksBoughtCount":
+            normalized_data[key] = value / max_non_reward_drinks if max_non_reward_drinks else 0
+        elif key == "RewardDrinksBoughtCount":
+            normalized_data[key] = value / max_reward_drinks if max_reward_drinks else 0
+        elif key == "GetDiamondSlotPlayCount":
+            normalized_data[key] = value / max_diamond_plays if max_diamond_plays else 0
+        elif key == "BillSlotPlayCount":
+            normalized_data[key] = value / max_bill_plays if max_bill_plays else 0
+        elif key == "CakeSlotPlayCount":
+            normalized_data[key] = value / max_cake_plays if max_cake_plays else 0
+        elif key == "MysterySlotPlayCount":
+            normalized_data[key] = value / max_mystery_plays if max_mystery_plays else 0
         elif key in [
             "MysterySlotPlaysPerMinute", "DiamondSlotPlaysPerMinute", "BillSlotPlaysPerMinute"
         ]:
-            normalized_data[key] = (value - mean_rate) / std_dev_rate
+            normalized_data[key] = (value - mean_rate) / std_dev_rate if std_dev_rate else 0
         elif key in [
             "AvgFixationTimeAlcoholicDisplays", "AvgFixationTimeAlcoholicVsNonAlcoholic",
             "AvgTimePlayingDiamondMachine", "AvgTimePlayingBillMachine",
             "AvgTimePlayingMysteryMachine", "AvgTimePlayingCakeMachine",
             "AvgStagnantTime"
         ]:
-            normalized_data[key] = value / max_fixation_time
-        elif key == "TotalAccumulatedMoney":
-            normalized_data[key] = math.log(value + 1) / math.log(max_accumulated_money + 1)
+            normalized_data[key] = value / max_fixation_time if max_fixation_time else 0
         else:
             normalized_data[key] = value
-
-    total_slot_plays = sum(input_data.get(slot_key, 0) for slot_key in [
-        "GetDiamondSlotPlayCount", "BillSlotPlayCount", "CakeSlotPlayCount", "MysterySlotPlayCount"
-    ])
-    normalized_data["TotalSlotPlays"] = total_slot_plays / (4 * max_coins)
 
     return normalized_data
 
@@ -49,22 +61,31 @@ def normalize_ls_input_data(input_data: Dict[str, Any], max_progress: float, max
 
     return normalized_data
 
-def normalize_gb_input_data(input_data: Dict[str, float], max_reaction_time: float, max_gaze_time: float, max_busted_ghosts: float, mean_reaction_time: float, std_dev_reaction_time: float) -> Dict[str, float]:
+def normalize_gb_input_data(
+    input_data: Dict[str, float],
+    max_reaction_time: float,
+    max_gaze_time: float,
+    max_busted_ghosts: float,
+    mean_reaction_time: float,
+    std_dev_reaction_time: float
+) -> Dict[str, float]:
+    
     normalized_data = {}
 
     for key, value in input_data.items():
         if "ReactionTime" in key:
-            normalized_data[key] = value / max_reaction_time
+            normalized_data[key] = value / max_reaction_time if max_reaction_time > 0 else 0
         elif "TimeGazeOn" in key:
-            normalized_data[key] = value / max_gaze_time
+            normalized_data[key] = value / max_gaze_time if max_gaze_time > 0 else 0
         elif "Number" in key:
-            normalized_data[key] = value / max_busted_ghosts
+            normalized_data[key] = value / max_busted_ghosts if max_busted_ghosts > 0 else 0
         elif "incDecMargin" in key:
-            normalized_data[key] = (value - mean_reaction_time) / std_dev_reaction_time
+            normalized_data[key] = (value - mean_reaction_time) / std_dev_reaction_time if std_dev_reaction_time > 0 else 0
         else:
             normalized_data[key] = value
 
     return normalized_data
+
 
 def normalize_tm_input_data(input_data: Dict[str, Any]) -> Dict[str, Any]:
     normalized_data = {}
@@ -81,12 +102,30 @@ def normalize_tm_input_data(input_data: Dict[str, Any]) -> Dict[str, Any]:
 
     return normalized_data
 
-def calculate_normalization_variables(raw_data_folder: str):
-    max_coins = max_plays_per_minute = max_fixation_time = max_accumulated_money = 0
+def normalize_wg_input_data(input_data: Dict[str, float], max_instruction_checks: float, max_safe_account_sum: float, max_non_reward_purchases: float, max_reward_purchases: float) -> Dict[str, float]:
+    normalized_data = {}
+
+    for key, value in input_data.items():
+        if "CheckedNumberOFTimesInstruction" in key:
+            normalized_data[key] = value / max_instruction_checks if max_instruction_checks else 0
+        elif "SafeAccountSumLevel" in key:
+            normalized_data[key] = value / max_safe_account_sum if max_safe_account_sum else 0
+        elif key == "NonRewardDrinksBoughtCount":
+            normalized_data[key] = value / max_non_reward_purchases if max_non_reward_purchases else 0
+        elif key == "RewardDrinksBoughtCount":
+            normalized_data[key] = value / max_reward_purchases if max_reward_purchases else 0
+        else:
+            normalized_data[key] = value
+
+    return normalized_data
+
+def calculate_puw_normalization_variables(raw_data_folder: str):
+    max_coins_quantity = max_coins_bought = 0
+    max_non_reward_drinks = max_reward_drinks = 0
+    max_diamond_plays = max_bill_plays = max_cake_plays = max_mystery_plays = 0
+    max_fixation_time = 0
     mean_rate = std_dev_rate = 0
-    max_progress = max_time_spent = 0
-    max_reaction_time = max_gaze_time = max_busted_ghosts = 0
-    reaction_times = []
+
     play_rates = []
 
     for filename in os.listdir(raw_data_folder):
@@ -94,57 +133,88 @@ def calculate_normalization_variables(raw_data_folder: str):
             file_path = os.path.join(raw_data_folder, filename)
 
             with open(file_path, 'r') as file:
-                raw_data = json.load(file)
+                raw_data = json.load(file).get("Rows", [])
 
-            for key, value in raw_data.items():
-                if key in [
-                    "CoinsQuantity", "CoinsBoughtCount", "NonRewardDrinksBoughtCount",
-                    "RewardDrinksBoughtCount", "GetDiamondSlotPlayCount", "BillSlotPlayCount",
-                    "CakeSlotPlayCount", "MysterySlotPlayCount"
-                ]:
-                    max_coins = max(max_coins, value)
+            for row in raw_data:
+                key = row.get("Column1", "")
+                value = row.get("Column2", 0)
+
+                if key == "CoinsQuantity":
+                    max_coins_quantity = max(max_coins_quantity, float(value))
+                elif key == "CoinsBoughtCount":
+                    max_coins_bought = max(max_coins_bought, float(value))
+                elif key == "NonRewardDrinksBoughtCount":
+                    max_non_reward_drinks = max(max_non_reward_drinks, float(value))
+                elif key == "RewardDrinksBoughtCount":
+                    max_reward_drinks = max(max_reward_drinks, float(value))
+                elif key == "GetDiamondSlotPlayCount":
+                    max_diamond_plays = max(max_diamond_plays, float(value))
+                elif key == "BillSlotPlayCount":
+                    max_bill_plays = max(max_bill_plays, float(value))
+                elif key == "CakeSlotPlayCount":
+                    max_cake_plays = max(max_cake_plays, float(value))
+                elif key == "MysterySlotPlayCount":
+                    max_mystery_plays = max(max_mystery_plays, float(value))
                 elif key in [
                     "MysterySlotPlaysPerMinute", "DiamondSlotPlaysPerMinute", "BillSlotPlaysPerMinute"
                 ]:
-                    play_rates.append(value)
+                    play_rates.append(float(value))
                 elif key in [
                     "AvgFixationTimeAlcoholicDisplays", "AvgFixationTimeAlcoholicVsNonAlcoholic",
                     "AvgTimePlayingDiamondMachine", "AvgTimePlayingBillMachine",
-                    "AvgTimePlayingMysteryMachine", "AvgTimePlayingCakeMachine",
-                    "AvgStagnantTime"
+                    "AvgTimePlayingMysteryMachine", "AvgTimePlayingCakeMachine", "AvgStagnantTime"
                 ]:
-                    max_fixation_time = max(max_fixation_time, value)
-                elif key == "TotalAccumulatedMoney":
-                    max_accumulated_money = max(max_accumulated_money, value)
-                elif key.startswith("ProgressOfSavingWithin") or key.startswith("AvgOfProgressOf"):
-                    max_progress = max(max_progress, value)
-                elif key.startswith("TimeSpentOn"):
-                    max_time_spent = max(max_time_spent, value)
-                elif "ReactionTime" in key:
-                    max_reaction_time = max(max_reaction_time, value)
-                    reaction_times.append(value)
-                elif "TimeGazeOn" in key:
-                    max_gaze_time = max(max_gaze_time, value)
-                elif "Number" in key:
-                    max_busted_ghosts = max(max_busted_ghosts, value)
-
+                    max_fixation_time = max(max_fixation_time, float(value))
+                
+    # Calculate mean and standard deviation for slot play rates
     mean_rate = sum(play_rates) / len(play_rates) if play_rates else 0
     variance = sum((x - mean_rate) ** 2 for x in play_rates) / len(play_rates) if play_rates else 0
     std_dev_rate = math.sqrt(variance)
 
+    return {
+        "max_coins_quantity": max_coins_quantity,
+        "max_coins_bought": max_coins_bought,
+        "max_non_reward_drinks": max_non_reward_drinks,
+        "max_reward_drinks": max_reward_drinks,
+        "max_diamond_plays": max_diamond_plays,
+        "max_bill_plays": max_bill_plays,
+        "max_cake_plays": max_cake_plays,
+        "max_mystery_plays": max_mystery_plays,
+        "mean_rate": mean_rate,
+        "std_dev_rate": std_dev_rate,
+        "max_fixation_time": max_fixation_time
+    }
+
+def calculate_gb_normalization_variables(raw_data_folder: str):
+    max_reaction_time = max_gaze_time = max_busted_ghosts = 0
+    mean_reaction_time = std_dev_reaction_time = 0
+    reaction_times = []
+
+    for filename in os.listdir(raw_data_folder):
+        if filename.startswith("AD") or filename.startswith("CG"):
+            file_path = os.path.join(raw_data_folder, filename)
+
+            with open(file_path, 'r') as file:
+                raw_data = json.load(file).get("Rows", [])
+
+            for row in raw_data:
+                key = row.get("Column5", "")  # Column5 holds the key names for GB
+                value = row.get("Column6", 0)  # Column6 holds the corresponding values
+
+                if "ReactionTime" in key:
+                    max_reaction_time = max(max_reaction_time, float(value))
+                    reaction_times.append(float(value))
+                elif "TimeGazeOn" in key:
+                    max_gaze_time = max(max_gaze_time, float(value))
+                elif "Number" in key:
+                    max_busted_ghosts = max(max_busted_ghosts, float(value))
+
+    # Compute mean and standard deviation for reaction times
     mean_reaction_time = sum(reaction_times) / len(reaction_times) if reaction_times else 0
     variance_reaction = sum((x - mean_reaction_time) ** 2 for x in reaction_times) / len(reaction_times) if reaction_times else 0
     std_dev_reaction_time = math.sqrt(variance_reaction)
 
     return {
-        "max_coins": max_coins,
-        "max_plays_per_minute": max_plays_per_minute,
-        "max_fixation_time": max_fixation_time,
-        "max_accumulated_money": max_accumulated_money,
-        "mean_rate": mean_rate,
-        "std_dev_rate": std_dev_rate,
-        "max_progress": max_progress,
-        "max_time_spent": max_time_spent,
         "max_reaction_time": max_reaction_time,
         "max_gaze_time": max_gaze_time,
         "max_busted_ghosts": max_busted_ghosts,
@@ -152,61 +222,138 @@ def calculate_normalization_variables(raw_data_folder: str):
         "std_dev_reaction_time": std_dev_reaction_time
     }
 
-def process_and_normalize_files(raw_data_folder: str, normalized_data_folder: str):
-    variables = calculate_normalization_variables(raw_data_folder)
-
-    if not os.path.exists(normalized_data_folder):
-        os.makedirs(normalized_data_folder)
+def calculate_ls_normalization_variables(raw_data_folder: str):
+    max_progress = max_time_spent = 0
 
     for filename in os.listdir(raw_data_folder):
         if filename.startswith("AD") or filename.startswith("CG"):
             file_path = os.path.join(raw_data_folder, filename)
 
             with open(file_path, 'r') as file:
-                rows = json.load(file)
+                raw_data = json.load(file).get("Rows", [])
 
-            puw_data, ls_data, gb_data, tm_data, wg_data = {}, {}, {}, {}, {}
+            for row in raw_data:
+                key = row.get("Column3", "")  # Column3 holds the key names for LS
+                value = row.get("Column4", 0)  # Column4 holds the corresponding values
 
-            for row in rows:
-                puw_data[row[0]] = float(row[1]) if row[1] else 0
-                ls_data[row[2]] = float(row[3]) if row[3] else 0
-                gb_data[row[4]] = float(row[5]) if row[5] else 0
-                tm_data[row[6]] = float(row[7]) if row[7] else 0
-                wg_data[row[8]] = float(row[9]) if row[9] else 0
+                if key.startswith("ProgressOfSavingWithin") or key.startswith("AvgOfProgressOf"):
+                    max_progress = max(max_progress, float(value))
+                elif key.startswith("TimeSpentOn"):
+                    max_time_spent = max(max_time_spent, float(value))
 
+    return {
+        "max_progress": max_progress,
+        "max_time_spent": max_time_spent
+    }
+
+def calculate_wg_normalization_variables(raw_data_folder: str):
+    max_instruction_checks = max_safe_account_sum = max_non_reward_purchases = max_reward_purchases = 0
+
+    for filename in os.listdir(raw_data_folder):
+        if filename.startswith("AD") or filename.startswith("CG"):
+            file_path = os.path.join(raw_data_folder, filename)
+
+            with open(file_path, 'r') as file:
+                raw_data = json.load(file).get("Rows", [])
+
+            for row in raw_data:
+                key = row.get("Column9", "")  # Column9 holds the key names for WG
+                value = row.get("Column10", 0)  # Column10 holds the corresponding values
+
+                if "CheckedNumberOFTimesInstruction" in key:
+                    max_instruction_checks = max(max_instruction_checks, float(value))
+                elif "SafeAccountSumLevel" in key:
+                    max_safe_account_sum = max(max_safe_account_sum, float(value))
+                elif key == "NonRewardDrinksBoughtCount":
+                    max_non_reward_purchases = max(max_non_reward_purchases, float(value))
+                elif key == "RewardDrinksBoughtCount":
+                    max_reward_purchases = max(max_reward_purchases, float(value))
+
+    return {
+        "max_instruction_checks": max_instruction_checks,
+        "max_safe_account_sum": max_safe_account_sum,
+        "max_non_reward_purchases": max_non_reward_purchases,
+        "max_reward_purchases": max_reward_purchases
+    }
+
+def parse_float_or_string(value):
+    if isinstance(value, str):
+        value = value.strip().lower()
+        if value == "yes":
+            return 1.0  # Convert "yes" to 1
+        try:
+            return float(value)  # Convert valid floats
+        except ValueError:
+            return value  # Keep other strings as they are
+    return float(value) if value not in ["", None] else ""
+
+def process_and_normalize_files(raw_data_folder: str, normalized_data_folder: str):
+    wg_variables = calculate_wg_normalization_variables(raw_data_folder)
+    puw_variables=calculate_puw_normalization_variables(raw_data_folder)
+    gb_variables=calculate_gb_normalization_variables( raw_data_folder)
+    ls_variables=calculate_ls_normalization_variables( raw_data_folder)
+
+    files = [os.path.join(raw_data_folder, f) for f in os.listdir(raw_data_folder) if f.endswith(".json")]
+
+    if not os.path.exists(normalized_data_folder):
+        os.makedirs(normalized_data_folder)
+
+    for file_path in files:
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+            rows = data.get("Rows", [])
+
+        normalized_rows = []
+        for row in rows:
+            puw_data = {row.get("Column1", ""): float(row.get("Column2", 0)) if row.get("Column2", "") not in ["", None] else ""}
+            ls_data = {row.get("Column3", ""): parse_float_or_string(row.get("Column4", ""))}
+            gb_data = {row.get("Column5", ""): float(row.get("Column6", 0)) if row.get("Column6", "") not in ["", None] else ""}
+            tm_data = {row.get("Column7", ""): float(row.get("Column8", 0)) if row.get("Column8", "") not in ["", None] else ""}
+            wg_data = {row.get("Column9", ""): float(row.get("Column10", 0)) if row.get("Column10", "") not in ["", None] else ""}
+            
             normalized_puw = normalize_puw_input_data(
                 puw_data,
-                variables["max_coins"],
-                variables["max_plays_per_minute"],
-                variables["max_fixation_time"],
-                variables["max_accumulated_money"],
-                variables["mean_rate"],
-                variables["std_dev_rate"]
+                puw_variables["max_coins_quantity"],
+                puw_variables["max_coins_bought"],
+                puw_variables["max_non_reward_drinks"],
+                puw_variables["max_reward_drinks"],
+                puw_variables["max_diamond_plays"],
+                puw_variables["max_bill_plays"],
+                puw_variables["max_cake_plays"],
+                puw_variables["max_mystery_plays"],
+                puw_variables["mean_rate"],
+                puw_variables["std_dev_rate"],
+                puw_variables["max_fixation_time"],
             )
-            normalized_ls = normalize_ls_input_data(ls_data, variables["max_progress"], variables["max_time_spent"])
+            normalized_ls = normalize_ls_input_data(ls_data, ls_variables["max_progress"], ls_variables["max_time_spent"])
             normalized_gb = normalize_gb_input_data(
                 gb_data,
-                variables["max_reaction_time"],
-                variables["max_gaze_time"],
-                variables["max_busted_ghosts"],
-                variables["mean_reaction_time"],
-                variables["std_dev_reaction_time"]
+                gb_variables["max_reaction_time"],
+                gb_variables["max_gaze_time"],
+                gb_variables["max_busted_ghosts"],
+                gb_variables["mean_reaction_time"],
+                gb_variables["std_dev_reaction_time"]
+                
             )
             normalized_tm = normalize_tm_input_data(tm_data)
-
-            normalized_data = {
-                **normalized_puw,
-                **normalized_ls,
-                **normalized_gb,
-                **normalized_tm,
-                **wg_data
+            normalized_wg = normalize_wg_input_data(wg_data,wg_variables["max_instruction_checks"],wg_variables["max_safe_account_sum"],wg_variables["max_non_reward_purchases"],wg_variables["max_reward_purchases"])
+            
+            normalized_row = {
+                "Column1": list(normalized_puw.keys())[0], "Column2": list(normalized_puw.values())[0],
+                "Column3": list(normalized_ls.keys())[0], "Column4": list(normalized_ls.values())[0],
+                "Column5": list(normalized_gb.keys())[0], "Column6": list(normalized_gb.values())[0],
+                "Column7": list(normalized_tm.keys())[0], "Column8": list(normalized_tm.values())[0],
+                "Column9": list(normalized_wg.keys())[0], "Column10": list(normalized_wg.values())[0]
             }
+            normalized_rows.append(normalized_row)
 
-            normalized_file_path = os.path.join(normalized_data_folder, filename)
-            with open(normalized_file_path, 'w') as normalized_file:
-                json.dump(normalized_data, normalized_file, indent=4)
+        normalized_data = {"Rows": normalized_rows}
 
-            print(f"Processed and saved: {normalized_file_path}")
+        normalized_file_path = os.path.join(normalized_data_folder, os.path.basename(file_path))
+        with open(normalized_file_path, 'w') as normalized_file:
+            json.dump(normalized_data, normalized_file, indent=4)
+
+        print(f"Processed and saved: {normalized_file_path}")
 
 def main():
     process_and_normalize_files("RawData", "NormalizedData")

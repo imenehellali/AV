@@ -24,36 +24,37 @@ define_ranges = {
 
     # Big Five Traits
     "Extraversion": (12, 60),
-    "Agreeableness": (12, 60),
-    "Conscientiousness": (12, 60),
-    "Neuroticism": (12, 60),
-    "Openness": (12, 60),
+    "Verträglichkeit": (12, 60),
+    "Gewissenhaftigkeit": (12, 60),
+    "Negative Emotionalität": (12, 60),
+    "Offenheit": (12, 60),
 
     # Big Five Facets
-    "Sociability": (4, 20),
-    "Assertiveness": (4, 20),
-    "Activity": (4, 20),
-    "Compassion": (4, 20),
-    "Politeness": (4, 20),
-    "Interpersonal Trust": (4, 20),
-    "Orderliness": (4, 20),
-    "Diligence": (4, 20),
-    "Reliability": (4, 20),
-    "Anxiety": (4, 20),
-    "Depression": (4, 20),
-    "Emotional Instability": (4, 20),
-    "Aesthetic Sensitivity": (4, 20),
-    "Intellectual Curiosity": (4, 20),
-    "Creative Imagination": (4, 20),
+    "Geselligkeit": (4, 20),
+    "Durchsetzungsfähigkeit": (4, 20),
+    "Aktivität": (4, 20),
+    "Mitgefühl": (4, 20),
+    "Höflichkeit": (4, 20),
+    "Zwischenmenschliches Vertrauen": (4, 20),
+    "Ordnungsliebe": (4, 20),
+    "Fleiß": (4, 20),
+    "Verlässlichkeit": (4, 20),
+    "Ängstlichkeit": (4, 20),
+    "Niedergeschlagenheit": (4, 20),
+    "Unbeständigkeit der Gefühle": (4, 20),
+    "Ästhetisches Empfinden": (4, 20),
+    "Intellektuelle Neugierde": (4, 20),
+    "Kreativer Einfallsreichtum": (4, 20),
 
     # BIS-11 Scores
-    "Attention score": (0, 20),
-    "Cognitive Instability score": (0, 12),
-    "Motor Scores": (0, 28),
-    "Perseverance scores": (0, 16),
-    "Self-Control scores": (0, 24),
-    "Cognitive Complexity scores": (0, 20)
+    "Aufmerksamkeit": (0, 20),
+    "Kognitive Instabilität": (0, 12),
+    "Motorische Impulsivität": (0, 28),
+    "Beharrlichkeit": (0, 16),
+    "Selbst Kontrolle": (0, 24),
+    "Kognitive Komplexität": (0, 20)
 }
+
 
 
 def validate_value(value, score_name, real_values=None):
@@ -70,33 +71,26 @@ def validate_value(value, score_name, real_values=None):
 def calculate_differences(predicted_data, real_data):
     differences = []
 
-    # Extract real rows from the "dataArray" key
-    real_rows = real_data.get("dataArray", [])
-    if not real_rows:
-        print("Error: 'dataArray' key missing or empty in real data.")
-        return differences
+    # Convert predicted data values to float
+    predicted_data = {key: float(value) if isinstance(value, str) and value.replace('.', '', 1).isdigit() else value 
+                      for key, value in predicted_data.items()}
 
-    # Transform real data into a dictionary for easier access
-    real_data_dict = {item["scoreName"]: item["scoreValue"] for item in real_rows}
+    # Transform real data into a dictionary
+    real_data_dict = {key: float(value) for key, value in real_data.items() if isinstance(value, (int, float))}
 
-    # Iterate through rows of predicted data
-    for i, predicted_row in enumerate(predicted_data):
-        row_differences = {}
+    # Compute absolute differences
+    row_differences = {}
+    for score_name, predicted_value in predicted_data.items():
+        if score_name in real_data_dict:
+            real_value = real_data_dict[score_name]
+            difference = abs(predicted_value - real_value)
+            row_differences[score_name] = difference
+        else:
+            print(f"Score {score_name} not found in real data.")
 
-        # Calculate differences for each score in the predicted row
-        for score_name, predicted_value in predicted_row.items():
-            if score_name in real_data_dict:
-                real_value = real_data_dict[score_name]
-                if not validate_value(predicted_value, score_name, real_values=real_data_dict):
-                    print(f"Validation failed for row {i + 1}, column {score_name}: Predicted={predicted_value}, Real={real_value}")
-                difference = abs(predicted_value - real_value)
-                row_differences[score_name] = difference
-            else:
-                print(f"Score {score_name} not found in real data.")
-
-        differences.append(row_differences)
-
+    differences.append(row_differences)
     return differences
+
 
 
 
@@ -108,20 +102,47 @@ def calculate_differences(predicted_data, real_data):
 # 5. Evaluate model performance using RMSE (Root Mean Square Error).
 # 6. Use ANOVA for assessing differences in variance across multiple datasets. ( comparing predictions across groups - later when i have AD too)
 # 7. Implement Mahalanobis distance to detect outliers in multivariate data.
-def perform_t_squared_test(all_differences):
-    differences_array = np.array(all_differences).reshape(-1, len(define_ranges))
-    mean_vector = np.mean(differences_array, axis=0)
-    cov_matrix = np.cov(differences_array, rowvar=False)
+import numpy as np
 
-    if np.linalg.det(cov_matrix) == 0:
-        print("Covariance matrix is singular; T-squared test cannot be performed.")
-        return [None] * len(differences_array)
-    else:
+import numpy as np
+from sklearn.covariance import LedoitWolf
+
+def perform_t_squared_test(all_differences):
+    if not isinstance(all_differences, list) or not all_differences:
+        print("No differences available for T-squared test.")
+        return [None] * len(all_differences)
+
+    differences_array = np.array(all_differences)
+
+    if differences_array.shape[0] < 2:
+        print("Not enough data for covariance matrix. Returning None for T-squared.")
+        return [None] * len(all_differences)
+
+    # **1. Standardize features (subtract mean, divide by std)**
+    mean_vector = np.mean(differences_array, axis=0)
+    std_vector = np.std(differences_array, axis=0, ddof=1)
+    std_vector[std_vector == 0] = 1  # Avoid division by zero
+    differences_array = (differences_array - mean_vector) / std_vector
+
+    # **2. Compute covariance with shrinkage regularization**
+    lw = LedoitWolf()
+    cov_matrix = lw.fit(differences_array).covariance_
+    print(cov_matrix)
+    try:
         inv_cov_matrix = np.linalg.inv(cov_matrix)
-        return [
-            np.dot(np.dot((row - mean_vector), inv_cov_matrix), (row - mean_vector).T)
-            for row in differences_array
-        ]
+        print(inv_cov_matrix)
+    except np.linalg.LinAlgError:
+        print("Covariance matrix is still singular; using pseudo-inverse.")
+        inv_cov_matrix = np.linalg.pinv(cov_matrix)
+
+    # **3. Compute T-squared values per row**
+    t_squared_values = [
+        np.dot(np.dot((row - mean_vector), inv_cov_matrix), (row - mean_vector).T)
+        for row in differences_array
+    ]
+
+    return t_squared_values if len(t_squared_values) == len(all_differences) else [None] * len(all_differences)
+
     
 def compute_p_values(all_differences):
     p_values = []
@@ -151,10 +172,7 @@ def calculate_sample_size(current_differences, alpha=0.05, power=0.8):
 #
 #
 def load_predicted_json(file_path):
-    """
-    Reads and normalizes the ParticipantPredictedResults JSON file.
-    Extracts a dictionary of score names and values.
-    """
+    """ Reads the predicted JSON file without normalization. """
     try:
         with open(file_path, 'r') as f:
             data = json.load(f)
@@ -162,7 +180,7 @@ def load_predicted_json(file_path):
         if isinstance(data, list) and len(data) > 1:
             header = data[0]  # First row contains score names
             values = data[-1]  # Last row contains the corresponding values
-            return {header[i]: int(values[i]) if values[i] != "N/A" else None for i in range(1, len(header))}
+            return {header[i]: values[i] for i in range(1, len(header))}
         else:
             print(f"Unexpected format in predicted file: {file_path}")
             return None
@@ -172,24 +190,30 @@ def load_predicted_json(file_path):
         return None
 
 
+
 def load_real_json(file_path):
-    """
-    Reads and normalizes the ParticipantRealResults JSON file.
-    Extracts a dictionary of score names and values.
-    """
+    """ Reads the real JSON file and returns a dictionary of values. """
     try:
         with open(file_path, 'r') as f:
             data = json.load(f)
 
-        if isinstance(data, dict) and "dataArray" in data:
+        # If "dataArray" exists, use it; otherwise, use the data as-is
+        if isinstance(data, dict) and "dataArray" in data and isinstance(data["dataArray"], list):
             return {item["scoreName"]: item["scoreValue"] for item in data["dataArray"]}
+        elif isinstance(data, dict):  # If the data is already a dictionary, return it
+            return {key: value for key, value in data.items() if isinstance(value, (int, float))}
         else:
-            print(f"Unexpected format in real file: {file_path}")
+            print(f"Unexpected real data format in: {file_path}")
             return None
 
+    except json.JSONDecodeError:
+        print(f"Error: JSON decoding failed for real file: {file_path}")
+        return None
     except Exception as e:
         print(f"Error reading real JSON file '{file_path}': {e}")
         return None
+
+
 
 def process_files():
     comparison_results = []
@@ -199,9 +223,9 @@ def process_files():
         predicted_path = os.path.join(predicted_folder, filename)
         real_path = os.path.join(real_folder, filename)
 
-        # Check if the corresponding real file exists
         if not os.path.exists(real_path):
             print(f"Real file missing for: {filename}")
+            comparison_results.append({"Filename": filename, "Status": "Missing real file"})
             continue
 
         # Load predicted and real data
@@ -215,16 +239,19 @@ def process_files():
 
         # Compare and calculate differences
         differences = calculate_differences(predicted_data, real_data)
+        
         if differences:
-            all_values = [d for row in differences for d in row.values()]
-            avg_diff = np.mean(all_values) if all_values else 0
-            max_diff = np.max(all_values) if all_values else 0
+            all_values = [list(row.values()) for row in differences]  # Convert to list of lists
+            avg_diff = np.mean([val for sublist in all_values for val in sublist]) if all_values else 0
+            max_diff = np.max([val for sublist in all_values for val in sublist]) if all_values else 0
         else:
             avg_diff = 0
             max_diff = 0
+        
+        all_differences.extend(all_values)
         comparison_results.append({"Filename": filename, "Average Difference": avg_diff, "Maximum Difference": max_diff})
-        all_differences.extend([d for row in differences for d in row.values()])
-
+ 
+    print(all_differences)
     # Perform statistical analysis
     t_squared_values = perform_t_squared_test(all_differences)
     p_values = compute_p_values(all_differences)
@@ -239,25 +266,29 @@ def process_files():
     print(f"Required sample size for significance: {sample_size}")
 
     # Attach t-squared values and p-values to results
-    for idx, t_val in enumerate(t_squared_values):
-        if idx < len(comparison_results):
-            comparison_results[idx]["T-squared Value"] = t_val
-
-    for idx, p_val in enumerate(p_values):
-        if idx < len(comparison_results):
-            comparison_results[idx]["P-value"] = p_val
+    for idx in range(len(comparison_results)):
+        comparison_results[idx]["T-squared Value"] = t_squared_values[idx] if idx < len(t_squared_values) else None
+        comparison_results[idx]["P-value"] = p_values[idx] if idx < len(p_values) else None
 
     return comparison_results
 
 
 def export_results_to_csv(results):
     output_file = os.path.join(os.getcwd(), "ComparisonResults.csv")
+
+    # Define only the expected fields for CSV
+    fieldnames = ["Filename", "Average Difference", "Maximum Difference", "T-squared Value", "P-value"]
+
+    # Remove extra fields from results before writing to CSV
+    cleaned_results = [{k: v for k, v in row.items() if k in fieldnames} for row in results]
+
     with open(output_file, mode='w', newline='') as csv_file:
-        fieldnames = ["Filename", "Average Difference", "Maximum Difference", "T-squared Value", "P-value"]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerows(results)
+        writer.writerows(cleaned_results)
+
     print(f"Comparison results saved to {output_file}")
+
 
 def main():
     ensure_folders_exist()

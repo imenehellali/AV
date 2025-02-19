@@ -99,7 +99,7 @@ public class InstructionPanel : MonoBehaviour
             if (SceneManager.GetSceneByName("StartScene").isLoaded)
             {
                 _audioSourceInstrGame.PlayOneShot(gameVideo);
-                levelTranscript.text = "Sie befinden sich in der Startszene, bevor eine der eigentlichen Aufgaben beginnt! Dies ist ein Platzhalter. Die spezifischen Anweisungen zu jeder Aufgabe werden hier angezeigt! Die Anweisungen zu jeder Aufgabe werden zu Beginn jeder Aufgabe abgespielt! Sie können sie unten pausieren und wieder fortsetzen oder jederzeit von diesem Panel aus abspielen!";
+                levelTranscript.text = "Die spezifischen Anweisungen zu jeder Aufgabe werden hier angezeigt!";
             }
 
             else if (SceneManager.GetSceneByName("PUWScene").isLoaded)
@@ -176,6 +176,11 @@ public class InstructionPanel : MonoBehaviour
     //Organic closing
     private IEnumerator StartLevelAfterPlay()
     {
+        if (_audioSourceInstrGame.isPlaying || _audioSourceInstrLvl.isPlaying)
+        {
+            _audioSourceInstrGame.Stop();
+            _audioSourceInstrLvl.Stop();
+        }
         if (currLoadedScene.Equals("EndScene"))
             yield return new WaitForSeconds(0f);
         else
