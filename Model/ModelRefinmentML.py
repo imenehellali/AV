@@ -65,7 +65,7 @@ def create_pipeline():
 
 # Define MLP model
 def train_mlp(X, y):
-    mlp = MLPRegressor(hidden_layer_sizes=(64, 32), activation='relu', solver='adam', max_iter=1000)
+    mlp = MLPRegressor(hidden_layer_sizes=(64, 32), activation='relu', solver='adam', max_iter=2000)
     mlp.fit(X, y)
     return mlp
 

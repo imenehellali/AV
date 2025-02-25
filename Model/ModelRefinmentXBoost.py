@@ -53,36 +53,6 @@ def load_data(file_path):
     df = pd.DataFrame(extracted_data, columns=['Feature', 'Value', 'Type'])
     return df
 
-# Define feature transformation pipeline
-def create_pipeline():
-    numeric_transformer = StandardScaler()
-    categorical_transformer = OneHotEncoder(handle_unknown='ignore')
-    text_transformer = TfidfVectorizer()
-    
-    return numeric_transformer, categorical_transformer, text_transformer
-
-
-# Define MLP model
-def train_mlp(X, y):
-    mlp = MLPRegressor(hidden_layer_sizes=(64, 32), activation='relu', solver='adam', max_iter=1000)
-    mlp.fit(X, y)
-    return mlp
-
-# Define Random Forest model for error correction
-def train_rf(X, y):
-    rf = RandomForestRegressor(n_estimators=100, random_state=42)
-    rf.fit(X, y)
-    return rf
-
-# Grid Search for hyperparameter tuning
-def optimize_model(model, X, y):
-    if X.shape[0] < 3:  # Avoiding sparse matrix ambiguity error
-        return model  # Return the original model if not enough data
-    
-    param_grid = {'hidden_layer_sizes': [(32, 16), (64, 32), (128, 64)]}
-    search = GridSearchCV(model, param_grid, cv=min(3, X.shape[0]))  # Ensuring cv is valid
-    search.fit(X, y)
-    return search.best_estimator_
 
 # Load SBERT model for text embeddings
 sbert_model = SentenceTransformer('all-MiniLM-L6-v2')

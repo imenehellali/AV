@@ -68,28 +68,6 @@ def validate_value(value, score_name, real_values=None):
         min_val, max_val = define_ranges[score_name]
     return min_val <= value <= max_val
 
-def calculate_differences(predicted_data, real_data):
-    differences = []
-
-    # Convert predicted data values to float
-    predicted_data = {key: float(value) if isinstance(value, str) and value.replace('.', '', 1).isdigit() else value 
-                      for key, value in predicted_data.items()}
-
-    # Transform real data into a dictionary
-    real_data_dict = {key: float(value) for key, value in real_data.items() if isinstance(value, (int, float))}
-
-    # Compute absolute differences
-    row_differences = {}
-    for score_name, predicted_value in predicted_data.items():
-        if score_name in real_data_dict:
-            real_value = real_data_dict[score_name]
-            difference = abs(predicted_value - real_value)
-            row_differences[score_name] = difference
-        else:
-            print(f"Score {score_name} not found in real data.")
-
-    differences.append(row_differences)
-    return differences
 
 
 
@@ -107,105 +85,92 @@ import numpy as np
 import numpy as np
 from sklearn.covariance import LedoitWolf
 
+
+#
+
+
+def calculate_differences(predicted_data, real_data):
+    """ Computes absolute differences between predicted and real scores."""
+    differences = []
+    row_differences = {}
+    for score_name, predicted_value in predicted_data.items():
+        real_value = real_data.get(score_name)
+        if real_value is not None:
+            row_differences[score_name] = abs(predicted_value - real_value)
+        else:
+            print(f"Score {score_name} not found in real data.")
+    differences.append(row_differences)
+    return differences
+
 def perform_t_squared_test(all_differences):
     if not isinstance(all_differences, list) or not all_differences:
         print("No differences available for T-squared test.")
         return [None] * len(all_differences)
-
-    differences_array = np.array(all_differences)
-
-    if differences_array.shape[0] < 2:
-        print("Not enough data for covariance matrix. Returning None for T-squared.")
-        return [None] * len(all_differences)
-
-    # **1. Standardize features (subtract mean, divide by std)**
-    mean_vector = np.mean(differences_array, axis=0)
-    std_vector = np.std(differences_array, axis=0, ddof=1)
-    std_vector[std_vector == 0] = 1  # Avoid division by zero
-    differences_array = (differences_array - mean_vector) / std_vector
-
-    # **2. Compute covariance with shrinkage regularization**
+    differences_array = np.array([list(diff.values()) for diff in all_differences if diff]).reshape(-1, len(all_differences[0]))
     lw = LedoitWolf()
     cov_matrix = lw.fit(differences_array).covariance_
-    print(cov_matrix)
     try:
         inv_cov_matrix = np.linalg.inv(cov_matrix)
-        print(inv_cov_matrix)
     except np.linalg.LinAlgError:
-        print("Covariance matrix is still singular; using pseudo-inverse.")
         inv_cov_matrix = np.linalg.pinv(cov_matrix)
+    mean_vector = np.mean(differences_array, axis=0)
+    return [np.dot(np.dot((row - mean_vector), inv_cov_matrix), (row - mean_vector).T) for row in differences_array]
 
-    # **3. Compute T-squared values per row**
-    t_squared_values = [
-        np.dot(np.dot((row - mean_vector), inv_cov_matrix), (row - mean_vector).T)
-        for row in differences_array
-    ]
-
-    return t_squared_values if len(t_squared_values) == len(all_differences) else [None] * len(all_differences)
-
-    
 def compute_p_values(all_differences):
     p_values = []
-    differences_array = np.array(all_differences).flatten()
-    for score_idx in range(len(define_ranges)):
-        score_differences = differences_array[score_idx::len(define_ranges)]
-        t_stat, p_val = ttest_1samp(score_differences, 0)
+    if not all_differences:
+        return [None]
+    differences_array = np.array([list(diff.values()) for diff in all_differences if diff]).flatten()
+    for score_idx in range(differences_array.shape[0]):
+        t_stat, p_val = ttest_1samp(differences_array[score_idx::len(differences_array)], 0)
         p_values.append(p_val)
     return p_values
-#
-#
-#
+
 def calculate_sample_size(current_differences, alpha=0.05, power=0.8):
-    # Compute mean and standard deviation of current differences
-    mean_diff = np.mean(current_differences)
-    std_diff = np.std(current_differences, ddof=1)
-
-    # Effect size (Cohen's d)
-    effect_size = mean_diff / std_diff
-
-    # Initialize power analysis
+    if not current_differences:
+        return None
+    differences_array = np.array([list(diff.values()) for diff in current_differences if diff]).flatten()
+    mean_diff = np.mean(differences_array)
+    std_diff = np.std(differences_array, ddof=1)
+    effect_size = mean_diff / std_diff if std_diff != 0 else 0
     analysis = TTestPower()
     sample_size = analysis.solve_power(effect_size=effect_size, alpha=alpha, power=power, alternative='two-sided')
+    return round(sample_size)
 
-    return sample_size
 #
 #
 #
 def load_predicted_json(file_path):
-    """ Reads the predicted JSON file without normalization. """
+    """ Reads the predicted JSON file and extracts score names and values."""
     try:
         with open(file_path, 'r') as f:
             data = json.load(f)
-
-        if isinstance(data, list) and len(data) > 1:
-            header = data[0]  # First row contains score names
-            values = data[-1]  # Last row contains the corresponding values
-            return {header[i]: values[i] for i in range(1, len(header))}
+        
+        if isinstance(data, dict):
+            return {key: float(value) if isinstance(value, (int, float, str)) and str(value).replace('.', '', 1).isdigit() else value 
+                    for key, value in data.items()}  # Extract score names and values
         else:
             print(f"Unexpected format in predicted file: {file_path}")
             return None
-
+    
     except Exception as e:
         print(f"Error reading predicted JSON file '{file_path}': {e}")
         return None
 
-
-
 def load_real_json(file_path):
-    """ Reads the real JSON file and returns a dictionary of values. """
+    """ Reads the real JSON file and returns a dictionary of values."""
     try:
         with open(file_path, 'r') as f:
             data = json.load(f)
 
-        # If "dataArray" exists, use it; otherwise, use the data as-is
         if isinstance(data, dict) and "dataArray" in data and isinstance(data["dataArray"], list):
-            return {item["scoreName"]: item["scoreValue"] for item in data["dataArray"]}
-        elif isinstance(data, dict):  # If the data is already a dictionary, return it
+            return {item["scoreName"]: float(item["scoreValue"]) if isinstance(item["scoreValue"], (int, float, str)) and str(item["scoreValue"]).replace('.', '', 1).isdigit() else item["scoreValue"] 
+                    for item in data["dataArray"]}
+        elif isinstance(data, dict):
             return {key: value for key, value in data.items() if isinstance(value, (int, float))}
         else:
             print(f"Unexpected real data format in: {file_path}")
             return None
-
     except json.JSONDecodeError:
         print(f"Error: JSON decoding failed for real file: {file_path}")
         return None

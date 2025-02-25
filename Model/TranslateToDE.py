@@ -48,4 +48,4 @@ def rename_and_save_json_files(folder_path):
             with open(file_path, "w", encoding="utf-8") as file:
                 json.dump(data, file, ensure_ascii=False, indent=4)
                 
-rename_and_save_json_files("ParticipantRealResults")
+rename_and_save_json_files("ParticipantPredictedResults")
