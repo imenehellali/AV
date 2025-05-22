@@ -7,6 +7,7 @@ import torch.nn as nn
 import torch.optim as optim
 import pdfplumber
 import networkx as nx
+import nltk
 
 from langdetect import detect
 from PyPDF2 import PdfReader
@@ -171,7 +172,8 @@ def load_measured_data():
     return measured_matrix
 
 ##################### RAG Pipeline ##################################
-
+nltk.download('punkt_tab')
+nltk.download('averaged_perceptron_tagger_eng')
 # Load NLP Models avoided spacy for installation issues trying with senza standford failed trying from huggingface
 nlp_en = pipeline("ner", model="dbmdz/bert-large-cased-finetuned-conll03-english")
 nlp_de = pipeline("ner", model="mschiesser/ner-bert-german")
@@ -225,6 +227,40 @@ def extract_ner_relations(text):
         entities = [(ent['word'] if isinstance(ent, dict) else ent.text, ent['entity'] if isinstance(ent, dict) else ent.label_) for ent in doc]
         all_entities.extend(entities)
         
+        # Use NLTK for sentence splitting and POS tagging
+        sentences = nltk.sent_tokenize(segment)
+        for sent in sentences:
+            tokens = nltk.word_tokenize(sent)
+            pos_tags = nltk.pos_tag(tokens)
+            
+            # Identify the first verb (ROOT candidate)
+            verb_index = None
+            for idx, (word, tag) in enumerate(pos_tags):
+                if tag.startswith("VB"):
+                    verb_index = idx
+                    break
+            
+            if verb_index is not None:
+                # Look backwards for a subject (noun)
+                subject = None
+                for idx in range(verb_index - 1, -1, -1):
+                    if pos_tags[idx][1].startswith("NN"):
+                        subject = pos_tags[idx][0]
+                        break
+                
+                # Look forward for an object (noun)
+                obj = None
+                for idx in range(verb_index + 1, len(pos_tags)):
+                    if pos_tags[idx][1].startswith("NN"):
+                        obj = pos_tags[idx][0]
+                        break
+                
+                # If both subject and object are found, add the relation
+                if subject and obj:
+                    relation = pos_tags[verb_index][0].lower()  # use the verb as the relation
+                    all_relations.append((subject, obj, relation))
+    
+    print(f"Total relations extracted from segment: {len(all_relations)}")
     return all_entities, all_relations
 
 # Extract tables using LayoutLMv3
@@ -245,6 +281,12 @@ def check_neo4j_cache():
         result = session.run("MATCH (n) RETURN count(n) as count")
         count = result.single()["count"]
     return count
+
+def check_neo4j_edges():
+    with driver.session() as session:
+        result = session.run("MATCH ()-[r]->() RETURN count(r) as count")
+        edge_count = result.single()["count"]
+    return edge_count
 
 # Fetch existing data from Neo4j (if needed)
 def fetch_neo4j_data():
@@ -279,8 +321,22 @@ def store_knowledge_in_neo4j(entities, relations):
 
 # Learn causal relationships using Bayesian Networks
 def learn_bayesian_network(relations):
-    edges = [(subj, obj) for subj, obj, rel in relations]
+    edges = [(subj, obj) for subj, obj, rel in relations if subj != obj]
     G = nx.DiGraph(edges)
+    G.add_edges_from(edges)
+
+    # Detect and break cycles until the graph is acyclic.
+    cycles = list(nx.simple_cycles(G))
+    while cycles:
+        for cycle in cycles:
+            # For each cycle, remove one edge.
+            # Here we remove the first edge in the cycle to break it.
+            if len(cycle) > 1:
+                edge_to_remove = (cycle[0], cycle[1])
+                if G.has_edge(*edge_to_remove):
+                    G.remove_edge(*edge_to_remove)
+                    print(f"Removed edge {edge_to_remove} to break cycle {cycle}")
+        cycles = list(nx.simple_cycles(G))
     bn_model = BayesianNetwork(G.edges())
     bn_model.fit(pd.DataFrame(edges, columns=["Cause", "Effect"]), estimator=MaximumLikelihoodEstimator)
     return bn_model
@@ -298,9 +354,9 @@ def fine_tune_scibert(knowledge_base):
         outputs = scibert_model(**inputs).last_hidden_state.mean(dim=1)  # Sentence embeddings
     return outputs.numpy()
 
-def process_pdfs():
-    # If both cache files exist, load and return their data
-    if os.path.exists(LOCAL_DATA_FILE) and os.path.exists(LOCAL_DATA_GRAPH):
+def process_pdfs(force_reprocess=False):
+    # If not forcing reprocessing and cache files exist, load them
+    if not force_reprocess and os.path.exists(LOCAL_DATA_FILE) and os.path.exists(LOCAL_DATA_GRAPH):
         try:
             with open(LOCAL_DATA_FILE, "r", encoding="utf-8") as f:
                 knowledge_base = f.read()
@@ -312,9 +368,8 @@ def process_pdfs():
             return knowledge_base, all_entities, all_relations
         except Exception as e:
             print("Error loading cached data:", e)
-            # Fall through to reprocessing if loading fails
-
-    # Process the PDFs if cache doesn't exist or loading fails
+            print("Reprocessing PDFs...")
+    # Reprocess PDFs from scratch
     knowledge_base = ""
     all_entities = []
     all_relations = []
@@ -332,12 +387,10 @@ def process_pdfs():
             all_relations.extend(relations)
             print(f"Processed: {filename}")
 
-    # Save the processed data locally for future runs
+    # Save processed data for future use
     try:
-        # Save the knowledge_base as plain text
         with open(LOCAL_DATA_FILE, "w", encoding="utf-8") as f:
             f.write(knowledge_base)
-        # Save the graph data (entities and relations) as JSON
         with open(LOCAL_DATA_GRAPH, "w", encoding="utf-8") as f:
             json.dump({"all_entities": all_entities, "all_relations": all_relations}, 
                       f, indent=4, ensure_ascii=False)
@@ -347,13 +400,16 @@ def process_pdfs():
 
     return knowledge_base, all_entities, all_relations
 
-# Main function to learn from PDFs
 def learn_from_pdfs():
-    # Check if Neo4j already contains nodes
-    neo4j_count = check_neo4j_cache()
-    if neo4j_count > 0:
-        print("Neo4j already contains knowledge. Attempting to load local cache...")
-        # If both cache files exist, load them; otherwise, process PDFs.
+    try:
+        # Try to check Neo4j for existing data.
+        node_count = check_neo4j_cache()
+        edge_count = check_neo4j_edges()
+        print(f"Neo4j node count: {node_count}")
+        print(f"Neo4j edge count: {edge_count}")
+    except Exception as e:
+        print("Neo4j connection failed:", e)
+        # Fall back to local files if available.
         if os.path.exists(LOCAL_DATA_FILE) and os.path.exists(LOCAL_DATA_GRAPH):
             try:
                 with open(LOCAL_DATA_FILE, "r", encoding="utf-8") as f:
@@ -362,23 +418,93 @@ def learn_from_pdfs():
                     graph_data = json.load(f)
                 all_entities = graph_data.get("all_entities", [])
                 all_relations = graph_data.get("all_relations", [])
+                if not all_relations:
+                    raise ValueError("Local graph data does not contain any edges.")
                 print("Loaded knowledge data from local cache files.")
-            except Exception as e:
-                print("Error loading local cache:", e)
+                bayesian_model = learn_bayesian_network(all_relations)
+                fine_tuned_scibert = fine_tune_scibert(knowledge_base)
+                return knowledge_base, bayesian_model, fine_tuned_scibert
+            except Exception as load_err:
+                print("Error loading local cache:", load_err)
                 print("Reprocessing PDFs...")
-                knowledge_base, all_entities, all_relations = process_pdfs()
         else:
-            print("Local cache files not found. Processing PDFs...")
-            knowledge_base, all_entities, all_relations = process_pdfs()
-    else:
-        print("Neo4j has no cached knowledge. Processing PDFs...")
-        knowledge_base, all_entities, all_relations = process_pdfs()
+            print("Local cache files not found. Reprocessing PDFs...")
+        # Reprocess PDFs if local cache isn't available or valid.
+        knowledge_base, all_entities, all_relations = process_pdfs(force_reprocess=True)
         store_knowledge_in_neo4j(all_entities, all_relations)
-    
-    # Build the Bayesian model and generate SciBERT embeddings using fixed tokenization settings.
+        bayesian_model = learn_bayesian_network(all_relations)
+        fine_tuned_scibert = fine_tune_scibert(knowledge_base)
+        return knowledge_base, bayesian_model, fine_tuned_scibert
+
+    # Neo4j connection was successful.
+    if node_count > 0:
+        # If Neo4j has nodes but no edges, try to push edges from local file.
+        if edge_count == 0:
+            print("Neo4j contains nodes but no edges. Attempting to push edges from local cache...")
+            if os.path.exists(LOCAL_DATA_GRAPH):
+                try:
+                    with open(LOCAL_DATA_GRAPH, "r", encoding="utf-8") as f:
+                        graph_data = json.load(f)
+                    all_relations = graph_data.get("all_relations", [])
+                    all_entities = graph_data.get("all_entities", [])
+                    if all_relations:
+                        store_knowledge_in_neo4j(all_entities, all_relations)
+                        print("Successfully pushed edges to Neo4j.")
+                    else:
+                        print("Local cache does not contain edges. Will use local file data.")
+                except Exception as push_err:
+                    print("Failed to push edges from local cache:", push_err)
+                    print("Continuing with local file data.")
+            else:
+                print("Local graph file not found. Cannot push edges. Continuing with local file data.")
+            # Now attempt to load local cache data
+            if os.path.exists(LOCAL_DATA_FILE) and os.path.exists(LOCAL_DATA_GRAPH):
+                try:
+                    with open(LOCAL_DATA_FILE, "r", encoding="utf-8") as f:
+                        knowledge_base = f.read()
+                    with open(LOCAL_DATA_GRAPH, "r", encoding="utf-8") as f:
+                        graph_data = json.load(f)
+                    all_entities = graph_data.get("all_entities", [])
+                    all_relations = graph_data.get("all_relations", [])
+                    if not all_relations:
+                        raise ValueError("Local graph data does not contain any edges.")
+                    print("Loaded knowledge data from local cache files.")
+                except Exception as e:
+                    print("Error loading local cache:", e)
+                    print("Reprocessing PDFs...")
+                    knowledge_base, all_entities, all_relations = process_pdfs(force_reprocess=True)
+            else:
+                print("Local cache files not found. Processing PDFs...")
+                knowledge_base, all_entities, all_relations = process_pdfs(force_reprocess=True)
+        else:
+            # Neo4j has both nodes and edges.
+            print("Neo4j already contains complete knowledge (nodes and edges). Attempting to load local cache...")
+            if os.path.exists(LOCAL_DATA_FILE) and os.path.exists(LOCAL_DATA_GRAPH):
+                try:
+                    with open(LOCAL_DATA_FILE, "r", encoding="utf-8") as f:
+                        knowledge_base = f.read()
+                    with open(LOCAL_DATA_GRAPH, "r", encoding="utf-8") as f:
+                        graph_data = json.load(f)
+                    all_entities = graph_data.get("all_entities", [])
+                    all_relations = graph_data.get("all_relations", [])
+                    if not all_relations:
+                        raise ValueError("Local graph data does not contain any edges.")
+                    print("Loaded knowledge data from local cache files.")
+                except Exception as e:
+                    print("Error loading local cache:", e)
+                    print("Reprocessing PDFs...")
+                    knowledge_base, all_entities, all_relations = process_pdfs(force_reprocess=True)
+            else:
+                print("Local cache files not found. Processing PDFs...")
+                knowledge_base, all_entities, all_relations = process_pdfs(force_reprocess=True)
+    else:
+        # Neo4j has no nodes.
+        print("Neo4j has no nodes. Processing PDFs...")
+        knowledge_base, all_entities, all_relations = process_pdfs(force_reprocess=True)
+        store_knowledge_in_neo4j(all_entities, all_relations)
+
     bayesian_model = learn_bayesian_network(all_relations)
     fine_tuned_scibert = fine_tune_scibert(knowledge_base)
-    
     return knowledge_base, bayesian_model, fine_tuned_scibert
 
 
@@ -454,22 +580,46 @@ class CorrelationLearner(nn.Module):
 
 def convert_measured_values(measured_values):
     """
-    Convert a dictionary of measured values (which may include strings)
-    into a list of numeric values. For string entries, we use a simple
-    mapping that assigns a unique float for each unique string.
+    Convert a dictionary or list of measured values (which may include strings or lists)
+    into a list of numeric values. For string entries, we assign a unique float 
+    for each unique string. If a value is a list, we attempt to convert its elements
+    to float and compute their average.
     """
     mapping_dict = {}
     numeric_values = []
-    for key, value in measured_values.items():
-        try:
-            numeric_values.append(float(value))
-        except ValueError:
-            # If the value is a string, use a mapping.
-            if value not in mapping_dict:
-                # Assign a unique number; here, we simply use the count plus 1.
-                mapping_dict[value] = float(len(mapping_dict) + 1)
-            numeric_values.append(mapping_dict[value])
+
+    def process_value(val):
+        # If the value is a list, attempt to convert its items to float and average them.
+        if isinstance(val, list):
+            try:
+                float_list = [float(item) for item in val]
+                return sum(float_list) / len(float_list) if float_list else 0.0
+            except Exception:
+                # Fallback: treat the list as a string for mapping.
+                val_str = str(val)
+                if val_str not in mapping_dict:
+                    mapping_dict[val_str] = float(len(mapping_dict) + 1)
+                return mapping_dict[val_str]
+        else:
+            try:
+                return float(val)
+            except Exception:
+                val_str = str(val)
+                if val_str not in mapping_dict:
+                    mapping_dict[val_str] = float(len(mapping_dict) + 1)
+                return mapping_dict[val_str]
+
+    if isinstance(measured_values, dict):
+        for key, value in measured_values.items():
+            numeric_values.append(process_value(value))
+    elif isinstance(measured_values, list):
+        for value in measured_values:
+            numeric_values.append(process_value(value))
+    else:
+        raise ValueError("measured_values must be either a dict or a list")
+    
     return numeric_values
+
 
 # Train the CorrelationLearner model using structured knwoledge
 def train_correlation_learner(measured_values, predicted_values, knowledge_data, fine_tuned_scibert, epochs=500, threshold=0.05):

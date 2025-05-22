@@ -9,7 +9,7 @@ import pandas as pd
 
 def prepare_prompt_puw(data):
     prompt = """
-    You are an advanced psychological scoring system tasked with interpreting tagged measurements provided below. These measurements must be mapped to psychological scores according to established frameworks: UPPS, Big Five Inventory, and BIS-11 assessments.
+    You are an advanced german psychological scoring system tasked with interpreting tagged measurements provided below. These measurements must be mapped to psychological scores according to established frameworks: UPPS, Big Five Inventory, and BIS-11 assessments.
 
     The interpretation must strictly adhere to the following guidelines:
     - Use the given ranges to calculate the scores.
@@ -24,35 +24,35 @@ def prepare_prompt_puw(data):
 
     // Big Five Traits
     Extraversion: [12-60]
-    Agreeableness: [12-60]
-    Conscientiousness: [12-60]
-    Neuroticism: [12-60]
-    Openness: [12-60]
+    Verträglichkeit: [12-60]
+    Gewissenhaftigkeit: [12-60]
+    Negative Emotionalität: [12-60]
+    Offenheit: [12-60]
 
     // Big Five Facets
-    Sociability: [4-20]
-    Assertiveness: [4-20]
-    Activity: [4-20]
-    Compassion: [4-20]
-    Politeness: [4-20]
-    Interpersonal Trust: [4-20]
-    Orderliness: [4-20]
-    Diligence: [4-20]
-    Reliability: [4-20]
-    Anxiety: [4-20]
-    Depression: [4-20]
-    Emotional Instability: [4-20]
-    Aesthetic Sensitivity: [4-20]
-    Intellectual Curiosity: [4-20]
-    Creative Imagination: [4-20]
+    Geselligkeit: [4-20]
+    Durchsetzungsfähigkeit: [4-20]
+    Aktivität: [4-20]
+    Mitgefühl: [4-20]
+    Höflichkeit: [4-20]
+    Zwischenmenschliches Vertrauen: [4-20]
+    Ordnungsliebe: [4-20]
+    Fleiß: [4-20]
+    Verlässlichkeit: [4-20]
+    Ängstlichkeit: [4-20]
+    Niedergeschlagenheit: [4-20]
+    Unbeständigkeit der Gefühle: [4-20]
+    Ästhetisches Empfinden: [4-20]
+    Intellektuelle Neugierde: [4-20]
+    Kreativer Einfallsreichtum: [4-20]
 
     // BIS-11 Scores
-    Attention score: [0-20]
-    Cognitive Instability score: [0-12]
-    Motor Scores: [0-28]
-    Perseverance scores: [0-16]
-    Self-Control scores: [0-24]
-    Cognitive Complexity scores: [0-20]
+    Aufmerksamkeit: [0-20]
+    Kognitive Instabilität: [0-12]
+    Motorische Impulsivität: [0-28]
+    Beharrlichkeit: [0-16]
+    Selbst Kontrolle: [0-24]
+    Kognitive Komplexität: [0-20]
 
     Given the following tagged measurements:
     """
@@ -66,7 +66,7 @@ def prepare_prompt_puw(data):
 
 def prepare_prompt_ls(data):
     prompt = """
-    The following analysis should consider multiple facets for a better understanding:
+    The following analysis should consider multiple german facets for a better understanding:
 
     Important Focus point:
     The defined strategy emphasizes the importance of the statement below as a key consideration
@@ -78,7 +78,7 @@ def prepare_prompt_ls(data):
     You are given in addition a set of tagged measurements, which should be interpreted together with the important focus point and mapped to psychological scores based on UPPS, Big Five Inventory, and BIS-11 assessments.
     Present each score as an integer within the specified range, as shown below:
 
-     // UPPS Scores
+    // UPPS Scores
     Urgency: [11-44]
     Lack of premeditation: [10-40]
     Lack of perseverance: [10-40]
@@ -86,35 +86,35 @@ def prepare_prompt_ls(data):
 
     // Big Five Traits
     Extraversion: [12-60]
-    Agreeableness: [12-60]
-    Conscientiousness: [12-60]
-    Neuroticism: [12-60]
-    Openness: [12-60]
+    Verträglichkeit: [12-60]
+    Gewissenhaftigkeit: [12-60]
+    Negative Emotionalität: [12-60]
+    Offenheit: [12-60]
 
     // Big Five Facets
-    Sociability: [4-20]
-    Assertiveness: [4-20]
-    Activity: [4-20]
-    Compassion: [4-20]
-    Politeness: [4-20]
-    Interpersonal Trust: [4-20]
-    Orderliness: [4-20]
-    Diligence: [4-20]
-    Reliability: [4-20]
-    Anxiety: [4-20]
-    Depression: [4-20]
-    Emotional Instability: [4-20]
-    Aesthetic Sensitivity: [4-20]
-    Intellectual Curiosity: [4-20]
-    Creative Imagination: [4-20]
+    Geselligkeit: [4-20]
+    Durchsetzungsfähigkeit: [4-20]
+    Aktivität: [4-20]
+    Mitgefühl: [4-20]
+    Höflichkeit: [4-20]
+    Zwischenmenschliches Vertrauen: [4-20]
+    Ordnungsliebe: [4-20]
+    Fleiß: [4-20]
+    Verlässlichkeit: [4-20]
+    Ängstlichkeit: [4-20]
+    Niedergeschlagenheit: [4-20]
+    Unbeständigkeit der Gefühle: [4-20]
+    Ästhetisches Empfinden: [4-20]
+    Intellektuelle Neugierde: [4-20]
+    Kreativer Einfallsreichtum: [4-20]
 
     // BIS-11 Scores
-    Attention score: [0-20]
-    Cognitive Instability score: [0-12]
-    Motor Scores: [0-28]
-    Perseverance scores: [0-16]
-    Self-Control scores: [0-24]
-    Cognitive Complexity scores: [0-20]
+    Aufmerksamkeit: [0-20]
+    Kognitive Instabilität: [0-12]
+    Motorische Impulsivität: [0-28]
+    Beharrlichkeit: [0-16]
+    Selbst Kontrolle: [0-24]
+    Kognitive Komplexität: [0-20]
 
     Given the following tagged measurements:
     """
@@ -127,63 +127,7 @@ def prepare_prompt_ls(data):
 
 def prepare_prompt_gb(data):
     prompt = """
-    You are an advanced psychological scoring system tasked with interpreting tagged measurements provided below. These measurements must be mapped to psychological scores according to established frameworks: UPPS, Big Five Inventory, and BIS-11 assessments.
-
-    The interpretation must strictly adhere to the following guidelines:
-    - Use the given ranges to calculate the scores.
-    - Ensure consistency in mapping the data to their respective traits or dimensions.
-    - Provide results as integers within the defined ranges.
-
-     // UPPS Scores
-    Urgency: [11-44]
-    Lack of premeditation: [10-40]
-    Lack of perseverance: [10-40]
-    Sensation seeking: [12-48]
-
-    // Big Five Traits
-    Extraversion: [12-60]
-    Agreeableness: [12-60]
-    Conscientiousness: [12-60]
-    Neuroticism: [12-60]
-    Openness: [12-60]
-
-    // Big Five Facets
-    Sociability: [4-20]
-    Assertiveness: [4-20]
-    Activity: [4-20]
-    Compassion: [4-20]
-    Politeness: [4-20]
-    Interpersonal Trust: [4-20]
-    Orderliness: [4-20]
-    Diligence: [4-20]
-    Reliability: [4-20]
-    Anxiety: [4-20]
-    Depression: [4-20]
-    Emotional Instability: [4-20]
-    Aesthetic Sensitivity: [4-20]
-    Intellectual Curiosity: [4-20]
-    Creative Imagination: [4-20]
-
-    // BIS-11 Scores
-    Attention score: [0-20]
-    Cognitive Instability score: [0-12]
-    Motor Scores: [0-28]
-    Perseverance scores: [0-16]
-    Self-Control scores: [0-24]
-    Cognitive Complexity scores: [0-20]
-
-    Given the following tagged measurements:
-    """
-    for key, value in data.items():
-        prompt += f"{key}: {value}\n"
-    prompt += """
-    Based on these measurements, provide only the psychological scores for each category with its name in the format of name: integerValue
-    """
-    return prompt
-
-def prepare_prompt_tm(data):
-    prompt = """
-    You are an advanced psychological scoring system tasked with interpreting tagged measurements provided below. These measurements must be mapped to psychological scores according to established frameworks: UPPS, Big Five Inventory, and BIS-11 assessments.
+    You are an advanced german psychological scoring system tasked with interpreting tagged measurements provided below. These measurements must be mapped to psychological scores according to established frameworks: UPPS, Big Five Inventory, and BIS-11 assessments.
 
     The interpretation must strictly adhere to the following guidelines:
     - Use the given ranges to calculate the scores.
@@ -198,35 +142,91 @@ def prepare_prompt_tm(data):
 
     // Big Five Traits
     Extraversion: [12-60]
-    Agreeableness: [12-60]
-    Conscientiousness: [12-60]
-    Neuroticism: [12-60]
-    Openness: [12-60]
+    Verträglichkeit: [12-60]
+    Gewissenhaftigkeit: [12-60]
+    Negative Emotionalität: [12-60]
+    Offenheit: [12-60]
 
     // Big Five Facets
-    Sociability: [4-20]
-    Assertiveness: [4-20]
-    Activity: [4-20]
-    Compassion: [4-20]
-    Politeness: [4-20]
-    Interpersonal Trust: [4-20]
-    Orderliness: [4-20]
-    Diligence: [4-20]
-    Reliability: [4-20]
-    Anxiety: [4-20]
-    Depression: [4-20]
-    Emotional Instability: [4-20]
-    Aesthetic Sensitivity: [4-20]
-    Intellectual Curiosity: [4-20]
-    Creative Imagination: [4-20]
+    Geselligkeit: [4-20]
+    Durchsetzungsfähigkeit: [4-20]
+    Aktivität: [4-20]
+    Mitgefühl: [4-20]
+    Höflichkeit: [4-20]
+    Zwischenmenschliches Vertrauen: [4-20]
+    Ordnungsliebe: [4-20]
+    Fleiß: [4-20]
+    Verlässlichkeit: [4-20]
+    Ängstlichkeit: [4-20]
+    Niedergeschlagenheit: [4-20]
+    Unbeständigkeit der Gefühle: [4-20]
+    Ästhetisches Empfinden: [4-20]
+    Intellektuelle Neugierde: [4-20]
+    Kreativer Einfallsreichtum: [4-20]
 
     // BIS-11 Scores
-    Attention score: [0-20]
-    Cognitive Instability score: [0-12]
-    Motor Scores: [0-28]
-    Perseverance scores: [0-16]
-    Self-Control scores: [0-24]
-    Cognitive Complexity scores: [0-20]
+    Aufmerksamkeit: [0-20]
+    Kognitive Instabilität: [0-12]
+    Motorische Impulsivität: [0-28]
+    Beharrlichkeit: [0-16]
+    Selbst Kontrolle: [0-24]
+    Kognitive Komplexität: [0-20]
+
+    Given the following tagged measurements:
+    """
+    for key, value in data.items():
+        prompt += f"{key}: {value}\n"
+    prompt += """
+    Based on these measurements, provide only the psychological scores for each category with its name in the format of name: integerValue
+    """
+    return prompt
+
+def prepare_prompt_tm(data):
+    prompt = """
+    You are an advanced german psychological scoring system tasked with interpreting tagged measurements provided below. These measurements must be mapped to psychological scores according to established frameworks: UPPS, Big Five Inventory, and BIS-11 assessments.
+
+    The interpretation must strictly adhere to the following guidelines:
+    - Use the given ranges to calculate the scores.
+    - Ensure consistency in mapping the data to their respective traits or dimensions.
+    - Provide results as integers within the defined ranges.
+
+    // UPPS Scores
+    Urgency: [11-44]
+    Lack of premeditation: [10-40]
+    Lack of perseverance: [10-40]
+    Sensation seeking: [12-48]
+
+    // Big Five Traits
+    Extraversion: [12-60]
+    Verträglichkeit: [12-60]
+    Gewissenhaftigkeit: [12-60]
+    Negative Emotionalität: [12-60]
+    Offenheit: [12-60]
+
+    // Big Five Facets
+    Geselligkeit: [4-20]
+    Durchsetzungsfähigkeit: [4-20]
+    Aktivität: [4-20]
+    Mitgefühl: [4-20]
+    Höflichkeit: [4-20]
+    Zwischenmenschliches Vertrauen: [4-20]
+    Ordnungsliebe: [4-20]
+    Fleiß: [4-20]
+    Verlässlichkeit: [4-20]
+    Ängstlichkeit: [4-20]
+    Niedergeschlagenheit: [4-20]
+    Unbeständigkeit der Gefühle: [4-20]
+    Ästhetisches Empfinden: [4-20]
+    Intellektuelle Neugierde: [4-20]
+    Kreativer Einfallsreichtum: [4-20]
+
+    // BIS-11 Scores
+    Aufmerksamkeit: [0-20]
+    Kognitive Instabilität: [0-12]
+    Motorische Impulsivität: [0-28]
+    Beharrlichkeit: [0-16]
+    Selbst Kontrolle: [0-24]
+    Kognitive Komplexität: [0-20]
 
     Given the following tagged measurements:
     """
@@ -240,7 +240,7 @@ def prepare_prompt_tm(data):
 
 def prepare_prompt_whole_game(data, previous_interpretations):
     prompt = """
-    You are an advanced psychological scoring system tasked with interpreting tagged measurements and unifying them with previously generated psychological scores and interpretations. 
+    You are an advanced german psychological scoring system tasked with interpreting tagged measurements and unifying them with previously generated psychological scores and interpretations. 
     Your goal is to refine the previous assessments by synthesizing new data with historical data to produce more accurate, nuanced, and logical results.
 
     The interpretation must strictly adhere to the following guidelines:
@@ -250,7 +250,7 @@ def prepare_prompt_whole_game(data, previous_interpretations):
     - Provide results **only in the format: ScoreName : ScoreValue**, as integers within the defined ranges.
     - Highlight how the refined scores align with behavioral patterns or tendencies observed.
 
-     // UPPS Scores
+    // UPPS Scores
     Urgency: [11-44]
     Lack of premeditation: [10-40]
     Lack of perseverance: [10-40]
@@ -258,35 +258,35 @@ def prepare_prompt_whole_game(data, previous_interpretations):
 
     // Big Five Traits
     Extraversion: [12-60]
-    Agreeableness: [12-60]
-    Conscientiousness: [12-60]
-    Neuroticism: [12-60]
-    Openness: [12-60]
+    Verträglichkeit: [12-60]
+    Gewissenhaftigkeit: [12-60]
+    Negative Emotionalität: [12-60]
+    Offenheit: [12-60]
 
     // Big Five Facets
-    Sociability: [4-20]
-    Assertiveness: [4-20]
-    Activity: [4-20]
-    Compassion: [4-20]
-    Politeness: [4-20]
-    Interpersonal Trust: [4-20]
-    Orderliness: [4-20]
-    Diligence: [4-20]
-    Reliability: [4-20]
-    Anxiety: [4-20]
-    Depression: [4-20]
-    Emotional Instability: [4-20]
-    Aesthetic Sensitivity: [4-20]
-    Intellectual Curiosity: [4-20]
-    Creative Imagination: [4-20]
+    Geselligkeit: [4-20]
+    Durchsetzungsfähigkeit: [4-20]
+    Aktivität: [4-20]
+    Mitgefühl: [4-20]
+    Höflichkeit: [4-20]
+    Zwischenmenschliches Vertrauen: [4-20]
+    Ordnungsliebe: [4-20]
+    Fleiß: [4-20]
+    Verlässlichkeit: [4-20]
+    Ängstlichkeit: [4-20]
+    Niedergeschlagenheit: [4-20]
+    Unbeständigkeit der Gefühle: [4-20]
+    Ästhetisches Empfinden: [4-20]
+    Intellektuelle Neugierde: [4-20]
+    Kreativer Einfallsreichtum: [4-20]
 
     // BIS-11 Scores
-    Attention score: [0-20]
-    Cognitive Instability score: [0-12]
-    Motor Scores: [0-28]
-    Perseverance scores: [0-16]
-    Self-Control scores: [0-24]
-    Cognitive Complexity scores: [0-20]
+    Aufmerksamkeit: [0-20]
+    Kognitive Instabilität: [0-12]
+    Motorische Impulsivität: [0-28]
+    Beharrlichkeit: [0-16]
+    Selbst Kontrolle: [0-24]
+    Kognitive Komplexität: [0-20]
 
     After presenting the scores, provide a detailed interpretation of the individual's personality and tendencies, focusing on:
     - Behavioral patterns derived from unified scores.
@@ -340,7 +340,7 @@ def generate_interpretation_per_level(prompt):
         openai.api_key = os.getenv("OPENAI_API_KEY")  # Ensure your API key is set in the environment variables --> DONE
 
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are a highly skilled psychologist helping to interpret complex data."},
                 {"role": "user", "content": prompt}
@@ -363,57 +363,60 @@ def extract_per_level_interpretation(level_name, interpretation):
     The first cell contains the level name.
     """
     try:
-        # Initialize the column with the level name
         column = [level_name]
-
-        # Regular expressions to extract scores for all 31 items
+        # Updated regex patterns to match German labels and allow flexible spaces
         patterns = {
-            "Scores": r"Scores: (\d+)",
-            "Urgency": r"Urgency: (\d+)",
-            "Lack of premeditation": r"Lack of premeditation: (\d+)",
-            "Lack of perseverance": r"Lack of perseverance: (\d+)",
-            "Sensation seeking": r"Sensation seeking: (\d+)",
-            "Extraversion": r"Extraversion: (\d+)",
-            "Agreeableness": r"Agreeableness: (\d+)",
-            "Conscientiousness": r"Conscientiousness: (\d+)",
-            "Neuroticism": r"Neuroticism: (\d+)",
-            "Openness": r"Openness: (\d+)",
-            "Sociability": r"Sociability: (\d+)",
-            "Assertiveness": r"Assertiveness: (\d+)",
-            "Activity": r"Activity: (\d+)",
-            "Compassion": r"Compassion: (\d+)",
-            "Politeness": r"Politeness: (\d+)",
-            "Interpersonal Trust": r"Interpersonal Trust: (\d+)",
-            "Orderliness": r"Orderliness: (\d+)",
-            "Diligence": r"Diligence: (\d+)",
-            "Reliability": r"Reliability: (\d+)",
-            "Anxiety": r"Anxiety: (\d+)",
-            "Depression": r"Depression: (\d+)",
-            "Emotional Instability": r"Emotional Instability: (\d+)",
-            "Aesthetic Sensitivity": r"Aesthetic Sensitivity: (\d+)",
-            "Intellectual Curiosity": r"Intellectual Curiosity: (\d+)",
-            "Creative Imagination": r"Creative Imagination: (\d+)",
-            "Attention score": r"Attention score: (\d+)",
-            "Cognitive Instability score": r"Cognitive Instability score: (\d+)",
-            "Motor Scores": r"Motor Scores: (\d+)",
-            "Perseverance scores": r"Perseverance scores: (\d+)",
-            "Self-Control scores": r"Self-Control scores: (\d+)",
-            "Cognitive Complexity scores": r"Cognitive Complexity scores: (\d+)"
+            # UPPS Scores (remain in English)
+            "Urgency": r"Urgency\s*:\s*(\d+)",
+            "Lack of premeditation": r"Lack of premeditation\s*:\s*(\d+)",
+            "Lack of perseverance": r"Lack of perseverance\s*:\s*(\d+)",
+            "Sensation seeking": r"Sensation seeking\s*:\s*(\d+)",
+    
+            # Big Five Traits (now using German labels)
+            "Extraversion": r"Extraversion\s*:\s*(\d+)",
+            "Verträglichkeit": r"Verträglichkeit\s*:\s*(\d+)",
+            "Gewissenhaftigkeit": r"Gewissenhaftigkeit\s*:\s*(\d+)",
+            "Negative Emotionalität": r"Negative Emotionalität\s*:\s*(\d+)",
+            "Offenheit": r"Offenheit\s*:\s*(\d+)",
+    
+            # Big Five Facets (German)
+            "Geselligkeit": r"Geselligkeit\s*:\s*(\d+)",
+            "Durchsetzungsfähigkeit": r"Durchsetzungsfähigkeit\s*:\s*(\d+)",
+            "Aktivität": r"Aktivität\s*:\s*(\d+)",
+            "Mitgefühl": r"Mitgefühl\s*:\s*(\d+)",
+            "Höflichkeit": r"Höflichkeit\s*:\s*(\d+)",
+            "Zwischenmenschliches Vertrauen": r"Zwischenmenschliches Vertrauen\s*:\s*(\d+)",
+            "Ordnungsliebe": r"Ordnungsliebe\s*:\s*(\d+)",
+            "Fleiß": r"Fleiß\s*:\s*(\d+)",
+            "Verlässlichkeit": r"Verlässlichkeit\s*:\s*(\d+)",
+            "Ängstlichkeit": r"Ängstlichkeit\s*:\s*(\d+)",
+            "Niedergeschlagenheit": r"Niedergeschlagenheit\s*:\s*(\d+)",
+            "Unbeständigkeit der Gefühle": r"Unbeständigkeit der Gefühle\s*:\s*(\d+)",
+            "Ästhetisches Empfinden": r"Ästhetisches Empfinden\s*:\s*(\d+)",
+            "Intellektuelle Neugierde": r"Intellektuelle Neugierde\s*:\s*(\d+)",
+            "Kreativer Einfallsreichtum": r"Kreativer Einfallsreichtum\s*:\s*(\d+)",
+    
+            # BIS-11 Scores (German)
+            "Aufmerksamkeit": r"Aufmerksamkeit\s*:\s*(\d+)",
+            "Kognitive Instabilität": r"Kognitive Instabilität\s*:\s*(\d+)",
+            "Motorische Impulsivität": r"Motorische Impulsivität\s*:\s*(\d+)",
+            "Beharrlichkeit": r"Beharrlichkeit\s*:\s*(\d+)",
+            "Selbst Kontrolle": r"Selbst Kontrolle\s*:\s*(\d+)",
+            "Kognitive Komplexität": r"Kognitive Komplexität\s*:\s*(\d+)"
         }
 
-        # Extract scores based on patterns
+
         for key, pattern in patterns.items():
             match = re.search(pattern, interpretation)
             if match:
                 column.append(match.group(1))
             else:
-                column.append("N/A")  # Add "N/A" if the value is not found
-
+                column.append("N/A")
         return column
 
     except Exception as e:
         print(f"Error extracting interpretation for {level_name}: {e}")
-        return [level_name] + ["N/A"] * 31  # Return "N/A" for all scores if an error occurs
+        return [level_name] + ["N/A"] * 31
 
 def interpret_participant_data(file_path):
     """
@@ -428,32 +431,33 @@ def interpret_participant_data(file_path):
         "Lack of perseverance",
         "Sensation seeking",
         "Extraversion",
-        "Agreeableness",
-        "Conscientiousness",
-        "Neuroticism",
-        "Openness",
-        "Sociability",
-        "Assertiveness",
-        "Activity",
-        "Compassion",
-        "Politeness",
-        "Interpersonal Trust",
-        "Orderliness",
-        "Diligence",
-        "Reliability",
-        "Anxiety",
-        "Depression",
-        "Emotional Instability",
-        "Aesthetic Sensitivity",
-        "Intellectual Curiosity",
-        "Creative Imagination",
-        "Attention score",
-        "Cognitive Instability score",
-        "Motor Scores",
-        "Perseverance scores",
-        "Self-Control scores",
-        "Cognitive Complexity scores"
+        "Verträglichkeit",
+        "Gewissenhaftigkeit",
+        "Negative Emotionalität",
+        "Offenheit",
+        "Geselligkeit",
+        "Durchsetzungsfähigkeit",
+        "Aktivität",
+        "Mitgefühl",
+        "Höflichkeit",
+        "Zwischenmenschliches Vertrauen",
+        "Ordnungsliebe",
+        "Fleiß",
+        "Verlässlichkeit",
+        "Ängstlichkeit",
+        "Niedergeschlagenheit",
+        "Unbeständigkeit der Gefühle",
+        "Ästhetisches Empfinden",
+        "Intellektuelle Neugierde",
+        "Kreativer Einfallsreichtum",
+        "Aufmerksamkeit",
+        "Kognitive Instabilität",
+        "Motorische Impulsivität",
+        "Beharrlichkeit",
+        "Selbst Kontrolle",
+        "Kognitive Komplexität"
     ]]
+
     previous_interpretations = {}
 
     # Load the JSON file
@@ -542,8 +546,8 @@ def load_and_save_interpretation():
         combined_array = interpret_participant_data(file_path)
 
         output_path = os.path.join(output_folder, f"{os.path.splitext(file)[0]}.json")
-        with open(output_path, 'w') as json_file:
-            json.dump(combined_array, json_file, indent=4)
+        with open(output_path, 'w', encoding='utf-8') as json_file:
+            json.dump(combined_array, json_file, indent=4, ensure_ascii=False)
     
 def main():
     load_and_save_interpretation()

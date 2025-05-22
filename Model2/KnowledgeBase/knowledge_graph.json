@@ -1,0 +1,157 @@
+{
+  "nodes": [
+    {
+      "name": "Craving",
+      "values": [
+        5.0,
+        2000.0,
+        100.0,
+        3.4,
+        45.0
+      ]
+    },
+    {
+      "name": "Neuroticism",
+      "values": [
+        2015.0,
+        22.0,
+        19.0,
+        163.0
+      ]
+    },
+    {
+      "name": "substance use disorder",
+      "values": [
+        14.0,
+        1.0
+      ]
+    },
+    {
+      "name": "Sensation seeking",
+      "values": [
+        2.0
+      ]
+    },
+    {
+      "name": "Depression",
+      "values": [
+        5.6,
+        2.0
+      ]
+    },
+    {
+      "name": "Reliability",
+      "values": [
+        2.0,
+        2.0
+      ]
+    },
+    {
+      "name": "cue reactivity",
+      "values": []
+    },
+    {
+      "name": "Amygdala",
+      "values": [
+        118.0
+      ]
+    },
+    {
+      "name": "Cognitive Instability score",
+      "values": [
+        11.0
+      ]
+    },
+    {
+      "name": "Anxiety",
+      "values": [
+        6.0,
+        2015.0,
+        20.0
+      ]
+    },
+    {
+      "name": "Activity",
+      "values": [
+        8.11
+      ]
+    },
+    {
+      "name": "attentional bias",
+      "values": [
+        500.0,
+        500.0,
+        6.0,
+        35.0,
+        128.0
+      ]
+    },
+    {
+      "name": "response inhibition",
+      "values": [
+        2.0,
+        27.0
+      ]
+    },
+    {
+      "name": "Lack of premeditation",
+      "values": [
+        24.0,
+        12.0
+      ]
+    },
+    {
+      "name": "Extraversion",
+      "values": [
+        2008.0,
+        1992.0,
+        29.0,
+        8.0
+      ]
+    },
+    {
+      "name": "reward sensitivity",
+      "values": [
+        3.0
+      ]
+    },
+    {
+      "name": "emotion regulation",
+      "values": [
+        26.0
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "attentional bias",
+      "to": "substance use disorder",
+      "label": "input_to_output"
+    },
+    {
+      "from": "attentional bias",
+      "to": "substance use disorder",
+      "label": "if"
+    },
+    {
+      "from": "attentional bias",
+      "to": "cue reactivity",
+      "label": "input_to_output"
+    },
+    {
+      "from": "attentional bias",
+      "to": "cue reactivity",
+      "label": "if"
+    },
+    {
+      "from": "attentional bias",
+      "to": "cue reactivity",
+      "label": "input_to_output"
+    },
+    {
+      "from": "attentional bias",
+      "to": "cue reactivity",
+      "label": "if"
+    }
+  ]
+}

@@ -2,6 +2,7 @@ import os
 import json
 import csv
 import numpy as np
+import pandas as pd
 from scipy.stats import multivariate_normal, ttest_1samp
 from statsmodels.stats.power import TTestPower
 
@@ -106,15 +107,27 @@ def perform_t_squared_test(all_differences):
     if not isinstance(all_differences, list) or not all_differences:
         print("No differences available for T-squared test.")
         return [None] * len(all_differences)
-    differences_array = np.array([list(diff.values()) for diff in all_differences if diff]).reshape(-1, len(all_differences[0]))
+    
+    # Check the type of the first element to decide conversion
+    if isinstance(all_differences[0], dict):
+        differences_array = np.array([list(diff.values()) for diff in all_differences if diff])
+    else:
+        differences_array = np.array([diff for diff in all_differences if diff])
+    
+    # Ensure differences_array is 2D: reshape using length of the first element
+    differences_array = differences_array.reshape(-1, len(all_differences[0]))
+    
     lw = LedoitWolf()
     cov_matrix = lw.fit(differences_array).covariance_
     try:
         inv_cov_matrix = np.linalg.inv(cov_matrix)
     except np.linalg.LinAlgError:
         inv_cov_matrix = np.linalg.pinv(cov_matrix)
+    
     mean_vector = np.mean(differences_array, axis=0)
-    return [np.dot(np.dot((row - mean_vector), inv_cov_matrix), (row - mean_vector).T) for row in differences_array]
+    return [np.dot(np.dot((row - mean_vector), inv_cov_matrix), (row - mean_vector).T)
+            for row in differences_array]
+
 
 def compute_p_values(all_differences):
     p_values = []
@@ -147,8 +160,39 @@ def load_predicted_json(file_path):
             data = json.load(f)
         
         if isinstance(data, dict):
+            # Existing processing for a JSON dictionary format
             return {key: float(value) if isinstance(value, (int, float, str)) and str(value).replace('.', '', 1).isdigit() else value 
-                    for key, value in data.items()}  # Extract score names and values
+                    for key, value in data.items()}
+        
+        elif isinstance(data, list):
+            # New accepted format: list-of-lists
+            # Expect the first row to be the header
+            if not data or not isinstance(data[0], list):
+                print(f"Unexpected list format in predicted file: {file_path}")
+                return None
+            
+            header = data[0]
+            wholegame_row = None
+            for row in data:
+                if isinstance(row, list) and row and row[0] == "WholeGame":
+                    wholegame_row = row
+                    break
+            
+            if wholegame_row is None:
+                print(f"'WholeGame' row not found in predicted file: {file_path}")
+                return None
+            
+            # Create dictionary mapping header columns (except the first label) to predicted values
+            predicted_dict = {}
+            for key, value in zip(header[1:], wholegame_row[1:]):
+                # Attempt to convert value to float when applicable
+                try:
+                    num_value = float(value)
+                except (ValueError, TypeError):
+                    num_value = value
+                predicted_dict[key] = num_value
+            
+            return predicted_dict
         else:
             print(f"Unexpected format in predicted file: {file_path}")
             return None
@@ -156,6 +200,7 @@ def load_predicted_json(file_path):
     except Exception as e:
         print(f"Error reading predicted JSON file '{file_path}': {e}")
         return None
+
 
 def load_real_json(file_path):
     """ Reads the real JSON file and returns a dictionary of values."""
@@ -179,10 +224,26 @@ def load_real_json(file_path):
         return None
 
 
+def export_evaluation_per_score(per_score_differences):
+    # Prepare data for DataFrame
+    data = []
+    for score, diffs in per_score_differences.items():
+        mean_diff = np.mean(diffs)
+        std_diff = np.std(diffs, ddof=1)
+        data.append({"Score": score, "Mean Deviation": mean_diff, "Standard Deviation": std_diff})
+    
+    df = pd.DataFrame(data)
+    output_file = os.path.join(os.getcwd(), "evaluationPerScore.xlsx")
+    # Specify engine='openpyxl' to ensure Unicode (including German characters) is handled properly.
+    df.to_excel(output_file, index=False, engine='openpyxl')
+    print(f"Per-score evaluation exported to {output_file}")
+
+
 
 def process_files():
     comparison_results = []
     all_differences = []
+    per_score_differences = {}
 
     for filename in os.listdir(predicted_folder):
         predicted_path = os.path.join(predicted_folder, filename)
@@ -204,7 +265,12 @@ def process_files():
 
         # Compare and calculate differences
         differences = calculate_differences(predicted_data, real_data)
-        
+
+        if differences and isinstance(differences[0], dict):
+            for score, diff in differences[0].items():
+                per_score_differences.setdefault(score, []).append(diff)
+        export_evaluation_per_score(per_score_differences)
+
         if differences:
             all_values = [list(row.values()) for row in differences]  # Convert to list of lists
             avg_diff = np.mean([val for sublist in all_values for val in sublist]) if all_values else 0
