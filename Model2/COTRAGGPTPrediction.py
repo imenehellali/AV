@@ -773,9 +773,6 @@ def predict_all_scores_for_participant(participant_id: str):
     return final_data
 
 
-
-
-
 # Main runner to test the pipeline
 if __name__ == "__main__":
     # Step F: Predict per score per participant
